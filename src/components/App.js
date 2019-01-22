@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import Tagesanzeige from "./Tagesanzeige";
+import Belegungstag from "./Belegungstag";
 
 class App extends Component {
   render() {
-    <div><Tagesanzeige /></div>
+
+    return (
+        <div>
+          <Tagesanzeige />
+          <Belegungstag />
+        </div>
+    );
   }
 }
 

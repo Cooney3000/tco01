@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 
 class Tagesanzeige extends Component {
   
-  options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  today  = new Date();
-  dateString = today.toLocaleDateString("de-DE", options);
-
   render() {
-    <div>{dateString}</div>
+    const options = { weekday: 'short', month: 'short', day: 'numeric' };
+    const today  = new Date();
+    const dateString = today.toLocaleDateString("de-DE", options);
+    return (
+        <div>{dateString}</div>
+    );
   }
 }
 
