@@ -6,6 +6,9 @@ import "./tafel.css";
 // Layout eines Tages
 
 class Belegungstag extends Component {
+  bearbeiteBelegung(b) {
+    console.log("Belegung " + b + " in Bearbeitung!")
+  }
   render() {
     return (
         <div>
@@ -24,12 +27,12 @@ class Belegungstag extends Component {
           <tbody>
             <tr className="platzDim">
               <td className="zeitleiste"><Zeitleiste /></td>
-              <td className="platz"><Platz /></td>
-              <td className="platz"><Platz /></td>              
-              <td className="platz"><Platz /></td>
-              <td className="platz"><Platz /></td>
-              <td className="platz"><Platz /></td>
-              <td className="platz"><Platz /></td>
+              <td className="platz"><Platz onClickHandler={ ()=>this.bearbeiteBelegung('P1') }/></td>
+              <td className="platz"><Platz onClickHandler={ ()=>this.bearbeiteBelegung('P2') }/></td>              
+              <td className="platz"><Platz onClickHandler={ ()=>this.bearbeiteBelegung('P3') }/></td>
+              <td className="platz"><Platz onClickHandler={ ()=>this.bearbeiteBelegung('P4') }/></td>
+              <td className="platz"><Platz onClickHandler={ ()=>this.bearbeiteBelegung('P5') }/></td>
+              <td className="platz"><Platz onClickHandler={ ()=>this.bearbeiteBelegung('P6') }/></td>
             </tr>
           </tbody>
           </table>
