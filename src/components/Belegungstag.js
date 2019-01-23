@@ -6,10 +6,8 @@ import "./tafel.css";
 // Layout eines Tages
 
 class Belegungstag extends Component {
-  bearbeiteBelegung(b) {
-    console.log("Belegung " + b + " in Bearbeitung!")
-  }
   render() {
+    const { bookingData } = this.props;
     return (
         <div>
           <table className="table">
@@ -27,33 +25,18 @@ class Belegungstag extends Component {
           <tbody>
             <tr className="platzDim">
               <td className="zeitleiste"><Zeitleiste /></td>
-              <td className="platz"><Platz onClickHandler={ ()=>this.bearbeiteBelegung('P1') }/></td>
-              <td className="platz"><Platz onClickHandler={ ()=>this.bearbeiteBelegung('P2') }/></td>              
-              <td className="platz"><Platz onClickHandler={ ()=>this.bearbeiteBelegung('P3') }/></td>
-              <td className="platz"><Platz onClickHandler={ ()=>this.bearbeiteBelegung('P4') }/></td>
-              <td className="platz"><Platz onClickHandler={ ()=>this.bearbeiteBelegung('P5') }/></td>
-              <td className="platz"><Platz onClickHandler={ ()=>this.bearbeiteBelegung('P6') }/></td>
+              <td className="platz"><Platz courtData={ bookingData.filter((e)=>e.court===1) }/></td>
+              <td className="platz"><Platz courtData={ bookingData.filter((e)=>e.court===2) }/></td>
+              <td className="platz"><Platz courtData={ bookingData.filter((e)=>e.court===3) }/></td>
+              <td className="platz"><Platz courtData={ bookingData.filter((e)=>e.court===4) }/></td>
+              <td className="platz"><Platz courtData={ bookingData.filter((e)=>e.court===5) }/></td>
+              <td className="platz"><Platz courtData={ bookingData.filter((e)=>e.court===6) }/></td>
             </tr>
           </tbody>
           </table>
         </div>
     );
   }
-}
-
-function getBelegungstag(belegungDate) {
-  const url = "http://localhost/api/api.php/records/bookings?filter=starts_at,ge,2018-12-27&filter=ends_at,lt,2018-12-28&order=starts_at";
-  let r;
-  fetch(url)
-  .then(result => result.json())
-  .then(result => {
-      r = result.records
-  })
-  .catch(function(err) {
-    console.log(err)
- });
- console.log(r);
- return r;
 }
 
 export default Belegungstag;

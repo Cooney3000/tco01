@@ -33,6 +33,7 @@
 	position: relative;
 }
 .ts {
+  background-color: rgb(111, 196, 136);
 	font-size: var(--buchungFontSize);
 	border: 2px solid white;
 	width: 100%;
@@ -43,27 +44,22 @@
 }
 
 .D-15 {
-	background-color: rgb(111, 196, 136);
 	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*1);
 }
 .D-30 {
-	background-color: rgb(111, 196, 136);
 	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*2);
 }
 .D-60 {
-	background-color: rgb(111, 196, 136);
 	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*4);
 }
 .D-90 {
-	background-color: rgb(111, 196, 136);
 	color: rgb(51, 51, 41);
   height: calc(var(--viertel)*6);
 }
 .D-120 {
-	background-color: rgb(111, 196, 136);
 	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*8);
 }
