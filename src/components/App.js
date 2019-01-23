@@ -6,10 +6,10 @@ class App extends Component {
   render() {
 
     return (
-        <div>
-          <Tagesanzeige />
+        <React.Fragment>
+          <h1><Tagesanzeige /></h1>
           <Belegungstag />
-        </div>
+        </React.Fragment>
     );
   }
 }

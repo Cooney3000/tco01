@@ -12,7 +12,7 @@ class Belegungstag extends Component {
           <table className="table">
           <thead>
             <tr>
-              <th scope="col">Uhr</th>
+              <th scope="col">Zeit</th>
               <th scope="col">Platz 1</th>
               <th scope="col">Platz 2</th>
               <th scope="col">Platz 3</th>

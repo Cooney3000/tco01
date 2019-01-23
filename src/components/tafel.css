@@ -1,18 +1,25 @@
 :root {
-	--viertel: 15px;
-	--schriftgroesse: 0.7rem;
+	--viertel: 15px; /* Pixel für eine Viertelstunde an einem Tag */
+	--buchungFontSize: 0.7rem; /* für Buchungen auf der Tafel */
 }
 .table td, .table th {
 	padding: 0;
 	margin: 0;
 }
-.viertelstunde {
-	font-size: calc(var(--schriftgroesse)*0.7);
+.stunde {
+	font-size: calc(var(--buchungFontSize)*1.1);
+	font-weight: bold;
 	border-top: 1px solid gray;
-	border-bottom: 1px solid white;
-	height: var(--viertel);
+	height: calc(var(--viertel));
 	top: -0px;
 	width: 2rem;
+	}
+.viertelstunde {
+	font-size: calc(var(--buchungFontSize)*0.8);
+	border-top: 1px solid gray;
+	height: var(--viertel);
+	top: -0px;
+	width: 1rem;
 }
 .zeitleiste {
 	position: relative;
@@ -26,9 +33,10 @@
 	position: relative;
 }
 .ts {
-	font-size: var(--schriftgroesse);
-	border: 1px solid white;
+	font-size: var(--buchungFontSize);
+	border: 2px solid white;
 	width: 100%;
+	padding: 0.2rem;
 	display:block;
 	overflow: hidden;
 	position: absolute;
@@ -59,6 +67,7 @@
 	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*8);
 }
+/* Positionierung für Belegungen innerhalb eines Tages im Format T-<stunde>-<minute> */
 .T-08-00 {top: 0px; }
 .T-08-15 {top: calc(var(--viertel)*1); }
 .T-08-30 {top: calc(var(--viertel)*2); }
