@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+// Datumsanzeige
+
 class Tagesanzeige extends Component {
   
   render() {
