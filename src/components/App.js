@@ -9,17 +9,23 @@ class App extends Component {
   };
 
   componentDidMount () {
-    const url = "http://localhost/api/api.php/records/bookings?filter=starts_at,ge,2018-12-27&filter=ends_at,lt,2018-12-28&order=starts_at";
+    const url = "http://tcolching.de/api/api.php/records/bookings?filter=starts_at,ge,2018-12-27&filter=ends_at,lt,2018-12-28&order=starts_at";
     fetch(url)
-        .then(result => result.json())
-        .then(result => {
-            this.setState({
-                bookingData: result.records
-            })
-        })
-        .catch(function(err) {
-          console.log(err)
-       });  
+      .then(function(response) {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(result => result.json())
+      .then(result => {
+          this.setState({
+              bookingData: result.records
+          })
+      })
+      .catch(function(err) {
+        console.log(err)
+      });  
   }
 
   render() {
