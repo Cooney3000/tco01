@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import Platz from "./Platz";
 import Zeitleiste from "./Zeitleiste";
 import "./tafel.css";
+// import dateJs from 'datejs';
 
 // Layout eines Tages
 
 class Belegungstag extends Component {
+  
   render() {
-    const { bookingData } = this.props;
+    //const day = (new Date()).toString("yyyy-MM-dd");
+    const day = "2019-05-02";
     return (
         <div>
           <table className="table">
@@ -25,12 +28,12 @@ class Belegungstag extends Component {
           <tbody>
             <tr className="platzDim">
               <td className="zeitleiste"><Zeitleiste /></td>
-              <td className="platz"><Platz courtData={ bookingData.filter((e)=>e.court===1) }/></td>
-              <td className="platz"><Platz courtData={ bookingData.filter((e)=>e.court===2) }/></td>
-              <td className="platz"><Platz courtData={ bookingData.filter((e)=>e.court===3) }/></td>
-              <td className="platz"><Platz courtData={ bookingData.filter((e)=>e.court===4) }/></td>
-              <td className="platz"><Platz courtData={ bookingData.filter((e)=>e.court===5) }/></td>
-              <td className="platz"><Platz courtData={ bookingData.filter((e)=>e.court===6) }/></td>
+              <td className="platz"><Platz court="1" day={day} /></td>
+              <td className="platz"><Platz court="2" day={day} /></td>
+              <td className="platz"><Platz court="3" day={day} /></td>
+              <td className="platz"><Platz court="4" day={day} /></td>
+              <td className="platz"><Platz court="5" day={day} /></td>
+              <td className="platz"><Platz court="6" day={day} /></td>
             </tr>
           </tbody>
           </table>

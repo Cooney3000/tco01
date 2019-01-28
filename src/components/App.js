@@ -3,39 +3,18 @@ import Tagesanzeige from "./Tagesanzeige";
 import Belegungstag from "./Belegungstag";
 
 class App extends Component {
-  
-  state = { 
-    bookingData : [],
-  };
-
-  componentDidMount () {
-    const url = "http://tcolching.de/api/api.php/records/bookings?filter=starts_at,ge,2018-12-27&filter=ends_at,lt,2018-12-28&order=starts_at";
-    fetch(url)
-      .then(function(response) {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response;
-      })
-      .then(result => result.json())
-      .then(result => {
-          this.setState({
-              bookingData: result.records
-          })
-      })
-      .catch(function(err) {
-        console.log(err)
-      });  
-  }
-
-  render() {
+    
+    render() {
+    // const { bookingData } = this.state;  
     return (
-        <React.Fragment>
+      <React.Fragment>
           <h1><Tagesanzeige /></h1>
-          <Belegungstag bookingData={this.state.bookingData} />
+          {/* <Belegungstag bookingData={bookingData} /> */}
+          <Belegungstag />
         </React.Fragment>
-    );
+    )};
   }
-}
+
 
 export default App;
+  

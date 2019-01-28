@@ -1,13 +1,13 @@
 :root {
 	--viertel: 15px; /* Pixel für eine Viertelstunde an einem Tag */
-	--buchungFontSize: 0.7rem; /* für Buchungen auf der Tafel */
+	--buchungFontSize: 1rem; /* für Buchungen auf der Tafel */
 }
 .table td, .table th {
 	padding: 0;
 	margin: 0;
 }
 .stunde {
-	font-size: calc(var(--buchungFontSize)*1.1);
+	font-size: calc(var(--buchungFontSize)*0.8);
 	font-weight: bold;
 	border-top: 1px solid gray;
 	height: calc(var(--viertel));
@@ -15,7 +15,7 @@
 	width: 2rem;
 	}
 .viertelstunde {
-	font-size: calc(var(--buchungFontSize)*0.8);
+	font-size: calc(var(--buchungFontSize)*0.7);
 	border-top: 1px solid gray;
 	height: var(--viertel);
 	top: -0px;
