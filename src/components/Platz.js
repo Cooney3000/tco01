@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import dateJs from 'datejs';
 
 
 // Alle Belegungen an diesem Tag für einen Platz
@@ -19,7 +18,8 @@ class Platz extends Component {
   }  
   componentWillMount() {
     const { court, day } = this.props;
-    // const url = "http://localhost/api/api.php/records/bookings?filter=booking_state,eq,A&filter=court,eq," + court + "&filter=starts_at,ge,2018-05-02&filter=ends_at,lt,2019-05-03&order=starts_at";
+    // const url = "http://tcolching.de/intern/api/platz.php?p=" + court + "&d=" + day + "";
+    console.log("PLATZ-URL: " + url);
     const url = "http://localhost/intern/api/platz.php?p=" + court + "&d=" + day + "";
 
     this.setState({isLoading : true});
@@ -33,9 +33,22 @@ class Platz extends Component {
         }
     })
     .then (result => {
+      console.log(result.records);
       let courtData = result.records.map( r => {
         let cn = computeBelClasses (r.starts_at, r.ends_at);
-        return <div className={cn} key={r.id}><strong>{new Date(r.starts_at).toString("HH:mm")}</strong><br />{r.p1} {r.p2} {r.p3} {r.p4}</div>
+        //console.log("PLATZ:" + r.court)
+        let spieler = 
+                 r.p1 
+              + (r.p2 ? '/' + r.p2 : ' ') 
+              + (r.p3 ? '/' + r.p3 : ' ') 
+              + (r.p4 ? '/' + r.p4 : ' ');
+        return (
+          <div className={cn} key={r.id} data-toggle="tooltip" data-placement="top" title={spieler}>
+            <strong>{r.starts_at.substring(11,16)}</strong>
+            <br />
+            {spieler}
+            </div>
+        );
       })
       this.setState({courtData: courtData});
     })

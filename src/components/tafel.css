@@ -7,26 +7,26 @@
 	margin: 0;
 }
 .stunde {
-	font-size: calc(var(--buchungFontSize)*0.8);
+  font-size: calc(var(--buchungFontSize)*0.8);
 	font-weight: bold;
 	border-top: 1px solid gray;
 	height: calc(var(--viertel));
 	top: -0px;
 	width: 2rem;
-	}
+}
 .viertelstunde {
-	font-size: calc(var(--buchungFontSize)*0.7);
+  font-size: calc(var(--buchungFontSize)*0.7);
 	border-top: 1px solid gray;
 	height: var(--viertel);
 	top: -0px;
 	width: 1rem;
 }
 .zeitleiste {
-	position: relative;
-	width: 2rem;
+  position: relative;
+  width: 2rem;
 }
 .platzDim {
-	height: calc(var(--viertel)*50);
+  height: calc(var(--viertel)*50);
 	border: 1px solid black;
 }
 .platz {
@@ -35,7 +35,8 @@
 .ts {
   background-color: rgb(111, 196, 136);
 	font-size: var(--buchungFontSize);
-	border: 2px solid white;
+  border: 2px solid white; 
+  border-radius: 0.5rem;
 	width: 100%;
 	padding: 0.2rem;
 	display:block;
