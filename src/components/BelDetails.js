@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import BelForm from './BelForm';
 import { Link } from 'react-router-dom';
+import Config from './Defaults';
 
 class BelDetails extends Component {
 
@@ -17,8 +18,7 @@ class BelDetails extends Component {
   }  
   componentWillMount() {
     const id = this.props.match.params.id;
-    // const url = "http://localhost/intern/api/platz.php?i=" + id;
-    const url = "http://www.tcolching.de/intern/api/platz.php?i=" + id;
+    const url = Config.hostname + "/intern/api/platz.php?i=" + id;
     //console.log(url);
 
     this.setState({isLoading : true});

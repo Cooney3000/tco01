@@ -8,10 +8,10 @@ class Routing extends Component {
     
     render() {
       return (
-        <React.Fragment>
+        <div>
           <Route exact path='/' component={Belegungstag} />
           <Route exact path='/belegungsdetails/:id' component={BelDetails} />
-        </React.Fragment>
+        </div>
       )
     }
 }

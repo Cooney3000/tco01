@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import Config from './Defaults';
 
 
 // Alle Belegungen an diesem Tag für einen Platz
@@ -19,9 +20,8 @@ class Platz extends Component {
   }  
   componentWillMount() {
     const { court, day } = this.props;
-    const url = "http://tcolching.de/intern/api/platz.php?p=" + court + "&d=" + day + "";
-    // const url = "http://localhost/intern/api/platz.php?p=" + court + "&d=" + day + "";
-    console.log("PLATZ-URL: " + url);
+    const url = Config.hostname + "/intern/api/platz.php?p=" + court + "&d=" + day + "";
+    // console.log("PLATZ-URL: " + url);
 
     this.setState({isLoading : true});
     

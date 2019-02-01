@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Config from './Defaults';
+import { Redirect } from 'react-router';
 
 class BelForm extends Component {
 
@@ -16,11 +18,12 @@ class BelForm extends Component {
       p3: r.p3id,
       p4: r.p4id,
       spieler: [],
+      zurTafel: false,
     };
   }
   componentWillMount() {
     // const url = "http://localhost/intern/api/spieler.php";
-    const url = "http://www.tcolching.de/intern/api/spieler.php";
+    const url = Config.hostname + "/intern/api/spieler.php";
 
     this.setState({isLoading : true});
     
@@ -40,9 +43,12 @@ class BelForm extends Component {
     .catch(error => this.setState({ error, isLoading: false }));
   }
   render(){
+    if (this.state.zurTafel === true) {
+      return <Redirect to='/' />
+    }
     return (
       <div className="form-group">
-        <form className="form-inline">
+        <form className="form-inline" onSubmit={e => {this.handleSubmit(e); return this.setState({ zurTafel: true })}}>
           <fieldset className="fields">
             <h4 className="d-inline">Start: </h4> 
             <select id="belStartStd" className="form-control" onChange={this.handleStdChange.bind(this)} value={this.state.std}>
@@ -82,24 +88,35 @@ class BelForm extends Component {
                 )
               })}
             </select>
-            <select id="belSpieler3" className="form-control" onChange={this.handleSpieler3Change.bind(this)} value={this.state.p3}>
-              {this.state.spieler.map( r => {
-                return (
-                    <option key={'3-' + r.id} value={r.id}>{r.spieler}</option>
-                )
-              })}
-            </select>
-            <select id="belSpieler4" className="form-control" onChange={this.handleSpieler4Change.bind(this)} value={this.state.p4}>
-              {this.state.spieler.map( r => {
-                return (
-                    <option key={'4-' + r.id} value={r.id}>{r.spieler}</option>
-                )
-              })}
-            </select>
+            { this.state.p3 > 0 ?
+                <select id="belSpieler3" className="form-control" onChange={this.handleSpieler3Change.bind(this)} value={this.state.p3}>
+                  {this.state.spieler.map( r => {
+                    return (
+                        <option key={'3-' + r.id} value={r.id}>{r.spieler}</option>
+                    )
+                  })}
+                </select>
+              : ''
+            }
+            { this.state.p4 > 0 ?
+                <select id="belSpieler4" className="form-control" onChange={this.handleSpieler4Change.bind(this)} value={this.state.p4}>
+                  {this.state.spieler.map( r => {
+                    return (
+                        <option key={'4-' + r.id} value={r.id}>{r.spieler}</option>
+                    )
+                  })}
+                </select>
+              : ''
+            }
+            <button type="submit" className="btn btn-primary">Submit</button>
           </fieldset>
         </form>
       </div>
     )
+  }
+  handleSubmit(e) {
+    console.log("SAVE FORM DATA");
+    e.preventDefault();
   }
   handleViertelChange(e) {
     this.setState({
