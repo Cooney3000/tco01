@@ -17,7 +17,8 @@ class BelDetails extends Component {
   }  
   componentWillMount() {
     const id = this.props.match.params.id;
-    const url = "http://localhost/intern/api/platz.php?i=" + id;
+    // const url = "http://localhost/intern/api/platz.php?i=" + id;
+    const url = "http://www.tcolching.de/intern/api/platz.php?i=" + id;
     //console.log(url);
 
     this.setState({isLoading : true});

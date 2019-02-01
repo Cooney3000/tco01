@@ -19,8 +19,8 @@ class Platz extends Component {
   }  
   componentWillMount() {
     const { court, day } = this.props;
-    // const url = "http://tcolching.de/intern/api/platz.php?p=" + court + "&d=" + day + "";
-    const url = "http://localhost/intern/api/platz.php?p=" + court + "&d=" + day + "";
+    const url = "http://tcolching.de/intern/api/platz.php?p=" + court + "&d=" + day + "";
+    // const url = "http://localhost/intern/api/platz.php?p=" + court + "&d=" + day + "";
     console.log("PLATZ-URL: " + url);
 
     this.setState({isLoading : true});

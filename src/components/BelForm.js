@@ -19,7 +19,8 @@ class BelForm extends Component {
     };
   }
   componentWillMount() {
-    const url = "http://localhost/intern/api/spieler.php";
+    // const url = "http://localhost/intern/api/spieler.php";
+    const url = "http://www.tcolching.de/intern/api/spieler.php";
 
     this.setState({isLoading : true});
     
