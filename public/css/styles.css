@@ -1,0 +1,703 @@
+body
+{
+	border-top:5px solid #3cb371;
+	font-family:'Open Sans', sans-serif;
+	color:#222222;
+	background-color:#F5DCB0;
+	line-height:2em;
+}
+p
+{
+	margin:5px 0 10px 0;	
+	line-height:1.2em;
+}
+a
+{
+	color:#0b5e12;
+	transition:color .5s ease;
+	text-decoration:underline;
+	cursor: pointer;
+
+}
+strong
+{
+	font-weight:bold;
+	text-shadow: -1px 1px 1px grey;
+}
+/* HEADER */
+header
+{
+	position:relative;
+	overflow:hidden;
+	width:auto;
+	max-width:900px;
+	margin:0 auto 0px auto;
+	padding:5px 0 5px 0;
+}
+.headerbackground
+{
+	background-image:url(../images/sandkachel2.png);
+	width:100%;
+	height:auto;
+}
+header h1
+{
+	height:auto;
+	padding:0.5em 0 0 0;
+	position:absolute;
+	right:1em;
+	top:0;
+	color:white;
+	
+	font-size:4em;
+	font-weight:bold;
+	font-style:italic;
+	text-shadow: 0.03em 0.03em #333;
+	font-family:'PT Sans', sans-serif;
+}
+nav
+{
+	width:auto;
+	max-width:900px;
+	margin:0 auto 0px auto;
+	padding:5px 0 5px 0;
+}
+nav ul .smSection
+{
+	line-height: 1em;
+}
+nav li 
+{
+	padding: 0 10px 0 10px ;
+	float: left;
+}
+th
+{
+	text-align: left;
+	color: white;
+	background-color: grey;
+}
+.smSection
+{
+	display: none;
+}
+.siteMapAbschnitt:hover 
+{
+/*
+	position:absolute;
+	top:150px;
+	opacity: 0.7;
+	background-color:#f1cd8e;
+*/
+	z-index:1000;
+	width: auto;
+	height: 300px;
+}
+.siteMapAbschnitt:hover > .smSection 
+{
+/*
+	z-index:1000;
+	top:150px;
+	opacity:0.5;
+	transition: all .4s;
+	width: 200px;
+	height: 300px;
+	background-color:#f1cd8e;
+*/
+	display: block;
+}
+nav ul .smSection a
+{
+	text-transform: none;
+	font-size: 0.9em;
+}
+nav a
+{
+	text-decoration:none;
+	text-transform:uppercase;
+	color:#222222;
+	transition:all .25s ease;
+}
+nav a:hover
+{
+	color:#c44014;
+}
+.betont tr:nth-child(even) {
+   background-color: #B0B0B0;
+}
+.betont tr:nth-child(odd) {
+   background-color: #DDDDDD;
+}
+.breitebilder, .breit
+{
+	max-width: 100%;
+	height: auto;
+	padding: 5px;
+}
+.navcurrent
+{
+	font-weight:bold;
+	text-decoration:underline;
+}
+table 
+{
+	border-spacing: 0px;
+	line-height:1.2em;
+}
+td
+{
+   padding: 5px 5px 5px 5px;
+
+}
+th
+{
+	font-weight:bold;
+}
+li
+{
+	line-height:1.7em;
+	margin:0 0 0 0;
+}
+.liste
+{
+	list-style-type: disc;
+	margin:0 0 0 2em;
+}
+.geldbetrag
+{
+	text-align:right;
+}
+.mittig
+{
+	text-align:center;
+}
+/* SLIDESHOW */
+/* Prevent the slideshow from flashing on load */
+.slidesjs-container
+{
+	border-top:1px #d6d0c1 solid;
+}
+h3
+{
+	font-size:2em;
+}
+#footerSiteMap .smSection
+{
+	display: none;
+}
+#logotcoheader
+{
+	width:150px;
+}
+#latest_news
+{
+	position:absolute;
+	top:3em;
+	z-index:998;
+	width:20em;
+	height:5em;
+	border-radius: 0.5em;
+	border:0.3em solid #3cb371;	
+	opacity:0.8;
+
+	color:red;
+	background-color: white;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: center;
+	-ms-transform: rotate(350deg);
+	-webkit-transform: rotate(350deg);
+	transform: rotate(350deg);
+/*
+*/
+	
+}
+#sms_Message
+{
+	border:0.15em solid white;
+	border-radius: 0.5em;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	color:white;
+	text-align: center;
+	vertical-align: center;
+}
+#sms_Message h1	
+{
+	font-size:1em;
+	font-weight:bold;
+}
+
+#aktuelles table, 
+#mitgliedschaft table, 
+#jugendtrainingskalender table,
+#jugendeinteilung table,
+#jugendtermine table,
+#mannschaften table,
+#platzbelegung table,
+#begegnungen table
+{
+	width:100%;
+	margin: 10px auto 10px auto;
+}
+#aktuelles td, #mitgliedschaft td,#jugendtermine td
+{
+	font-size:1em;
+	border-bottom: 2px solid grey;
+}
+#jugendkontakte
+{
+	float:left;
+}
+#kinderzeichnung
+{
+	width:300px;
+	z-index:9999;
+}
+.screenshotMobile
+{
+	width:300px;
+	z-index:9999;
+}
+#ooschirmherr
+{
+	border: 1px solid black;
+	width:250px;
+	height:auto;
+	text-align:center;
+	margin: 10px auto 10px auto;
+}
+#datenschutz
+{
+	width: auto;
+	margin-top:0.6em;
+	font-size:1.5em;
+	font-weight:bold;
+	line-height: 1em;
+}
+#anfahrtbutton
+{
+	width: 10em;
+	margin:0.6em 0 0.6em 0;
+	padding: 8px 8px 8px 8px;
+	border: 5px dotted white;
+	background-color:#196719;
+	font-size:1.5em;
+	font-weight:bold;
+	line-height: 1em;
+	text-align:center;
+}
+#anfahrtbutton a
+{
+	color:white;
+	text-decoration:underline;
+}
+
+#blattSmsText
+{
+	background-color:#ff3300;
+}
+#blatt1
+{
+	background-color:inherit;
+	padding:10px 3px 0 3px;
+	border-bottom:5px solid #3cb371;
+}
+#blatt2
+{
+	background-color:#ddffcc;
+	border-bottom:5px solid #3cb371;
+	padding:0px 3px 0 3px;
+
+}
+#blatt21
+{
+	background-color:#aabbff;
+	border-bottom:5px solid #3cb371;
+	padding:0px 3px 0 3px;
+
+}
+#blatt3
+{
+	background-color:#ccfff5;
+	border-bottom:5px solid #3cb371;
+	padding:0px 3px 0 3px;
+}
+#blatt4
+{
+	background-color:#aabbcc;
+	border-bottom:5px solid #3cb371;
+	padding:0px 3px 0 3px;
+}
+#blatt5
+{
+	background-color:#ffffcc;
+	border-bottom:5px solid #3cb371;
+	padding:0px 3px 0 3px;
+}
+#blatt6
+{
+	background-color:#ffddcc;
+	border-bottom:5px solid #3cb371;
+	padding:0px 3px 0 3px;
+}
+#googlekarte
+{
+	width:100%;
+	height:30em;
+	border:0;
+}
+#fehlerseite
+{
+	color: red !important;
+	font-weight: bold;
+}
+#uebernachtung img
+{
+	float: left;
+	width: 290px;
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
+	border:0;
+	box-shadow: 5px 5px 3px #999;
+}
+#nuLigaIframeM
+{
+	background-color:inherit;
+	border: medium; 
+	border-image: none; 
+	width: 744px; 
+	height: 870px; 
+	margin-top: -20px; 
+	min-height: 500px; 
+	min-width: 740px;
+}
+#nuLigaIframeB
+{
+	border: medium; 
+	border-image: none; 
+	width: auto; 
+	height: 3104px; 
+	min-height: 500px; 
+	min-width: 740px;
+}
+#lkraceIframe
+{
+	border: medium; 
+	border-image: none; 
+	width: 270px; 
+	height: 620px;
+}
+.anschreiben
+{
+	font-family:'Lucida Calligraphy';
+}
+#clubturnierIframe
+{
+   -moz-transform: scale(0.6, 0.6);
+   zoom: 0.6;
+   zoom: 60%;
+	background-color:inherit;
+	border: medium; 
+	border-image: none; 
+	width: 744px; 
+	height: 870px; 
+	margin-top: 0px; 
+	min-height: 500px; 
+	min-width: 740px;
+}
+.heimspiel
+{
+	font-weight:bold;
+	text-shadow: -1px 1px 1px grey;
+	color:#009900;
+}
+.seite h2
+{
+	font-weight:bold;
+	font-size:2em;
+	padding:1em 0 1em 0;
+}
+.seite h3
+{
+	font-size:1.5em;
+	padding:0.5em 0 0.5em 0;
+}
+.seite
+{
+	position:relative;
+	overflow:hidden;
+	width:auto;
+	max-width:900px;
+	margin:0px auto 0px auto;
+	padding:10px 0 20px 0px;
+}
+.spalte1breit
+{
+	float:left;
+	width:66%;
+	max-width:600px;
+}
+.spalte1
+{
+	float:left;
+	width:50%;
+	max-width:450px;
+}
+.spalte2
+{
+	float:right;
+	width:auto;
+	max-width:450px;
+	margin:0 auto 0 auto;
+}
+.fliessenderAbschnitt
+{
+	float:left;
+	border: 1px solid white;
+	padding: 0 10px 5px 10px;
+	margin: 10px 10px 10px 10px;
+}
+.siteMapAbschnitt
+{
+	float:left;
+	margin: 0 10px 5px 10px;
+}
+.sponsor
+{
+	position: relative;
+	float:left;
+	width:200px;
+	height:160px;
+	background-color:white; 
+	margin: 3px 3px 3px 3px;
+}
+.sponsor img
+{
+    position: absolute;
+	width:180px;
+	margin:auto auto auto auto;
+}
+#footerSitemap .siteMapAbschnitt
+{
+	font-size: 1em;
+	line-height: 1.1em;
+}
+#footerSitemap li
+{
+	list-style-type: none;
+	list-style-position: none;
+}
+
+#visitenkarten
+{
+	position:relative;
+}
+
+.visitenkarte
+{
+	float:left;
+	width:200px;
+	height:230px;
+/*
+	background-color:white;
+*/
+	font-size:0.8em;
+	margin: 5px 10px 0 0;
+	padding: 5px 5px 5px 5px; 
+	line-height: 1em;
+}
+.visitenkarte img
+{
+	width:140px;
+	border: 6px solid white;
+}
+
+.z0 
+{
+	background-color: #B0B0B0;
+}
+.z1 
+{
+	background-color: #DDDDDD;
+}
+#willkommen .sponsoren
+{
+	float:right;
+	width:40%;
+	margin:0 auto 0 auto;
+}
+#willkommen .sponsor
+{
+	float:left;
+	width:100px;
+	height:80px;
+	top: 10px;
+	background-color:white; 
+	margin: 3px 3px 3px 3px;
+}
+#willkommen .sponsor img
+{
+	width:90px;
+	margin:auto auto auto auto;
+}
+#trainer img
+{
+	width:450px;
+	margin:auto auto auto auto;
+}
+#trainerflyer
+{
+	width:300px !important;
+	height:auto;
+	margin:20px auto auto auto !important;
+}
+#olchingopen .sponsoren
+{
+	background-color:white;
+	width: 100%;
+	margin: 0 0 0 0;
+}
+#olchingopen .sponsor
+{
+	background-color:white;
+	margin:0px 0 0px 0;
+}
+#olchingopen .sponsor img
+{
+	top: 30px;
+}
+.spalte1 h3
+{
+	padding:10px 0px 10px 0px;
+}
+.sponsoren h3, .sponsor
+{
+	padding:2px 2px 20px 2px;
+}
+#slides
+{
+	display:none;
+}
+/* Center the slideshow */
+.container
+{
+	width:auto;
+	margin:0 auto;
+	position:relative;
+}
+
+/* Show active item in the pagination */
+.slidesjs-pagination .active
+{
+	color:red;
+}
+#slider_content1 p .responsive_button, #slider_content2 p .responsive_button, #slider_content3 p  .responsive_button
+{
+	display:none;
+	color:#000;
+}
+
+/* FOOTER */
+footer
+{
+	background-image:url(../images/sandkachel2.png);
+	width:auto;
+	height:auto;
+	font-size:0.8em;
+	line-height:1.4em;
+	color:#222222;
+	width:auto;
+	height:auto;
+	padding:0px 3px 0 3px;
+}
+footer h4
+{
+	font-weight:bold;
+}
+.dreiSpalten .spalte1, .spalte2, .spalte3
+{
+	float:left;
+	width:33%%;
+	max-width:300px;
+	padding: 10px;
+}
+.dreiSpalten spalte3
+{
+	clear:both;
+}
+
+
+/* MEDIA QUERIES FOR A RESPONSIVE LAYOUT */
+
+
+@media (max-width:695px)
+{
+	header h1
+	{
+		position:relative;
+		right:auto;
+		top:auto;
+		font-size:2em;
+		padding: 0.4em 0 0 0.4em;
+	}
+	nav ul,nav li
+	{
+		line-height:1em;
+		margin:0 0 0 0.5em;
+	}
+	.siteMapAbschnitt
+	{
+		margin: 0 5px 0 5px;
+	}
+	.siteMapAbschnitt:hover > .smSection 
+	{
+		display: none;
+	}
+	.screenshotMobile
+	{
+		width:200px;
+	}
+
+	#latest_news
+	{
+		width:15em;
+		height:5em;
+		font-weight:normal;
+		font-size:0.8em;
+		line-height:1.3em;
+	}
+
+	#willkommen .spalte1
+	{
+		float:none;
+		width:auto;
+	}
+	#willkommen .sponsoren
+	{
+		float:none;
+		width:auto;
+	}
+	#olchingopen .spalte1
+	{
+		float:none;
+		width:auto;
+	}
+	#olchingopen .sponsor
+	{
+		float:left;
+		width:100px;
+		height:80px;
+		background-color:white; 
+		margin: 3px 3px 3px 3px;
+	}
+	#olchingopen .sponsor img
+	{
+		width:90px;
+		margin:auto auto auto auto;
+	}
+}
+
+
+
+

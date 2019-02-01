@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
 
 
 // Alle Belegungen an diesem Tag für einen Platz
@@ -19,8 +20,8 @@ class Platz extends Component {
   componentWillMount() {
     const { court, day } = this.props;
     // const url = "http://tcolching.de/intern/api/platz.php?p=" + court + "&d=" + day + "";
-    console.log("PLATZ-URL: " + url);
     const url = "http://localhost/intern/api/platz.php?p=" + court + "&d=" + day + "";
+    console.log("PLATZ-URL: " + url);
 
     this.setState({isLoading : true});
     
@@ -32,28 +33,33 @@ class Platz extends Component {
           throw new Error('Fehler beim Laden der Platzbuchungsdaten');
         }
     })
-    .then (result => {
-      console.log(result.records);
-      let courtData = result.records.map( r => {
-        let cn = computeBelClasses (r.starts_at, r.ends_at);
-        //console.log("PLATZ:" + r.court)
-        let spieler = 
+    .then (
+      result => {
+        // console.log(result.records);
+        let courtData = result.records.map ( r => {
+            let cn = computeBelClasses (r.starts_at, r.ends_at);
+            //console.log("PLATZ:" + r.court)
+            let spieler = 
                  r.p1 
               + (r.p2 ? '/' + r.p2 : ' ') 
               + (r.p3 ? '/' + r.p3 : ' ') 
               + (r.p4 ? '/' + r.p4 : ' ');
-        return (
-          <div className={cn} key={r.id} data-toggle="tooltip" data-placement="top" title={spieler}>
-            <strong>{r.starts_at.substring(11,16)}</strong>
-            <br />
-            {spieler}
-            </div>
-        );
-      })
-      this.setState({courtData: courtData});
-    })
-    .catch(error => this.setState({ error, isLoading: false })) 
+            return ( 
+              <Link key={r.id} to={'/belegungsdetails/' + r.id}>
+                <div  className={cn} key={r.id} >
+                  <strong>{r.starts_at.substring(11,16)}</strong>
+                  <br />
+                  {spieler}
+                </div>
+              </Link>
+            )
+        })
+        this.setState({courtData: courtData});
+      }
+    )
+    .catch(error => this.setState({ error, isLoading: false }));
   }
+
     
   render() {
     return (

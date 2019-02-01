@@ -9,7 +9,7 @@ class Tagesanzeige extends Component {
     const today  = new Date();
     const dateString = today.toLocaleDateString("de-DE", options);
     return (
-        <div>{dateString}</div>
+        <span>{dateString}</span>
     );
   }
 }

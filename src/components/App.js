@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Tagesanzeige from "./Tagesanzeige";
-import Belegungstag from "./Belegungstag";
+import Routing from "./Routing";
 
 class App extends Component {
     
@@ -8,10 +8,12 @@ class App extends Component {
     // const { bookingData } = this.state;  
     return (
       <React.Fragment>
-          <h1><Tagesanzeige /></h1>
-          {/* <Belegungstag bookingData={bookingData} /> */}
-          <Belegungstag />
-        </React.Fragment>
+        <h1>
+            <img src="/images/TCO-Logo_2010.png" alt="TCO -Logo" id="logotcoheader" /> TCO Magnettafel - 
+            <Tagesanzeige />
+        </h1>
+        <Routing />
+      </React.Fragment>
     )};
   }
 

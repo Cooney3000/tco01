@@ -2,6 +2,23 @@
 	--viertel: 15px; /* Pixel für eine Viertelstunde an einem Tag */
 	--buchungFontSize: 1rem; /* für Buchungen auf der Tafel */
 }
+
+/* Small devices like phones: */
+@media (max-width: 578px)
+{
+  --buchungFontSize: 0.5rem; /* für Buchungen auf der Tafel */
+}
+
+body
+{
+	color:#222222;
+	background-color:#F5DCB0;
+}
+
+h1 {
+  font-size: calc(var(--buchungFontSize)*2);
+}
+
 .table td, .table th {
 	padding: 0;
 	margin: 0;
@@ -116,3 +133,10 @@
 .T-20-00 {top: calc(var(--viertel)*48); }
 .T-20-15 {top: calc(var(--viertel)*49); }
 .T-20-30 {top: calc(var(--viertel)*50); }
+
+
+
+/* Individuelle Einstellungen */
+#logotcoheader {
+	width:150px;
+}
