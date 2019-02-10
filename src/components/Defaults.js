@@ -1,4 +1,6 @@
 let config = {
-  hostname: 'http://www.tcolching.de',
+  hostname: 'http://localhost',
+  // hostname: 'http://www.tcolching.de',
+  smartphoneWidth: 578,
 }
 export default config;

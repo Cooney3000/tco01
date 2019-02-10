@@ -34,10 +34,9 @@ class BelDetails extends Component {
     .then(result => {
       let belegung = result.records.map( r => {
         return (
-          <div key={r.id} className="card w-50">
-            <div className="card-body">
+          <div key={r.id} className="p-2 w-50">
+              <Link to="/"><p className="btn btn-secondary">Zurück</p></Link>
               <BelForm r={r} />
-            </div>
           </div>
         )
       })
@@ -48,7 +47,7 @@ class BelDetails extends Component {
 
   render() {
     return (
-      <div><Link to="/"><p>{'<--'} Zurück</p></Link>{this.state.belegung}</div>
+      <div>{this.state.belegung}</div>
     );
   }
 }

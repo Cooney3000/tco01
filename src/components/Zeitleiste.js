@@ -12,7 +12,7 @@ class Zeitleiste extends Component {
       }
     } 
     return (
-      <div>
+      <div className="zeitleiste">
         {
           zeit.map((e, index) => 
             <React.Fragment key={index}>

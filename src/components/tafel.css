@@ -1,12 +1,6 @@
 :root {
-	--viertel: 15px; /* Pixel für eine Viertelstunde an einem Tag */
-	--buchungFontSize: 1rem; /* für Buchungen auf der Tafel */
-}
-
-/* Small devices like phones: */
-@media (max-width: 578px)
-{
-  --buchungFontSize: 0.5rem; /* für Buchungen auf der Tafel */
+	--viertel: 10px; /* Pixel für eine Viertelstunde an einem Tag */
+  --buchungFontSize: 0.8rem; /* für Buchungen auf der Tafel */
 }
 
 body
@@ -24,11 +18,11 @@ h1 {
 	margin: 0;
 }
 .stunde {
+	top: 0px;
   font-size: calc(var(--buchungFontSize)*0.8);
 	font-weight: bold;
 	border-top: 1px solid gray;
 	height: calc(var(--viertel));
-	top: -0px;
 	width: 2rem;
 }
 .viertelstunde {
@@ -39,21 +33,33 @@ h1 {
 	width: 1rem;
 }
 .zeitleiste {
+  margin-top: calc(var(--viertel)* 3);
+}
+.zeitleisteCol {
   position: relative;
   width: 2rem;
 }
 .platzDim {
-  height: calc(var(--viertel)*50);
-	border: 1px solid black;
+  /* height: calc(var(--viertel)*55); */
+	border: none;
 }
 .platz {
 	position: relative;
 }
+.platznummer {
+  top: 0px;
+  height: calc(var(--viertel)*3);
+  background-color: rgb(226, 186, 99);
+  font-size: calc(var(--buchungFontSize)*1.2);
+  border: 1px solid white; 
+  font-weight: bold;
+  text-align: center;
+}
 .ts {
   background-color: rgb(111, 196, 136);
 	font-size: var(--buchungFontSize);
-  border: 2px solid white; 
-  border-radius: 0.5rem;
+  border: 1px solid white; 
+  border-radius: 0.3rem;
 	width: 100%;
 	padding: 0.2rem;
 	display:block;
@@ -62,7 +68,7 @@ h1 {
 }
 
 .D-15 {
-	color: rgb(51, 51, 41);
+	color: rgb(51, 51, 41); 
 	height: calc(var(--viertel)*1);
 }
 .D-30 {
@@ -82,61 +88,78 @@ h1 {
 	height: calc(var(--viertel)*8);
 }
 /* Positionierung für Belegungen innerhalb eines Tages im Format T-<stunde>-<minute> */
-.T-08-00 {top: 0px; }
-.T-08-15 {top: calc(var(--viertel)*1); }
-.T-08-30 {top: calc(var(--viertel)*2); }
-.T-08-45 {top: calc(var(--viertel)*3); }
-.T-09-00 {top: calc(var(--viertel)*4); }
-.T-09-15 {top: calc(var(--viertel)*5); }
-.T-09-30 {top: calc(var(--viertel)*6); }
-.T-09-45 {top: calc(var(--viertel)*7); }
-.T-10-00 {top: calc(var(--viertel)*8); }
-.T-10-15 {top: calc(var(--viertel)*9); }
-.T-10-30 {top: calc(var(--viertel)*10); }
-.T-10-45 {top: calc(var(--viertel)*11); }
-.T-11-00 {top: calc(var(--viertel)*12); }
-.T-11-15 {top: calc(var(--viertel)*13); }
-.T-11-30 {top: calc(var(--viertel)*14); }
-.T-11-45 {top: calc(var(--viertel)*15); }
-.T-12-00 {top: calc(var(--viertel)*16); }
-.T-12-15 {top: calc(var(--viertel)*17); }
-.T-12-30 {top: calc(var(--viertel)*18); }
-.T-12-45 {top: calc(var(--viertel)*19); }
-.T-13-00 {top: calc(var(--viertel)*20); }
-.T-13-15 {top: calc(var(--viertel)*21); }
-.T-13-30 {top: calc(var(--viertel)*22); }
-.T-13-45 {top: calc(var(--viertel)*23); }
-.T-14-00 {top: calc(var(--viertel)*24); }
-.T-14-15 {top: calc(var(--viertel)*25); }
-.T-14-30 {top: calc(var(--viertel)*26); }
-.T-14-45 {top: calc(var(--viertel)*27); }
-.T-15-00 {top: calc(var(--viertel)*28); }
-.T-15-15 {top: calc(var(--viertel)*29); }
-.T-15-30 {top: calc(var(--viertel)*30); }
-.T-15-45 {top: calc(var(--viertel)*31); }
-.T-16-00 {top: calc(var(--viertel)*32); }
-.T-16-15 {top: calc(var(--viertel)*33); }
-.T-16-30 {top: calc(var(--viertel)*34); }
-.T-16-45 {top: calc(var(--viertel)*35); }
-.T-17-00 {top: calc(var(--viertel)*36); }
-.T-17-15 {top: calc(var(--viertel)*37); }
-.T-17-30 {top: calc(var(--viertel)*38); }
-.T-17-45 {top: calc(var(--viertel)*39); }
-.T-18-00 {top: calc(var(--viertel)*40); }
-.T-18-15 {top: calc(var(--viertel)*41); }
-.T-18-30 {top: calc(var(--viertel)*42); }
-.T-18-45 {top: calc(var(--viertel)*43); }
-.T-19-00 {top: calc(var(--viertel)*44); }
-.T-19-15 {top: calc(var(--viertel)*45); }
-.T-19-30 {top: calc(var(--viertel)*46); }
-.T-19-45 {top: calc(var(--viertel)*47); }
-.T-20-00 {top: calc(var(--viertel)*48); }
-.T-20-15 {top: calc(var(--viertel)*49); }
-.T-20-30 {top: calc(var(--viertel)*50); }
-
-
+.T-08-00 {top: calc(var(--viertel)* 3); }
+.T-08-15 {top: calc(var(--viertel)* 4); }
+.T-08-30 {top: calc(var(--viertel)* 5); }
+.T-08-45 {top: calc(var(--viertel)* 6); }
+.T-09-00 {top: calc(var(--viertel)* 7); }
+.T-09-15 {top: calc(var(--viertel)* 8); }
+.T-09-30 {top: calc(var(--viertel)* 9); }
+.T-09-45 {top: calc(var(--viertel)*10); }
+.T-10-00 {top: calc(var(--viertel)*11); }
+.T-10-15 {top: calc(var(--viertel)*12); }
+.T-10-30 {top: calc(var(--viertel)*13); }
+.T-10-45 {top: calc(var(--viertel)*14); }
+.T-11-00 {top: calc(var(--viertel)*15); }
+.T-11-15 {top: calc(var(--viertel)*16); }
+.T-11-30 {top: calc(var(--viertel)*17); }
+.T-11-45 {top: calc(var(--viertel)*18); }
+.T-12-00 {top: calc(var(--viertel)*19); }
+.T-12-15 {top: calc(var(--viertel)*20); }
+.T-12-30 {top: calc(var(--viertel)*21); }
+.T-12-45 {top: calc(var(--viertel)*22); }
+.T-13-00 {top: calc(var(--viertel)*23); }
+.T-13-15 {top: calc(var(--viertel)*24); }
+.T-13-30 {top: calc(var(--viertel)*25); }
+.T-13-45 {top: calc(var(--viertel)*26); }
+.T-14-00 {top: calc(var(--viertel)*27); }
+.T-14-15 {top: calc(var(--viertel)*28); }
+.T-14-30 {top: calc(var(--viertel)*29); }
+.T-14-45 {top: calc(var(--viertel)*30); }
+.T-15-00 {top: calc(var(--viertel)*31); }
+.T-15-15 {top: calc(var(--viertel)*32); }
+.T-15-30 {top: calc(var(--viertel)*33); }
+.T-15-45 {top: calc(var(--viertel)*34); }
+.T-16-00 {top: calc(var(--viertel)*35); }
+.T-16-15 {top: calc(var(--viertel)*36); }
+.T-16-30 {top: calc(var(--viertel)*37); }
+.T-16-45 {top: calc(var(--viertel)*38); }
+.T-17-00 {top: calc(var(--viertel)*39); }
+.T-17-15 {top: calc(var(--viertel)*40); }
+.T-17-30 {top: calc(var(--viertel)*41); }
+.T-17-45 {top: calc(var(--viertel)*42); }
+.T-18-00 {top: calc(var(--viertel)*43); }
+.T-18-15 {top: calc(var(--viertel)*44); }
+.T-18-30 {top: calc(var(--viertel)*45); }
+.T-18-45 {top: calc(var(--viertel)*46); }
+.T-19-00 {top: calc(var(--viertel)*47); }
+.T-19-15 {top: calc(var(--viertel)*48); }
+.T-19-30 {top: calc(var(--viertel)*49); }
+.T-19-45 {top: calc(var(--viertel)*50); }
+.T-20-00 {top: calc(var(--viertel)*51); }
+.T-20-15 {top: calc(var(--viertel)*52); }
+.T-20-30 {top: calc(var(--viertel)*53); }
 
 /* Individuelle Einstellungen */
-#logotcoheader {
-	width:150px;
+.logo {
+  width: 150px;
+  height: 60px;
+}
+
+/* Form Validierung */
+.invalidFeedback {
+  border: 2px solid red;
+}
+.invalidText {
+  color: red;
+}
+
+
+/* Für Smartphones: */
+@media (max-width: 578px)
+{
+  --buchungFontSize: 0.5rem; /* für Buchungen auf der Tafel */
+  h1 {
+    font-size: calc(var(--buchungFontSize)*1.2);
+  }
 }
