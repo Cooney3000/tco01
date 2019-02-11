@@ -17,15 +17,14 @@ class Platz extends Component {
       error : false,
       width: window.innerWidth,
     };
-  }  
+  }
   componentWillMount() {
     const { court, day } = this.props;
-    const url = config.hostname + "/intern/api/platz.php?p=" + court + "&d=" + day + "";
+    const url = config.hostname + "/intern/api/platz.php?op=ra&p=" + court + "&ds=" + day + "&de=" + day;
     // console.log("PLATZ-URL: " + url);
     window.addEventListener('resize', this.handleWindowSizeChange);
-
-    this.setState({isLoading : true});
     
+    this.setState({isLoading : true});
     fetch(url)
     .then(result => {
       if (result.ok) {

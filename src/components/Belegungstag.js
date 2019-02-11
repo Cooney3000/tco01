@@ -32,7 +32,7 @@ class Belegungstag extends Component {
   render() {
     //const day = (new Date()).toString("yyyy-MM-dd");
     const day = "2019-05-02";
-
+    console.log("RENDER BELTAG!");
 
     const { width } = this.state;
     const isMobile = width <= config.smartphoneWidth;

@@ -18,8 +18,8 @@ class BelDetails extends Component {
   }  
   componentWillMount() {
     const id = this.props.match.params.id;
-    const url = Config.hostname + "/intern/api/platz.php?i=" + id;
-    //console.log(url);
+    const url = Config.hostname + "/intern/api/platz.php?op=r&i=" + id;
+    // console.log(url);
 
     this.setState({isLoading : true});
     

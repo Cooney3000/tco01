@@ -6,17 +6,22 @@ import classNames from 'classnames';
 
 class BelForm extends Component {
   
+  /////// TO DO: richtige User Id der Session einfügen!!
+  userId = 8;
+
   constructor(props){
     super(props);
     const { r } = props;
     // Daten für Datum, Start und Ende extrahieren
     let [sd, st] = r.starts_at.split(' ');
-    let [  , et] = r.ends_at.split(' ');
+    let [ed, et] = r.ends_at.split(' ');
     let sdA = sd.split('-');
     // console.log("DATE: " + sd + " TIME: " + st);
     this.state = {
       r : r,
       spieltag: sdA[2] + '.' + sdA[1] + '.' + sdA[0],
+      startsAtDate: sd,
+      endsAtDate: ed,
       startsAtStd: st.substring(0,2),
       startsAtViertel: st.substring(3,5),
       endsAtStd: et.substring(0,2),
@@ -34,11 +39,9 @@ class BelForm extends Component {
   }
   
   componentWillMount() {
-    // const url = "http://localhost/intern/api/spieler.php";
+    // Alle Spieler für die Select-Auswahl laden    
     const url = Config.hostname + "/intern/api/spieler.php";
-    
     this.setState({isLoading : true});
-    
     fetch(url)
     .then(result => {
       if (result.ok) {
@@ -57,7 +60,7 @@ class BelForm extends Component {
 
   componentDidMount () {
     this.setState({spielzeitClassnames : document.getElementById('startsAtStd').className});
-    console.log(this.state.spielzeitClassnames);
+    // console.log(this.state.spielzeitClassnames);
   }
 
   render(){
@@ -68,7 +71,7 @@ class BelForm extends Component {
     return (
       <div>
         <h1>Spieltag: {this.state.spieltag}</h1>
-        <form className="form-inline" onSubmit={e => {this.handleSubmit(e); return this.setState({ zurTafel: true })}}>
+        <form className="form-inline">
           <fieldset className="fields">
             <div><strong>Platz</strong></div>
             <div className="form-group">
@@ -175,28 +178,69 @@ class BelForm extends Component {
                 : ''
               }
             </div>
-            <button type="submit" onClick={handleSave()}  className="btn btn-primary">Speichern</button>
-            <button type="submit" onClick={handleDelete()}  className="btn btn-primary">Löschen</button>
+            <button type="submit" onClick={e => {this.handleSave(e); return this.setState({ zurTafel: true })}}  className="btn btn-primary">Speichern</button>
+            <button type="submit" onClick={e => {this.handleDelete(e); return this.setState({ zurTafel: true })}}  className="btn btn-primary">Löschen</button>
           </fieldset>
         </form>
       </div>
     )
   }
 
-  handleSubmit(e) {
-    console.log("SAVE FORM DATA");
+  handleSave(e) {
+    // console.log("SAVE FORM DATA NOW!");
+    let url = Config.hostname 
+                + '/intern/api/platz.php?op=cu' 
+                + '&i=' + this.state.r.id
+                + '&ds=' + this.state.startsAtDate + ' ' + this.state.startsAtStd + ':' + this.state.startsAtViertel
+                + '&de=' + this.state.endsAtDate + ' ' + this.state.endsAtStd + ':' + this.state.endsAtViertel
+                + '&uid=' + this.userId
+                + '&p1=' + this.state.p1
+                + '&p2=' + this.state.p2
+                + '&p3=' + this.state.p3
+                + '&p4=' + this.state.p4
+                + '&c=' + this.state.court
+                + '&t=' + this.bookingType
+                + '&pr=0'
+                ;
+    fetch(url)
+    .then(result => {
+      if (result.ok) {
+        return result.json();
+      } else {
+        throw new Error('Fehler beim Erzeugen/Updaten der Belegung' + this.state.r.id);
+        }
+      })
+    .catch(error => this.setState({ error, isLoading: false }));
+
+    e.preventDefault();
+  }
+  handleDelete(e) {
+    // console.log("DELETE ROW NOW!" + this.state.r.id);
+    let url = Config.hostname 
+                + '/intern/api/platz.php?op=d' 
+                + '&i=' + this.state.r.id
+                ;
+    fetch(url)
+    .then(result => {
+      if (result.ok) {
+        return result.json();
+      } else {
+        throw new Error('Fehler beim Löschen der Belegung' + this.state.r.id);
+        }
+      })
+    .catch(error => this.setState({ error, isLoading: false }));
     
     e.preventDefault();
   }
   handleChange(e) {
     const id = e.target.id;
+    this.setState({
+      [e.target.id] : e.target.value
+    })
     if (id.match(/(startsAtStd)|(startsAtViertel)|(endsAtStd)|(endsAtViertel)/ig)) {
       this.clearSpielzeit();
       this.validateSpielzeit();
     }    
-    this.setState({
-      [e.target.id] : e.target.value
-    })
   }
   
   clearSpielzeit() {
@@ -213,7 +257,8 @@ class BelForm extends Component {
     // Ende vor Start?
     const s = this.state.startsAtStd + this.state.startsAtViertel;
     const e = this.state.endsAtStd + this.state.endsAtViertel;
-    if (s <= e) {
+    console.log("Validate: " + s + ', ' + e + ', ' + (s >= e));
+    if (s >= e) {
       document.getElementById("startsAtInvalid").innerHTML = "- Der Start muss vor dem Ende liegen!";
       const selects = document.querySelectorAll('select');
       for (let i = 0; i < selects.length; i++) {
