@@ -2,9 +2,16 @@ import React, { Component } from 'react';
 import Config from './Defaults';
 import { Redirect } from 'react-router';
 import classNames from 'classnames';
+import { connect } from "react-redux";
+import { addBel } from "../actions/index";
 
+function mapDispatchToProps(dispatch) {
+  return {
+    addBel: belegung => dispatch(addBel(belegung))
+  };
+}
 
-class BelForm extends Component {
+class ConnectedBelForm extends Component {
   
   /////// TO DO: richtige User Id der Session einfügen!!
   userId = 8;
@@ -188,34 +195,47 @@ class BelForm extends Component {
 
   handleSave(e) {
     // console.log("SAVE FORM DATA NOW!");
-    let url = Config.hostname 
-                + '/intern/api/platz.php?op=cu' 
-                + '&i=' + this.state.r.id
-                + '&ds=' + this.state.startsAtDate + ' ' + this.state.startsAtStd + ':' + this.state.startsAtViertel
-                + '&de=' + this.state.endsAtDate + ' ' + this.state.endsAtStd + ':' + this.state.endsAtViertel
-                + '&uid=' + this.userId
-                + '&p1=' + this.state.p1
-                + '&p2=' + this.state.p2
-                + '&p3=' + this.state.p3
-                + '&p4=' + this.state.p4
-                + '&c=' + this.state.court
-                + '&t=' + this.bookingType
-                + '&pr=0'
-                ;
-    fetch(url)
-    .then(result => {
-      if (result.ok) {
-        return result.json();
-      } else {
-        throw new Error('Fehler beim Erzeugen/Updaten der Belegung' + this.state.r.id);
-        }
-      })
-    .catch(error => this.setState({ error, isLoading: false }));
-
     e.preventDefault();
+    this.props.addBelegung({ id: this.state.r.id, 
+                             ds: this.state.startsAtDate + ' ' + this.state.startsAtStd + ':' + this.state.startsAtViertel,
+                             de: this.state.endsAtDate + ' ' + this.state.endsAtStd + ':' + this.state.endsAtViertel,
+                             uid: this.userId,
+                             p1: this.state.p1,
+                             p2: this.state.p2,
+                             p3: this.state.p3,
+                             p4: this.state.p4,
+                             c: this.state.court,
+                             t: this.bookingType,
+                             pr: 0,
+    })
+
+    // let url = Config.hostname 
+    //             + '/intern/api/platz.php?op=cu' 
+    //             + '&i=' + this.state.r.id
+    //             + '&ds=' + this.state.startsAtDate + ' ' + this.state.startsAtStd + ':' + this.state.startsAtViertel
+    //             + '&de=' + this.state.endsAtDate + ' ' + this.state.endsAtStd + ':' + this.state.endsAtViertel
+    //             + '&uid=' + this.userId
+    //             + '&p1=' + this.state.p1
+    //             + '&p2=' + this.state.p2
+    //             + '&p3=' + this.state.p3
+    //             + '&p4=' + this.state.p4
+    //             + '&c=' + this.state.court
+    //             + '&t=' + this.bookingType
+    //             + '&pr=0'
+    //             ;
+    // fetch(url)
+    // .then(result => {
+    //   if (result.ok) {
+    //     return result.json();
+    //   } else {
+    //     throw new Error('Fehler beim Erzeugen/Updaten der Belegung' + this.state.r.id);
+    //     }
+    //   })
+    // .catch(error => this.setState({ error, isLoading: false }));
   }
   handleDelete(e) {
     // console.log("DELETE ROW NOW!" + this.state.r.id);
+    e.preventDefault();
     let url = Config.hostname 
                 + '/intern/api/platz.php?op=d' 
                 + '&i=' + this.state.r.id
@@ -229,8 +249,6 @@ class BelForm extends Component {
         }
       })
     .catch(error => this.setState({ error, isLoading: false }));
-    
-    e.preventDefault();
   }
   handleChange(e) {
     const id = e.target.id;
@@ -254,10 +272,12 @@ class BelForm extends Component {
   }
   
   validateSpielzeit() {
+    
+    //////// DAS HIER DURCH REDUX MIDDLEWARE ERSETZEN? ///////////////////
+    
     // Ende vor Start?
     const s = this.state.startsAtStd + this.state.startsAtViertel;
     const e = this.state.endsAtStd + this.state.endsAtViertel;
-    console.log("Validate: " + s + ', ' + e + ', ' + (s >= e));
     if (s >= e) {
       document.getElementById("startsAtInvalid").innerHTML = "- Der Start muss vor dem Ende liegen!";
       const selects = document.querySelectorAll('select');
@@ -273,6 +293,8 @@ class BelForm extends Component {
   }  
   
 }
+
+const BelForm = connect(null, mapDispatchToProps)(ConnectedBelForm);
 
 export default BelForm;
   
