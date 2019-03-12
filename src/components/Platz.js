@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
-import classNames from 'classnames';
-import { Link } from 'react-router-dom';
 import Zeitleiste from "./Zeitleiste";
 import config from './Defaults';
-
+import { connect } from "react-redux";
+import { fetchBel } from "../actions/index";
 
 // Alle Belegungen an diesem Tag für einen Platz
 
-class Platz extends Component {
+function mapStateToProps (state) {
+  return { belegungen: state.belegungen };
+};
+
+class ConnectedPlatz extends Component {
   constructor(props) {
     super(props);
     
     this.state = { 
-      bookingData : [],
+      courtJSX : [],
       isLoading : false,
       error : false,
       width: window.innerWidth,
@@ -20,44 +23,8 @@ class Platz extends Component {
   }
   componentWillMount() {
     const { court, day } = this.props;
-    const url = config.hostname + "/intern/api/platz.php?op=ra&p=" + court + "&ds=" + day + "&de=" + day;
-    // console.log("PLATZ-URL: " + url);
     window.addEventListener('resize', this.handleWindowSizeChange);
-    
-    this.setState({isLoading : true});
-    fetch(url)
-    .then(result => {
-      if (result.ok) {
-          return result.json();
-        } else {
-          throw new Error('Fehler beim Laden der Platzbuchungsdaten');
-        }
-    })
-    .then (
-      result => {
-        // console.log(result.records);
-        let courtData = result.records.map ( r => {
-            let k = r.id;
-            let cn = computeBelClasses (r.starts_at, r.ends_at);
-            //console.log("PLATZ:" + r.court)
-            let spieler = 
-                r.p1 
-              + (r.p2 ? ', ' + r.p2 : ' ') 
-              + (r.p3 ? ', ' + r.p3 : ' ') 
-              + (r.p4 ? ', ' + r.p4 : ' ');
-            return ( 
-              <Link key={k} to={'/belegungsdetails/' + r.id}>
-                <div key={k} className={cn}>
-                  <strong>{r.starts_at.substring(11,16)} </strong>
-                  {spieler}
-                </div>
-              </Link>
-            )
-        })
-        this.setState({courtData: courtData});
-      }
-    )
-    .catch(error => this.setState({ error, isLoading: false }));
+    fetchBel(court, day, day) // Redux action
   }
 
   componentWillUnmount() {
@@ -81,7 +48,7 @@ class Platz extends Component {
               <td className="zeitleisteCol"><Zeitleiste /></td>
               <td className="platz">
                 <div className="platznummer">PLATZ {this.props.court}</div>
-                {this.state.courtData}
+                {this.state.courtJSX}
               </td>
             </tr>
           </tbody>
@@ -93,7 +60,7 @@ class Platz extends Component {
       return (
         <div>
           <div className="platznummer">PLATZ {this.props.court}</div>
-          <div>{this.state.courtData}</div>
+          <div>{this.state.courtJSX}</div>
         </div>
       );  
 
@@ -101,18 +68,6 @@ class Platz extends Component {
   }
 }
 
-// CSS-Klassen bilden für die Positionierung und Höhe einer Blegung auf der Tafel
-function computeBelClasses (s, e) {
-
-  // Dauer berechnen, also z. B. '2019-05-02 16:00:00' - '2019-05-02 14:00:00' = 120
-  let dauer = (Number(e.substring(11,13))*60 + Number(e.substring(14,16))) - (Number(s.substring(11,13))*60 + Number(s.substring(14,16)));
-  let cn = classNames(
-    'D-' + dauer,
-    'ts', 
-    'T-' + s.substring(11, 16).replace(':', '-'),
-    
-    );
-  return cn;
-}
+const Platz = connect(mapStateToProps, {fetchBel} )(ConnectedPlatz);
 
 export default Platz;
