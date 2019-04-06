@@ -3,6 +3,7 @@ import Zeitleiste from "./Zeitleiste";
 import config from './Defaults';
 import { connect } from "react-redux";
 import { fetchBel } from "../actions/index";
+import store from "../store/index";
 
 // Alle Belegungen an diesem Tag für einen Platz
 
@@ -18,13 +19,13 @@ class ConnectedPlatz extends Component {
       courtJSX : [],
       isLoading : false,
       error : false,
-      width: window.innerWidth,
+      width : window.innerWidth,
     };
   }
   componentWillMount() {
     const { court, day } = this.props;
     window.addEventListener('resize', this.handleWindowSizeChange);
-    fetchBel(court, day, day) // Redux action
+    store.dispatch(fetchBel(court, day, day)); // Redux action
   }
 
   componentWillUnmount() {

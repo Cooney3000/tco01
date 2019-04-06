@@ -19,6 +19,7 @@ export function fetchBel(court, day1, day2) {
   const url = HOSTNAME + "/intern/api/platz.php?op=ra&p=" + court + "&ds=" + day1 + "&de=" + day2;
   console.log("fetch " + url);
   return function(dispatch) {
+    dispatch(requestBel(court, day1, day2));
     return fetch(url)
             .then(response => response.json())
             .then(json => dispatch(receiveBel(json)));

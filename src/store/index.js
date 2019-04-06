@@ -7,9 +7,10 @@ const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
   rootReducer,
-  storeEnhancers(applyMiddleware(
-                    pruefeZeitraumMiddleware, 
-                    thunk,
-                    )),
-);
+  // storeEnhancers(applyMiddleware(
+  //                   pruefeZeitraumMiddleware, 
+  //                   thunk,
+  //                   )),
+  applyMiddleware(thunk),
+  );
 export default store;

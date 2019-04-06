@@ -72,11 +72,3 @@ class Belegungstag extends Component {
 }
 
 export default Belegungstag;
-
-
-
-
-
-
-
-
