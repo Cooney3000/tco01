@@ -211,7 +211,6 @@ class BelForm extends Component {
         }
       })
     .catch(error => this.setState({ error, isLoading: false }));
-
     e.preventDefault();
   }
   handleDelete(e) {
