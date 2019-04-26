@@ -12,16 +12,25 @@ class Platz extends Component {
     super(props);
     
     this.state = { 
-      bookingData : [],
+      courtData: [],
       isLoading : false,
       error : false,
       width: window.innerWidth,
     };
   }
+  
+  componentWillReceiveProps(nextProps) {
+    const {court, day} = nextProps;
+    this.fetchPlatz(court, day);
+  }
+
   componentWillMount() {
     const { court, day } = this.props;
+    this.fetchPlatz(court, day);
+  }
+
+  fetchPlatz(court, day) {
     const url = config.hostname + "/intern/api/platz.php?op=ra&p=" + court + "&ds=" + day + "&de=" + day;
-    // console.log("PLATZ-URL: " + url);
     window.addEventListener('resize', this.handleWindowSizeChange);
     
     this.setState({isLoading : true});
@@ -30,34 +39,30 @@ class Platz extends Component {
       if (result.ok) {
           return result.json();
         } else {
-          throw new Error('Fehler beim Laden der Platzbuchungsdaten');
+          // In diesem Fall haben wir einen neuen, noch unbebuchten Tag
+          this.setState({isLoading : false});
         }
-    })
-    .then (
-      result => {
-        // console.log(result.records);
+      })
+    .then (result => {
         let courtData = result.records.map ( r => {
             let k = r.id;
-            let cn = computeBelClasses (r.starts_at, r.ends_at);
-            //console.log("PLATZ:" + r.court)
+            let cn = computeBelClasses (r.starts_at, r.ends_at, r.bookingType);
             let spieler = 
                 r.p1 
               + (r.p2 ? ', ' + r.p2 : ' ') 
               + (r.p3 ? ', ' + r.p3 : ' ') 
               + (r.p4 ? ', ' + r.p4 : ' ');
             return ( 
-              <Link key={k} to={'/belegungsdetails/' + r.id}>
-                <div key={k} className={cn}>
-                  <strong>{r.starts_at.substring(11,16)} </strong>
-                  {spieler}
-                </div>
-              </Link>
+                <Link key={k} className={cn} to={{ pathname: '/belegungsdetails/update', state: {i: r.id} }}>
+                  <strong>{r.starts_at.substring(11,16)}</strong> {spieler}
+                </Link>
             )
         })
         this.setState({courtData: courtData});
+        this.setState({isLoading : false});
       }
     )
-    .catch(error => this.setState({ error, isLoading: false }));
+    .catch(error => this.setState({ error, isLoading: true }));
   }
 
   componentWillUnmount() {
@@ -69,9 +74,14 @@ class Platz extends Component {
   };
   
   render() {
+    if (this.state.isLoading === true) {
+      return (
+        <div>Loading...</div>
+        );
+    }
     const { width } = this.state;
     const isMobile = width <= config.smartphoneWidth;
-    
+      
     if (isMobile) {
     
       return (
@@ -80,8 +90,13 @@ class Platz extends Component {
             <tr className="platzDim">
               <td className="zeitleisteCol"><Zeitleiste /></td>
               <td className="platz">
-                <div className="platznummer">PLATZ {this.props.court}</div>
-                {this.state.courtData}
+                <div className="platznummer">
+                  <span className="platzziffer">{this.props.court}</span> 
+                  <Link to={{pathname: '/belegungsdetails/new', state: {c: this.props.court, d: this.props.day} }} className="neuBtn">NEU</Link> 
+                </div>
+                <div>
+                  {this.state.courtData}
+                </div>
               </td>
             </tr>
           </tbody>
@@ -92,17 +107,19 @@ class Platz extends Component {
 
       return (
         <div>
-          <div className="platznummer">PLATZ {this.props.court}</div>
+          <div className="platznummer">
+            <span className="platzziffer">{this.props.court}</span> 
+            <Link to={{pathname: '/belegungsdetails/new', state: {c: this.props.court, d: this.props.day} }} className="neuBtn">NEU</Link> 
+          </div>
           <div>{this.state.courtData}</div>
         </div>
       );  
-
     }
   }
 }
 
 // CSS-Klassen bilden für die Positionierung und Höhe einer Blegung auf der Tafel
-function computeBelClasses (s, e) {
+function computeBelClasses (s, e, bt) {
 
   // Dauer berechnen, also z. B. '2019-05-02 16:00:00' - '2019-05-02 14:00:00' = 120
   let dauer = (Number(e.substring(11,13))*60 + Number(e.substring(14,16))) - (Number(s.substring(11,13))*60 + Number(s.substring(14,16)));
@@ -110,7 +127,7 @@ function computeBelClasses (s, e) {
     'D-' + dauer,
     'ts', 
     'T-' + s.substring(11, 16).replace(':', '-'),
-    
+    bt === 'Turnier' ? 'bg-info' : '',
     );
   return cn;
 }

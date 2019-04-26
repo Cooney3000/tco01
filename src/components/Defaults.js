@@ -1,5 +1,5 @@
 let config = {
-  hostname: 'http://localhost',
+  hostname: 'http://192.168.178.50',
   // hostname: 'http://www.tcolching.de',
   smartphoneWidth: 578,
 }

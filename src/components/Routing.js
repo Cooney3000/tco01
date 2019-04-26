@@ -5,12 +5,12 @@ import BelDetails from './BelDetails';
 
 
 class Routing extends Component {
-    
     render() {
       return (
         <React.Fragment>
-          <Route exact path='/' component={Belegungstag} />
-          <Route exact path='/belegungsdetails/:id' component={BelDetails} />
+          <Route exact path='/belegungsdetails/:op' component={BelDetails} />
+          {/* <Route exact path='/:day' component={Belegungstag} /> */}
+          <Route component={Belegungstag} />
         </React.Fragment>
       )
     }

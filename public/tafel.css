@@ -17,9 +17,6 @@ h1 {
 	padding: 0;
 	margin: 0;
 }
-.daypicker {
-  margin: 0 1.5rem 0 1.5rem;
-}
 .stunde {
 	top: 0px;
   font-size: calc(var(--buchungFontSize)*0.8);
@@ -47,26 +44,16 @@ h1 {
 	border: none;
 }
 .platz {
-  position: relative;
-  background-size: 100% calc(var(--viertel)*2);
-  background-image: linear-gradient(to right, rgb(168, 168, 168) 1px, transparent 1px), linear-gradient(to bottom, #E5CCA0 10px, transparent 1px);
+	position: relative;
 }
 .platznummer {
   top: 0px;
   height: calc(var(--viertel)*3);
   background-color: rgb(226, 186, 99);
   font-size: calc(var(--buchungFontSize)*1.2);
-  border: 1px solid white;
+  border: 1px solid white; 
   font-weight: bold;
   text-align: center;
-}
-.platzziffer {
-  font-size: calc(var(--buchungFontSize)*0.9);
-  border: 2px solid black;
-  border-radius: 8px;
-  margin-top: 1px;
-  padding-left: 4px;
-  padding-right: 4px;
 }
 .neuBtn {
   color: white;
@@ -81,7 +68,6 @@ h1 {
 {
   background-color: rgb(143, 255, 139);
 }
-
 .ts {
   background-color: rgb(111, 196, 136);
   font-size: var(--buchungFontSize);
@@ -103,25 +89,13 @@ h1 {
 	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*2);
 }
-.D-45 {
-	color: rgb(51, 51, 41);
-	height: calc(var(--viertel)*3);
-}
 .D-60 {
 	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*4);
 }
-.D-75 {
-	color: rgb(51, 51, 41);
-	height: calc(var(--viertel)*5);
-}
 .D-90 {
 	color: rgb(51, 51, 41);
   height: calc(var(--viertel)*6);
-}
-.D-105 {
-	color: rgb(51, 51, 41);
-	height: calc(var(--viertel)*7);
 }
 .D-120 {
 	color: rgb(51, 51, 41);
@@ -194,50 +168,11 @@ h1 {
   color: red;
 }
 
-/* DatePicker horizontal scroll component */
-.menu-item {
-  user-select: none;
-  cursor: pointer;
-  border: none;
-}
-
-.horizontal-menu {
-  background-color: rgb(197, 175, 139);
-}
-.dateBtn {
-  color: black;
-  /* background-color: rgb(226, 186, 99); */
-  font-size: calc(var(--buchungFontSize)*0.9);
-  padding: 0px 1px 0px 1px;
-  margin: 0 0 2px 0;
-  border-left: 1px solid white;
-  border-right: 1px solid white;
-  /* border-radius: 4px; */
-}
-.dateBtn.aktiv {
-  font-size: calc(var(--buchungFontSize)*1.2);
-  font-weight: bold;
-  background-color: rgb(250, 240, 153);
-}
-.dateBtn:hover
-{
-  background-color: rgb(226, 203, 153);
-}
-.arrowPicker {
-  background-color: rgb(226, 186, 99);
-  padding: 0px 3px 0px 3px;
-  border: 1px solid white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
 
 /* Für Smartphones: */
 @media (max-width: 578px)
 {
-  /* :root {
-    --buchungFontSize: 0.5rem;
-  } */
+  --buchungFontSize: 0.5rem; /* für Buchungen auf der Tafel */
   h1 {
     font-size: calc(var(--buchungFontSize)*1.2);
   }
