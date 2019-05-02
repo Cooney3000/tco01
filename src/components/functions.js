@@ -19,6 +19,9 @@ export const getDateArray = function(start, end) {
   return arr;
 }
 
+export function isValidDate(d) {
+  return d instanceof Date && !isNaN(d);
+}
 
 
 

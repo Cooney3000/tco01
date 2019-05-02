@@ -83,6 +83,7 @@ h1 {
 }
 
 .ts {
+	color: rgb(51, 51, 41); 
   background-color: rgb(111, 196, 136);
   font-size: var(--buchungFontSize);
   line-height: 110%;
@@ -94,37 +95,34 @@ h1 {
 	overflow: hidden;
 	position: absolute;
 }
+.ts-turnier {
+	color: rgb(51, 51, 41); 
+  background-color: rgb(161, 240, 185);
+  font-style: italic;  
+}
 
 .D-15 {
-	color: rgb(51, 51, 41); 
 	height: calc(var(--viertel)*1);
 }
 .D-30 {
-	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*2);
 }
 .D-45 {
-	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*3);
 }
 .D-60 {
-	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*4);
 }
 .D-75 {
-	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*5);
 }
 .D-90 {
-	color: rgb(51, 51, 41);
   height: calc(var(--viertel)*6);
 }
 .D-105 {
-	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*7);
 }
 .D-120 {
-	color: rgb(51, 51, 41);
 	height: calc(var(--viertel)*8);
 }
 /* Positionierung für Belegungen innerhalb eines Tages im Format T-<stunde>-<minute> */

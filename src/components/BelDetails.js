@@ -17,16 +17,16 @@ class BelDetails extends Component {
   componentWillMount() {
     const op = this.props.match.params.op;
     if (op === "update") {
-      const {i} = this.props.location.state;
-      this.updateBel(i);
+      const {i, d} = this.props.location.state;
+      this.updateBel(i, d);
     } else if (op === "new") {
       const {c, d} = this.props.location.state;
       this.newBel(c, d);
     }
   }
   
-  updateBel(id) {
-    const url = Config.hostname + "/intern/api/platz.php?op=r&i=" + id;
+  updateBel(id, day) {
+    const url = Config.protokoll + Config.hostname + "/intern/api/platz.php?op=r&i=" + id;
     // console.log(url);
   
     this.setState({isLoading : true});
@@ -42,8 +42,8 @@ class BelDetails extends Component {
     .then(result => {
       let belegung = result.records.map( r => {
         return (
-          <div key={r.id} className="p-2 w-50">
-              <Link to="/"><p className="btn btn-secondary">Zurück</p></Link>
+          <div key={r.id} className="p-2">
+              <Link to={'/' + day}><p className="btn btn-secondary">Zurück</p></Link>
               <BelForm r={r} />
           </div>
         )
@@ -58,7 +58,7 @@ class BelDetails extends Component {
     let r = getEmptyBel(court, day);
     let belegung = [
         <div key={-1} className="p-2 w-50">
-            <Link to="/"><p className="btn btn-secondary">Zurück</p></Link>
+            <Link to={'/' + day}><p className="btn btn-secondary">Zurück</p></Link>
             <BelForm r={r} />
         </div>
     ];
@@ -83,7 +83,7 @@ function getEmptyBel(court, day) {
     court: court,
     starts_at: day + ' 08:00:00',
     ends_at: day + ' 09:00:00',
-    booking_type: 'Einzel',
+    booking_type: '',
     p1id: 0,
     p2id: 0,
     p3id: 0,

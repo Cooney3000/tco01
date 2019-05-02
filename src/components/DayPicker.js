@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ScrollMenu from 'react-horizontal-scrolling-menu';
 import {getDateArray} from "./functions";
 
+// Das ist das Array mit den Tagen
 let list = [];
 
 // One item component
@@ -45,10 +46,10 @@ class DayPicker extends Component {
   };
 
   componentWillMount() {
-    const {day} = this.props;
+    const {startswith, day} = this.props;
     let end = new Date(day);
     end.setDate(end.getDate() + 30);
-    list = getDateArray(day, end);
+    list = getDateArray(startswith, end);
     this.setState({selected: day});
   }
 

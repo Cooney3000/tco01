@@ -5,7 +5,7 @@ import DayPicker from "./DayPicker";
 import "./tafel.css";
 import SwipeableViews from 'react-swipeable-views';
 import config from './Defaults';
-import {formatDate} from "./functions";
+import {formatDate, isValidDate} from "./functions";
 
 // Layout eines Tages
 
@@ -22,7 +22,7 @@ class Belegungstag extends Component {
   componentWillMount() {
     window.addEventListener('resize', this.handleWindowSizeChange);
     let dayDate = this.props.match.params.day;
-    if (typeof dayDate === 'undefined') {
+    if ( ! isValidDate(new Date(dayDate)) ) {
       dayDate = new Date();
     } else {
       dayDate = new Date(dayDate);
@@ -53,7 +53,7 @@ class Belegungstag extends Component {
     if (isMobile) {
       return (
         <div>
-          <DayPicker day={this.state.day} onClickHandler={ this.setDay } />
+          <DayPicker startswith={new Date()} day={this.state.day} onClickHandler={this.setDay} />
           <SwipeableViews>
             <div id="platz1"><Platz court="1" day={this.state.day} /></div>
             <div id="platz2"><Platz court="2" day={this.state.day} /></div>
@@ -67,7 +67,7 @@ class Belegungstag extends Component {
     } else {
       return (
         <div>
-          <DayPicker day={this.state.day} onClickHandler={ this.setDay } />
+          <DayPicker startswith={new Date()} day={this.state.day} onClickHandler={ this.setDay } />
           <table className="table">
             <tbody>
               <tr className="platzDim">

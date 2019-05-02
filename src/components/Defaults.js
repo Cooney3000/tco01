@@ -1,6 +1,8 @@
 let config = {
-  hostname: 'http://192.168.178.50',
-  // hostname: 'http://www.tcolching.de',
+  hostname: '192.168.178.50',
+  protokoll: 'http://',
+  // hostname: 'www.tcolching.de',
+  // protokoll: 'https://',
   smartphoneWidth: 578,
 }
 export default config;

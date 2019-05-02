@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import Zeitleiste from "./Zeitleiste";
-import config from './Defaults';
+import Config from './Defaults';
 
 
 // Alle Belegungen an diesem Tag für einen Platz
@@ -30,7 +30,7 @@ class Platz extends Component {
   }
 
   fetchPlatz(court, day) {
-    const url = config.hostname + "/intern/api/platz.php?op=ra&p=" + court + "&ds=" + day + "&de=" + day;
+    const url = Config.protokoll + Config.hostname + "/intern/api/platz.php?op=ra&p=" + court + "&ds=" + day + "&de=" + day;
     window.addEventListener('resize', this.handleWindowSizeChange);
     
     this.setState({isLoading : true});
@@ -46,14 +46,14 @@ class Platz extends Component {
     .then (result => {
         let courtData = result.records.map ( r => {
             let k = r.id;
-            let cn = computeBelClasses (r.starts_at, r.ends_at, r.bookingType);
+            let cn = computeBelClasses (r.starts_at, r.ends_at, r.booking_type);
             let spieler = 
                 r.p1 
               + (r.p2 ? ', ' + r.p2 : ' ') 
               + (r.p3 ? ', ' + r.p3 : ' ') 
               + (r.p4 ? ', ' + r.p4 : ' ');
             return ( 
-                <Link key={k} className={cn} to={{ pathname: '/belegungsdetails/update', state: {i: r.id} }}>
+                <Link key={k} className={cn} to={{ pathname: '/belegungsdetails/update', state: {c: this.props.court, i: r.id, d: day} }}>
                   <strong>{r.starts_at.substring(11,16)}</strong> {spieler}
                 </Link>
             )
@@ -80,7 +80,7 @@ class Platz extends Component {
         );
     }
     const { width } = this.state;
-    const isMobile = width <= config.smartphoneWidth;
+    const isMobile = width <= Config.smartphoneWidth;
       
     if (isMobile) {
     
@@ -119,15 +119,16 @@ class Platz extends Component {
 }
 
 // CSS-Klassen bilden für die Positionierung und Höhe einer Blegung auf der Tafel
-function computeBelClasses (s, e, bt) {
+function computeBelClasses (s, e, bookingType) {
 
   // Dauer berechnen, also z. B. '2019-05-02 16:00:00' - '2019-05-02 14:00:00' = 120
-  let dauer = (Number(e.substring(11,13))*60 + Number(e.substring(14,16))) - (Number(s.substring(11,13))*60 + Number(s.substring(14,16)));
+  const dauer = (Number(e.substring(11,13))*60 + Number(e.substring(14,16))) - (Number(s.substring(11,13))*60 + Number(s.substring(14,16)));
+  const bt = bookingType === 'Turnier' ? 'ts-turnier' : '' 
   let cn = classNames(
     'D-' + dauer,
     'ts', 
     'T-' + s.substring(11, 16).replace(':', '-'),
-    bt === 'Turnier' ? 'bg-info' : '',
+    bt,
     );
   return cn;
 }
