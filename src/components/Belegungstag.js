@@ -51,16 +51,24 @@ class Belegungstag extends Component {
     const { width } = this.state;
     const isMobile = width <= config.smartphoneWidth;
     if (isMobile) {
+      const courtDiv = [1,2,3,4,5,6].map( (court) => {
+        return <div id={"platz" + court}><Platz court={court} day={this.state.day} /></div>
+      })
       return (
         <div>
           <DayPicker startswith={new Date()} day={this.state.day} onClickHandler={this.setDay} />
           <SwipeableViews>
-            <div id="platz1"><Platz court="1" day={this.state.day} /></div>
+            {courtDiv}
+
+
+
+
+            {/* <div id="platz1"><Platz court="1" day={this.state.day} /></div>
             <div id="platz2"><Platz court="2" day={this.state.day} /></div>
             <div id="platz3"><Platz court="3" day={this.state.day} /></div>
             <div id="platz4"><Platz court="4" day={this.state.day} /></div>
             <div id="platz5"><Platz court="5" day={this.state.day} /></div>
-            <div id="platz6"><Platz court="6" day={this.state.day} /></div>
+            <div id="platz6"><Platz court="6" day={this.state.day} /></div> */}
           </SwipeableViews>
         </div>
       )

@@ -7,6 +7,7 @@
     "datejs": "^1.0.0-rc3",
     "fetch": "^1.1.0",
     "history": "^4.7.2",
+    "jquery": "^3.4.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-horizontal-scrolling-menu": "^0.5.8",

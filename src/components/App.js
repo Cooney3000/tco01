@@ -11,17 +11,17 @@ class App extends Component {
     };
   }
   
-  componentWillMount() {
-    const url = Config.protokoll + Config.hostname + "/intern/api/checkuser.php";
-    fetch(url)
-    .then(result => {
-      if (result.ok) {
-        console.log('checking login status...');
-      }
-    });
+  // componentWillMount() {
+  //   const url = Config.protokoll + Config.hostname + "/intern/api/checkuser.php";
+  //   fetch(url)
+  //   .then(result => {
+  //     if (result.ok) {
+  //       console.log('checking login status...');
+  //     }
+  //   });
           
 
-  }
+  // }
 
   
   render() {

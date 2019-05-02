@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import Zeitleiste from "./Zeitleiste";
 import Config from './Defaults';
+import { Redirect } from 'react-router';
 
 
 // Alle Belegungen an diesem Tag für einen Platz
@@ -16,6 +17,7 @@ class Platz extends Component {
       isLoading : false,
       error : false,
       width: window.innerWidth,
+      zumBelegungstag: false,
     };
   }
   
@@ -70,10 +72,14 @@ class Platz extends Component {
   }
 
   handleWindowSizeChange = () => {
-    this.setState({ width: window.innerWidth });
+    // this.setState({ width: window.innerWidth });
+    this.setState({ zumBelegungstag: true });
   };
   
   render() {
+    // if (this.state.zumBelegungstag === true) {
+    //   return <Redirect to={'/' + this.props.day} />
+    // }
     if (this.state.isLoading === true) {
       return (
         <div>Loading...</div>
