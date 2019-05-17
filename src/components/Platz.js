@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import Zeitleiste from "./Zeitleiste";
-import Config from './Defaults';
-import { Redirect } from 'react-router';
+import Config, { permissions } from './Defaults';
 
 
 // Alle Belegungen an diesem Tag für einen Platz
@@ -32,6 +30,7 @@ class Platz extends Component {
   }
 
   fetchPlatz(court, day) {
+    const userIsAdmin = (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions));
     const url = Config.protokoll + Config.hostname + "/intern/api/platz.php?op=ra&p=" + court + "&ds=" + day + "&de=" + day;
     window.addEventListener('resize', this.handleWindowSizeChange);
     
@@ -46,25 +45,32 @@ class Platz extends Component {
         }
       })
     .then (result => {
-        let courtData = result.records.map ( r => {
-            let k = r.id;
-            let cn = computeBelClasses (r.starts_at, r.ends_at, r.booking_type);
-            let spieler = 
-                r.p1 
-              + (r.p2 ? ', ' + r.p2 : ' ') 
-              + (r.p3 ? ', ' + r.p3 : ' ') 
-              + (r.p4 ? ', ' + r.p4 : ' ');
-            return ( 
-                <Link key={k} className={cn} to={{ pathname: '/belegungsdetails/update', state: {c: this.props.court, i: r.id, d: day} }}>
-                  <strong>{r.starts_at.substring(11,16)}</strong> {spieler}
-                </Link>
-            )
-        })
-        this.setState({courtData: courtData});
-        this.setState({isLoading : false});
-      }
-    )
-    .catch(error => this.setState({ error, isLoading: true }));
+      let courtData = result.records.map ( r => {
+        let k = r.id;
+        let cn = computeBelClasses (r.starts_at, r.ends_at, r.booking_type);
+        let spieler = 
+            r.p1.replace(new RegExp("^[\\.\\s]+"), "") 
+          + (r.p2 ? ', ' + r.p2.replace(new RegExp("^[\\.\\s]+"), "") : ' ') 
+          + (r.p3 ? ', ' + r.p3.replace(new RegExp("^[\\.\\s]+"), "") : ' ') 
+          + (r.p4 ? ', ' + r.p4.replace(new RegExp("^[\\.\\s]+"), "") : ' ');
+        if ( !userIsAdmin && (r.booking_type.match(/(ts-training)|(ts-nichtreservierbar)/ig)))
+        {
+          return ( 
+            <div key={k} className={cn}>
+              <strong>{r.starts_at.substring(11,16)}</strong> {spieler}
+            </div>
+          )
+        } else {
+          return ( 
+            <Link key={k} className={cn} to={{ pathname: '/belegungsdetails/update', state: {c: court, i: r.id, d: day} }}>
+              <strong>{r.starts_at.substring(11,16)}</strong> {spieler}
+            </Link>
+          )
+        }
+      })
+      this.setState({courtData: courtData});
+      this.setState({isLoading : false});
+    })
   }
 
   componentWillUnmount() {
@@ -77,50 +83,7 @@ class Platz extends Component {
   };
   
   render() {
-    // if (this.state.zumBelegungstag === true) {
-    //   return <Redirect to={'/' + this.props.day} />
-    // }
-    if (this.state.isLoading === true) {
-      return (
-        <div>Loading...</div>
-        );
-    }
-    const { width } = this.state;
-    const isMobile = width <= Config.smartphoneWidth;
-      
-    if (isMobile) {
-    
-      return (
-        <table className="table">
-          <tbody>
-            <tr className="platzDim">
-              <td className="zeitleisteCol"><Zeitleiste /></td>
-              <td className="platz">
-                <div className="platznummer">
-                  <span className="platzziffer">{this.props.court}</span> 
-                  <Link to={{pathname: '/belegungsdetails/new', state: {c: this.props.court, d: this.props.day} }} className="neuBtn">NEU</Link> 
-                </div>
-                <div>
-                  {this.state.courtData}
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      );
-
-    } else {
-
-      return (
-        <div>
-          <div className="platznummer">
-            <span className="platzziffer">{this.props.court}</span> 
-            <Link to={{pathname: '/belegungsdetails/new', state: {c: this.props.court, d: this.props.day} }} className="neuBtn">NEU</Link> 
-          </div>
-          <div>{this.state.courtData}</div>
-        </div>
-      );  
-    }
+    return this.state.courtData;
   }
 }
 
@@ -129,7 +92,7 @@ function computeBelClasses (s, e, bookingType) {
 
   // Dauer berechnen, also z. B. '2019-05-02 16:00:00' - '2019-05-02 14:00:00' = 120
   const dauer = (Number(e.substring(11,13))*60 + Number(e.substring(14,16))) - (Number(s.substring(11,13))*60 + Number(s.substring(14,16)));
-  const bt = bookingType === 'Turnier' ? 'ts-turnier' : '' 
+  const bt = bookingType 
   let cn = classNames(
     'D-' + dauer,
     'ts', 

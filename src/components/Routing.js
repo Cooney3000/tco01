@@ -8,9 +8,10 @@ class Routing extends Component {
     render() {
       return (
         <Switch>
-          <Route exact path='/belegungsdetails/:op' component={BelDetails} />
-          <Route path='/:day' component={Belegungstag} />
-          <Route component={Belegungstag} />
+          <Route exact path='/belegungsdetails/:op' render={(props) => <BelDetails {...props} userId={this.props.userId} permissions={this.props.permissions} />} />
+          {/* <Route exact path='/belegungsdetails/:op' component={BelDetails} /> */}
+          <Route path='/:day' render={(props) => <Belegungstag {...props} userId={this.props.userId} permissions={this.props.permissions} />} />
+          <Route render={(props) => <Belegungstag {...props} userId={this.props.userId} permissions={this.props.permissions} />} />
         </Switch>
       )
     }

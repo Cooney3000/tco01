@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import Config from './Defaults';
+import Config, { permissions } from './Defaults';
 import { Redirect } from 'react-router';
 
 
 class BelForm extends Component {
   
   /////// TO DO: richtige User Id der Session einfügen!!
-  userId = 8;
-
+  // userId = 8;
+  
   constructor(props){
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -17,7 +17,16 @@ class BelForm extends Component {
     // Daten für Datum, Start und Ende extrahieren
     let [sd, st] = r.starts_at.split(' ');
     const dateIsToday = ((new Date(sd)).getDate() === (new Date()).getDate());
-    const bookingType = (r.booking_type === '') ? (dateIsToday ? 'Einzel' : 'Turnier') : r.booking_type;
+
+    // Initialer Wert für neue Buchungen. Wenn Einzel/Doppel erlaubt sind, hier ändern
+    // const bookingType = (r.booking_type === '') ? (dateIsToday ? 'ts-einzel' : 'ts-turnier') : r.booking_type;
+    const bookingType = (r.booking_type === '') ? 'ts-turnier' : r.booking_type;
+
+
+    const deleteActive = r.booking_type.match(/(ts-training)|(ts-nichtreservierbar)/ig) ? (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions)) : true;
+    
+    // console.log(deleteActive)
+    
     let [ed, et] = r.ends_at.split(' ');
     let sdA = sd.split('-');
     let doppel = (r.booking_type === "Doppel") ? true : false;
@@ -48,17 +57,20 @@ class BelForm extends Component {
       invalidClassnameSpielzeit: '',
       invalidClassnameSpieler: '',
       saveActive: false,
+      deleteActive: deleteActive,
+      admin: false,
       dateIsToday: dateIsToday,
     };
   }
   
   componentWillMount() {
     // Alle Spieler für die Select-Auswahl laden    
-    const url = Config.protokoll + Config.hostname + "/intern/api/spieler.php";
+    let url = Config.protokoll + Config.hostname + "/intern/api/spieler.php";
     this.setState({isLoading : true});
     fetch(url)
     .then(result => {
       if (result.ok) {
+        // console.log(result);
         return result.json();
       } else {
         throw new Error('Fehler beim Laden der Spielerdaten');
@@ -70,6 +82,8 @@ class BelForm extends Component {
       this.setState({ spieler: spieler })
     })
     .catch(error => this.setState({ error, isLoading: false }));
+
+
   }
 
   render(){
@@ -137,6 +151,7 @@ class BelForm extends Component {
                 <option value="18">18</option>
                 <option value="19">19</option>
                 <option value="20">20</option>
+                <option value="21">21</option>
               </select>
               <select id="endsAtViertel" className={this.state.spielzeitClassnames + ' ' + this.state.invalidClassnameSpielzeit} onChange={this.handleChange} value={this.state.endsAtViertel}>
                 <option value="--">--</option>
@@ -149,11 +164,12 @@ class BelForm extends Component {
             <br />
             <div><strong>Buchungstyp</strong></div>
             <select id="bookingType" className="form-control" onChange={this.handleChange} value={this.state.bookingType}>
-                <option disabled={ ! this.state.dateIsToday} value="Einzel">Einzel</option>
-                <option disabled={ ! this.state.dateIsToday} value="Doppel">Doppel</option>
-                <option value="Turnier">Turnier</option>
-                <option value="Punktspiele">Punktspiele</option>
-                <option value="Training">Training</option>
+                {/* <option disabled={ ! this.state.dateIsToday} value="ts-einzel">Einzel</option>
+                <option disabled={ ! this.state.dateIsToday} value="ts-doppel">Doppel</option> */}
+                <option value="ts-turnier">Turnier</option>
+                <option value="ts-punktspiele">Punktspiele</option>
+                <option value="ts-training">Training</option>
+                <option value="ts-nichtreservierbar">Nicht reservierbar</option>
             </select>
             <br />
             <div><strong>Spieler</strong> <span id="playerInvalid" className="invalidText">{this.state.fehlerSpielerTxt}</span></div>
@@ -167,7 +183,7 @@ class BelForm extends Component {
                 })}
               </select>
               <select id="p2" className="form-control" onChange={this.handleChange} value={this.state.p2}>
-                 <option value="none">- Bitte auswählen -</option>
+                 <option value="0">- Bitte auswählen -</option>
                   {this.state.spieler.map( r => {
                      return (
                      <option key={'p2' + r.id} value={r.id}>{r.spieler}</option>
@@ -178,7 +194,7 @@ class BelForm extends Component {
             <div className="form-row">
               { (this.state.doppel) ?
                   <select id="p3" className="form-control" onChange={this.handleChange} value={this.state.p3}>
-                    <option value="none">- Bitte auswählen -</option>
+                    <option value="0">- Bitte auswählen -</option>
                     {this.state.spieler.map( r => {
                       return (
                         <option key={'p3' + r.id} value={r.id}>{r.spieler}</option>
@@ -189,7 +205,7 @@ class BelForm extends Component {
               }
               { (this.state.doppel) ?
                   <select id="p4" className="form-control" onChange={this.handleChange} value={this.state.p4}>
-                    <option value="none">- Bitte auswählen -</option>
+                    <option value="0">- Bitte auswählen -</option>
                     {this.state.spieler.map( r => {
                       return (
                           <option key={'p4' + r.id} value={r.id}>{r.spieler}</option>
@@ -200,7 +216,7 @@ class BelForm extends Component {
               }
             </div>
             <button type="submit" onClick={e => {this.handleSave(e)}}  className="btn btn-primary m-1" disabled={!this.state.saveActive}>Speichern</button> 
-            <button type="submit" onClick={e => {this.handleDelete(e)}}  className="btn btn-primary m-2">Löschen</button>
+            <button type="submit" onClick={e => {this.handleDelete(e)}}  className="btn btn-primary m-2" disabled={!this.state.deleteActive}>Löschen</button>
           </fieldset>
         </form>
       </div>
@@ -208,13 +224,14 @@ class BelForm extends Component {
   }
 
   handleSave(e) {
+    e.preventDefault();
     // console.log("SAVE FORM DATA NOW!");
     let url = Config.protokoll + Config.hostname 
                 + '/intern/api/platz.php?op=cu' 
                 + '&i=' + this.state.r.id
                 + '&ds=' + this.state.startsAtDate + ' ' + this.state.startsAtStd + ':' + this.state.startsAtViertel
                 + '&de=' + this.state.endsAtDate + ' ' + this.state.endsAtStd + ':' + this.state.endsAtViertel
-                + '&uid=' + this.userId
+                + '&uid=' + this.props.userId
                 + '&p1=' + this.state.p1
                 + '&p2=' + this.state.p2
                 + '&p3=' + this.state.p3
@@ -223,9 +240,11 @@ class BelForm extends Component {
                 + '&t=' + this.state.bookingType
                 + '&pr=0'
                 ;
-    fetch(url)
+  // console.log(url);
+  fetch(url)
     .then(result => {
       if (result.ok) {
+        // console.log(result);
         return result.json();
       } else {
         throw new Error('Fehler beim Erzeugen/Updaten der Belegung' + this.state.r.id);
@@ -242,10 +261,11 @@ class BelForm extends Component {
           this.setState({invalidClassnameSpielzeit: 'invalidFeedback'});
         }
       })
-      .catch(error => this.setState({ error, isLoading: false }));
-    e.preventDefault();
+      // .catch(error => this.setState({ error, isLoading: false }));
+    // e.preventDefault();
   }
   handleDelete(e) {
+    e.preventDefault();
     // console.log("DELETE ROW NOW!" + this.state.r.id);
     let url = Config.protokoll + Config.hostname
                 + '/intern/api/platz.php?op=d' 
@@ -255,13 +275,12 @@ class BelForm extends Component {
     .then(result => {
       if (result.ok) {
         this.setState( { zurTafel: true } );
-      } else {
-        throw new Error('Fehler beim Löschen der Belegung' + this.state.r.id);
       }
     })
     e.preventDefault();
   }
   handleChange(e) {
+    e.preventDefault();
     let s = {};
     s = {
       id: e.target.id, 
@@ -276,10 +295,15 @@ class BelForm extends Component {
       }
     }    
     this.setState({[s.id] : s.value}, () => {
-      if (s.id.match(/(startsAtStd)|(startsAtViertel)|(endsAtStd)|(endsAtViertel)|(court)|(p1)|(p2)|(p3)|(p4)/ig)) {
+      if (s.id.match(/(startsAtStd)|(startsAtViertel)|(endsAtStd)|(endsAtViertel)|(court)|(p1)|(p2)|(p3)|(p4)|bookingType/ig)) {
         this.clearFehler();
         this.validateSpielzeit();
         this.validateSpieler();
+        if (this.state.bookingType.match(/(ts-training)|(ts-nichtreservierbar)/ig))
+        {
+          this.setState({deleteActive: (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions))})
+          this.setState({saveActive: (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions))})
+        }
       }    
     });
   }
@@ -288,8 +312,11 @@ class BelForm extends Component {
     this.setState({fehlerSpielzeitTxt: '', fehlerSpielzeit: false, invalidClassnameSpielzeit: ''});
     this.setState({fehlerSpielerTxt: '', fehlerSpieler: false, invalidClassnameSpieler: ''});
     this.setState({saveActive: true});
+    this.setState({deleteActive: true})
   }
   
+
+
   validateSpielzeit() {
     // Ende vor Start?
     const start = this.state.startsAtStd + this.state.startsAtViertel;
@@ -300,11 +327,12 @@ class BelForm extends Component {
       this.setState({invalidClassnameSpielzeit: 'invalidFeedback'});
       this.setState({saveActive: false});
       return;
-    } else if ((ende - start) > 200) {  // 200 sind 2 Stunden (z. B. "1500" - "1300")
-      this.setState({fehlerSpielzeitTxt: '- Maximal 120 Minuten buchbar!', fehlerSpielzeit: true});
-      this.setState({invalidClassnameSpielzeit: 'invalidFeedback'});
-      this.setState({saveActive: false});
-    }
+    } 
+    // else if ((ende - start) > 200) {  // 200 sind 2 Stunden (z. B. "1500" - "1300")
+    //   this.setState({fehlerSpielzeitTxt: '- Maximal 120 Minuten buchbar!', fehlerSpielzeit: true});
+    //   this.setState({invalidClassnameSpielzeit: 'invalidFeedback'});
+    //   this.setState({saveActive: false});
+    // }
     // console.log(this.state.r.starts_at);
   }  
   validateSpieler() {

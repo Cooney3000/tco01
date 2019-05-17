@@ -44,7 +44,7 @@ class BelDetails extends Component {
         return (
           <div key={r.id} className="p-2">
               <Link to={'/' + day}><p className="btn btn-secondary">Zurück</p></Link>
-              <BelForm r={r} />
+              <BelForm r={r} userId={this.props.userId} permissions={this.props.permissions} />
           </div>
         )
       })
@@ -59,7 +59,7 @@ class BelDetails extends Component {
     let belegung = [
         <div key={-1} className="p-2 w-50">
             <Link to={'/' + day}><p className="btn btn-secondary">Zurück</p></Link>
-            <BelForm r={r} />
+            <BelForm r={r} userId={this.props.userId} permissions={this.props.permissions} />
         </div>
     ];
     this.setState({ belegung: belegung })

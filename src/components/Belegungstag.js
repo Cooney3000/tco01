@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import Platz from "./Platz";
-import Zeitleiste from "./Zeitleiste";
 import DayPicker from "./DayPicker";
 import "./tafel.css";
 import SwipeableViews from 'react-swipeable-views';
 import config from './Defaults';
 import {formatDate, isValidDate} from "./functions";
+import { Link } from 'react-router-dom';
 
 // Layout eines Tages
 
@@ -49,50 +49,104 @@ class Belegungstag extends Component {
     
   render() {
     const { width } = this.state;
-    const isMobile = width <= config.smartphoneWidth;
+    const isMobile = (width <= config.smartphoneWidth);
     if (isMobile) {
-      const courtDiv = [1,2,3,4,5,6].map( (court) => {
-        return <div id={"platz" + court}><Platz court={court} day={this.state.day} /></div>
+      const courtDiv = config.platzArray.map( (court) => {
+        return (<div key={court} id={"platz" + court}>
+          <table className="table">
+            <tbody>
+              <tr className="platzDim">
+                <td className="zeitleisteCol"><Zeitleiste /></td>
+                <td className="platz">
+                  <div className="platznummer">
+                    <span className="platzziffer">{court}</span> 
+                    <Link to={{pathname: '/belegungsdetails/new', state: {c: court, d: this.state.day} }}><img  className="neuBtn p-1 rounded-circle" src="images/add.png" alt="Neue Belegung" /></Link> 
+                  </div>
+                  <div>
+                    <Platz court={court} day={this.state.day} permissions={this.props.permissions} />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        )
       })
       return (
         <div>
           <DayPicker startswith={new Date()} day={this.state.day} onClickHandler={this.setDay} />
           <SwipeableViews>
             {courtDiv}
-
-
-
-
-            {/* <div id="platz1"><Platz court="1" day={this.state.day} /></div>
-            <div id="platz2"><Platz court="2" day={this.state.day} /></div>
-            <div id="platz3"><Platz court="3" day={this.state.day} /></div>
-            <div id="platz4"><Platz court="4" day={this.state.day} /></div>
-            <div id="platz5"><Platz court="5" day={this.state.day} /></div>
-            <div id="platz6"><Platz court="6" day={this.state.day} /></div> */}
           </SwipeableViews>
+          <Legende />
         </div>
       )
     } else {
+      const courtDiv = config.platzArray.map( (court) => {
+        return (<td key={court} id={"platz" + court} className="platz">
+          <div>
+            <div className="platznummer">
+              <span className="platzziffer rounded-circle">{court}</span> 
+              <Link to={{pathname: '/belegungsdetails/new', state: {c: court, d: this.state.day} }}><img  className="neuBtn p-1 rounded-circle" src="images/add.png" alt="Neue Belegung" /></Link> 
+            </div>
+            <div>            
+              <Platz court={court} day={this.state.day} permissions={this.props.permissions} />
+              </div>
+            </div>
+          </td>
+        )
+      })
       return (
         <div>
-          <DayPicker startswith={new Date()} day={this.state.day} onClickHandler={ this.setDay } />
+          <DayPicker startswith={new Date()} day={this.state.day} onClickHandler={this.setDay} />
           <table className="table">
             <tbody>
               <tr className="platzDim">
-                <td className="zeitleisteCol"><Zeitleiste /></td>
-                <td id="platz1" className="platz"><Platz court="1" day={this.state.day} /></td>
-                <td id="platz2" className="platz"><Platz court="2" day={this.state.day} /></td>
-                <td id="platz3" className="platz"><Platz court="3" day={this.state.day} /></td>
-                <td id="platz4" className="platz"><Platz court="4" day={this.state.day} /></td>
-                <td id="platz5" className="platz"><Platz court="5" day={this.state.day} /></td>
-                <td id="platz6" className="platz"><Platz court="6" day={this.state.day} /></td>
+                <td className="zeitleisteCol"><Zeitleiste /> </td>
+                {courtDiv}
               </tr>
             </tbody>
           </table>
+          <Legende />
         </div>
-      );
+      )
     }
   }
+}
+
+const Zeitleiste = () => {
+  let zeit = [];
+  for (let s = config.dailyStartTime; s <= config.dailyEndTime; s++) {
+    for (let m = 0; m < 60; m=m+60) {
+      zeit.push (s.toString().padStart(2, '0') + ':' + m.toString().padStart(2, '0'));
+    }
+  } 
+  return (
+    <div className="zeitleiste">
+      {
+        zeit.map((e, index) => 
+          <React.Fragment key={index}>
+            <div className="stunde"><div className="stundetext">{e}</div></div>
+            <div className="viertelstunde"></div>
+            <div className="viertelstunde"></div>
+            <div className="viertelstunde"></div>
+          </React.Fragment>
+        )
+      }
+    </div>
+  );
+}
+
+const Legende = () => {
+  return (
+    <div class="container">
+      {/* <div className="col l-einzeldoppel p-0 m-1 text-center">Einzel/Doppel</div> */}
+      <div className="col l-turnier p-0 m-1 text-center">Turnier</div>
+      <div className="col l-punktspiele p-0 m-1 text-center">Punktspiele</div>
+      <div className="col l-training m-1 text-center">Training</div>
+      <div className="col l-nichtreservierbar p-0 m-1 text-center">Frei verfügbar / Anderes</div>
+    </div>
+  );
 }
 
 export default Belegungstag;

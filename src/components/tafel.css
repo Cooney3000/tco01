@@ -20,11 +20,14 @@ h1 {
 .daypicker {
   margin: 0 1.5rem 0 1.5rem;
 }
+.stundetext {
+  margin-top: -0.2rem;
+}
 .stunde {
 	top: 0px;
   font-size: calc(var(--buchungFontSize)*0.8);
 	font-weight: bold;
-	border-top: 1px solid gray;
+  border-top: 1px solid gray;
 	height: calc(var(--viertel));
 	width: 2rem;
 }
@@ -57,31 +60,36 @@ h1 {
   background-color: rgb(226, 186, 99);
   font-size: calc(var(--buchungFontSize)*1.2);
   border: 1px solid white;
-  font-weight: bold;
   text-align: center;
 }
 .platzziffer {
   font-size: calc(var(--buchungFontSize)*0.9);
+  font-weight: bold;
   border: 2px solid black;
   border-radius: 8px;
   margin-top: 1px;
+  margin-right: 10px;
   padding-left: 4px;
   padding-right: 4px;
 }
 .neuBtn {
-  color: white;
-  background-color: green;
-  font-size: calc(var(--buchungFontSize)*0.9);
-  padding: 1px 3px 1px 3px;
-  margin: 0 1.5rem 0 1.5rem;
-  border: 1px solid white;
-  border-radius: 4px;
+  margin: 0px 10px 0px 10px
 }
 .neuBtn:hover
 {
   background-color: rgb(143, 255, 139);
+  text-decoration: none;
 }
-
+a {
+  color: black !important;
+  text-decoration: none;
+}
+a:link {
+  color: black !important;
+}
+a:hover {
+  color: black;
+}
 .ts {
 	color: rgb(51, 51, 41); 
   background-color: rgb(111, 196, 136);
@@ -95,36 +103,110 @@ h1 {
 	overflow: hidden;
 	position: absolute;
 }
+.ts-einzeldoppel {
+  color: black; 
+  background-color: rgb(111, 196, 136);
+}
+.ts-training {
+  color: black; 
+  background-color: rgb(175, 245, 196);
+}
 .ts-turnier {
-	color: rgb(51, 51, 41); 
-  background-color: rgb(161, 240, 185);
-  font-style: italic;  
+  color: white;
+  background-color: rgb(255, 0, 0); 
+}
+.ts-punktspiele {
+  color: black; 
+  background-color: rgb(255, 253, 148);
+}
+.ts-nichtreservierbar {
+  color: black; 
+  background-color: rgb(156, 156, 156);
+}
+.l-einzeldoppel {
+  width:20%;
+  color: black; 
+  background-color: rgb(111, 196, 136);
+}
+.l-training {
+  width:20%;
+  color: black; 
+  background-color: rgb(175, 245, 196);
+}
+.l-turnier {
+  width:20%;
+  color: white;
+  background-color: rgb(255, 0, 0); 
+}
+.l-punktspiele {
+  width:20%;
+  color: black; 
+  background-color: rgb(255, 253, 148);
+}
+.l-nichtreservierbar {
+  width:20%;
+  color: black; 
+  background-color: rgb(156, 156, 156);
 }
 
-.D-15 {
-	height: calc(var(--viertel)*1);
-}
-.D-30 {
-	height: calc(var(--viertel)*2);
-}
-.D-45 {
-	height: calc(var(--viertel)*3);
-}
-.D-60 {
-	height: calc(var(--viertel)*4);
-}
-.D-75 {
-	height: calc(var(--viertel)*5);
-}
-.D-90 {
-  height: calc(var(--viertel)*6);
-}
-.D-105 {
-	height: calc(var(--viertel)*7);
-}
-.D-120 {
-	height: calc(var(--viertel)*8);
-}
+/* Höhenberechnung für die Dauer der Platzbelegungen */
+.D-15	{height: calc(var(--viertel)*	1	);}
+.D-30	{height: calc(var(--viertel)*	2	);}
+.D-45	{height: calc(var(--viertel)*	3	);}
+.D-60	{height: calc(var(--viertel)*	4	);}
+.D-75	{height: calc(var(--viertel)*	5	);}
+.D-90	{height: calc(var(--viertel)*	6	);}
+.D-105	{height: calc(var(--viertel)*	7	);}
+.D-120	{height: calc(var(--viertel)*	8	);}
+.D-135	{height: calc(var(--viertel)*	9	);}
+.D-150	{height: calc(var(--viertel)*	10	);}
+.D-165	{height: calc(var(--viertel)*	11	);}
+.D-180	{height: calc(var(--viertel)*	12	);}
+.D-195	{height: calc(var(--viertel)*	13	);}
+.D-210	{height: calc(var(--viertel)*	14	);}
+.D-225	{height: calc(var(--viertel)*	15	);}
+.D-240	{height: calc(var(--viertel)*	16	);}
+.D-255	{height: calc(var(--viertel)*	17	);}
+.D-270	{height: calc(var(--viertel)*	18	);}
+.D-285	{height: calc(var(--viertel)*	19	);}
+.D-300	{height: calc(var(--viertel)*	20	);}
+.D-315	{height: calc(var(--viertel)*	21	);}
+.D-330	{height: calc(var(--viertel)*	22	);}
+.D-345	{height: calc(var(--viertel)*	23	);}
+.D-360	{height: calc(var(--viertel)*	24	);}
+.D-375	{height: calc(var(--viertel)*	25	);}
+.D-390	{height: calc(var(--viertel)*	26	);}
+.D-405	{height: calc(var(--viertel)*	27	);}
+.D-420	{height: calc(var(--viertel)*	28	);}
+.D-435	{height: calc(var(--viertel)*	29	);}
+.D-450	{height: calc(var(--viertel)*	30	);}
+.D-465	{height: calc(var(--viertel)*	31	);}
+.D-480	{height: calc(var(--viertel)*	32	);}
+.D-495	{height: calc(var(--viertel)*	33	);}
+.D-510	{height: calc(var(--viertel)*	34	);}
+.D-525	{height: calc(var(--viertel)*	35	);}
+.D-540	{height: calc(var(--viertel)*	36	);}
+.D-555	{height: calc(var(--viertel)*	37	);}
+.D-570	{height: calc(var(--viertel)*	38	);}
+.D-585	{height: calc(var(--viertel)*	39	);}
+.D-600	{height: calc(var(--viertel)*	40	);}
+.D-615	{height: calc(var(--viertel)*	41	);}
+.D-630	{height: calc(var(--viertel)*	42	);}
+.D-645	{height: calc(var(--viertel)*	43	);}
+.D-660	{height: calc(var(--viertel)*	44	);}
+.D-675	{height: calc(var(--viertel)*	45	);}
+.D-690	{height: calc(var(--viertel)*	46	);}
+.D-705	{height: calc(var(--viertel)*	47	);}
+.D-720	{height: calc(var(--viertel)*	48	);}
+.D-735	{height: calc(var(--viertel)*	49	);}
+.D-750	{height: calc(var(--viertel)*	50	);}
+.D-765	{height: calc(var(--viertel)*	51	);}
+.D-780	{height: calc(var(--viertel)*	52	);}
+.D-795	{height: calc(var(--viertel)*	53	);}
+.D-810	{height: calc(var(--viertel)*	54	);}
+.D-825	{height: calc(var(--viertel)*	55	);}
+.D-840	{height: calc(var(--viertel)*	56	);}
+
 /* Positionierung für Belegungen innerhalb eines Tages im Format T-<stunde>-<minute> */
 .T-08-00 {top: calc(var(--viertel)* 3); }
 .T-08-15 {top: calc(var(--viertel)* 4); }
@@ -177,6 +259,12 @@ h1 {
 .T-20-00 {top: calc(var(--viertel)*51); }
 .T-20-15 {top: calc(var(--viertel)*52); }
 .T-20-30 {top: calc(var(--viertel)*53); }
+.T-20-45 {top: calc(var(--viertel)*54); }
+.T-21-00 {top: calc(var(--viertel)*55); }
+.T-21-15 {top: calc(var(--viertel)*56); }
+.T-21-30 {top: calc(var(--viertel)*57); }
+.T-21-45 {top: calc(var(--viertel)*58); }
+.T-22-00 {top: calc(var(--viertel)*59); }
 
 /* Individuelle Einstellungen */
 .logo {
@@ -219,7 +307,7 @@ h1 {
 }
 .dateBtn:hover
 {
-  background-color: rgb(226, 203, 153);
+  background-color: rgb(250, 240, 153);
 }
 .arrowPicker {
   background-color: rgb(226, 186, 99);
@@ -239,5 +327,19 @@ h1 {
   h1 {
     font-size: calc(var(--buchungFontSize)*1.2);
   }
-  
+  .l-einzeldoppel {
+    width:100%;
+  }
+  .l-training {
+    width:100%;
+  }
+  .l-turnier {
+    width:100%;
+  }
+  .l-punktspiele {
+    width:100%;
+  }
+  .l-nichtreservierbar {
+    width:100%;
+  }
 }

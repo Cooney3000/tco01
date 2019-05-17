@@ -23,8 +23,6 @@ export function isValidDate(d) {
   return d instanceof Date && !isNaN(d);
 }
 
-
-
 // Auswahl über Mausposition???
 // handleClick (e) {
   

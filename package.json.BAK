@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.6",
     "datejs": "^1.0.0-rc3",
     "fetch": "^1.1.0",
@@ -17,9 +16,12 @@
     "react-swipeable-views": "^0.13.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    // "start": "react-scripts start",
+    "start": "react-app-rewired start --scripts-version react-scripts-ts",
+    // "build": "react-scripts build",
+    "build": "react-app-rewired build --scripts-version react-scripts-ts",
+    // "test": "react-scripts-ts test",
+    "test": "react-app-rewired test --env=jsdom --scripts-version react-scripts-ts",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
