@@ -72,7 +72,8 @@ class App extends Component {
           <div className="p-1">
               <span className="logo"><a href="https://www.tcolching.de"><img src="/images/tcoplain_0,1x.png" alt="TCO -Logo" /></a></span> 
               <span className="w-75 text-center h4 align-middle ml-2"><a href="/intern/tafel/" id="appname">Turnierplaner</a> ({this.state.user.vorname + ' ' + this.state.user.nachname})</span>
-              <div className="small align-bottom"><span>(Wir verwenden Cookies!)</span><span className="pl-5"> <a href="/intern/logout.php">LOGOUT</a></span></div>
+              <div className="small align-bottom"><span>(Wir verwenden Cookies!)</span><span className="pl-5"> 
+              <a href="/intern/internal.php">->TCO Intern</a>&nbsp;&nbsp;&nbsp;<a href="/intern/logout.php">->Logout</a></span></div>
           </div>
           <Routing userId = {this.state.user.id} permissions = {this.state.permissions}/>
           <footer class="blockquote-footer">(c) 2019 by Conny Roloff. Dem TC Olching zur kostenlosen Nutzung zur Verfügung gestellt.</footer>

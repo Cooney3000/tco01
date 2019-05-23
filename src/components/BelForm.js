@@ -41,6 +41,7 @@ class BelForm extends Component {
       endsAtStd: et.substring(0,2),
       endsAtViertel: et.substring(3,5),
       bookingType: bookingType,
+      comment: r.comment,
       p1: r.p1id,
       p2: r.p2id,
       p3: r.p3id,
@@ -215,6 +216,12 @@ class BelForm extends Component {
                 : ''
               }
             </div>
+
+            <div className="form-group">
+              <div><strong>Bemerkung</strong></div>
+              <input id="comment" className="form-control" onChange={this.handleChange} value={this.state.court}  placeholder="Spielergebnis o. ä." />
+            </div>
+
             <button type="submit" onClick={e => {this.handleSave(e)}}  className="btn btn-primary m-1" disabled={!this.state.saveActive}>Speichern</button> 
             <button type="submit" onClick={e => {this.handleDelete(e)}}  className="btn btn-primary m-2" disabled={!this.state.deleteActive}>Löschen</button>
           </fieldset>
@@ -238,6 +245,7 @@ class BelForm extends Component {
                 + '&p4=' + this.state.p4
                 + '&c=' + this.state.court
                 + '&t=' + this.state.bookingType
+                + '&t=' + this.state.comment
                 + '&pr=0'
                 ;
   // console.log(url);
