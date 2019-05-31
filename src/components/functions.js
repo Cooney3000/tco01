@@ -8,7 +8,7 @@ export function formatDate (d) {
 
   return [year, month, day].join('-');  
 }
-// date array
+// ***** date array 
 export const getDateArray = function(start, end) {
   let dt = new Date(start),
       arr = [];
@@ -22,6 +22,7 @@ export const getDateArray = function(start, end) {
 export function isValidDate(d) {
   return d instanceof Date && !isNaN(d);
 }
+
 
 // Auswahl über Mausposition???
 // handleClick (e) {

@@ -64,7 +64,7 @@ class App extends Component {
   }
   render() {
     const { isLoading1, isLoading2 } = this.state;
-    if (isLoading1 || isLoading2) {
+    if (config.prod && (isLoading1 || isLoading2)) {
       return <p>Loading...</p>
     } else {
       return (
@@ -76,9 +76,9 @@ class App extends Component {
               <a href="/intern/internal.php">->TCO Intern</a>&nbsp;&nbsp;&nbsp;<a href="/intern/logout.php">->Logout</a></span></div>
           </div>
           <Routing userId = {this.state.user.id} permissions = {this.state.permissions}/>
-          <footer class="blockquote-footer">(c) 2019 by Conny Roloff. Dem TC Olching zur kostenlosen Nutzung zur Verfügung gestellt.</footer>
+          <footer className="blockquote-footer">(c) 2019 by Conny Roloff. Dem TC Olching zur kostenlosen Nutzung zur Verfügung gestellt.</footer>
         </React.Fragment>
-      )};
+      )}
     }
   }
 

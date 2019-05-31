@@ -21,8 +21,6 @@ class BelForm extends Component {
     // Initialer Wert für neue Buchungen. Wenn Einzel/Doppel erlaubt sind, hier ändern
     // const bookingType = (r.booking_type === '') ? (dateIsToday ? 'ts-einzel' : 'ts-turnier') : r.booking_type;
     const bookingType = (r.booking_type === '') ? 'ts-turnier' : r.booking_type;
-
-
     const deleteActive = r.booking_type.match(/(ts-training)|(ts-nichtreservierbar)/ig) ? (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions)) : true;
     
     // console.log(deleteActive)
@@ -41,7 +39,7 @@ class BelForm extends Component {
       endsAtStd: et.substring(0,2),
       endsAtViertel: et.substring(3,5),
       bookingType: bookingType,
-      comment: r.comment,
+      comment: (typeof r.comment === "undefined") ? "" : r.comment ,
       p1: r.p1id,
       p2: r.p2id,
       p3: r.p3id,
@@ -68,7 +66,7 @@ class BelForm extends Component {
     // Alle Spieler für die Select-Auswahl laden    
     let url = Config.protokoll + Config.hostname + "/intern/api/spieler.php";
     this.setState({isLoading : true});
-    fetch(url)
+    fetch(url, {credentials: 'same-origin'})
     .then(result => {
       if (result.ok) {
         // console.log(result);
@@ -217,9 +215,9 @@ class BelForm extends Component {
               }
             </div>
 
+            <div><strong>Bemerkung</strong></div>
             <div className="form-group">
-              <div><strong>Bemerkung</strong></div>
-              <input id="comment" className="form-control" onChange={this.handleChange} value={this.state.court}  placeholder="Spielergebnis o. ä." />
+              <input id="comment" className="form-control" onChange={this.handleChange} value={this.state.comment}  placeholder="Spielergebnis o. ä." />
             </div>
 
             <button type="submit" onClick={e => {this.handleSave(e)}}  className="btn btn-primary m-1" disabled={!this.state.saveActive}>Speichern</button> 
@@ -245,11 +243,11 @@ class BelForm extends Component {
                 + '&p4=' + this.state.p4
                 + '&c=' + this.state.court
                 + '&t=' + this.state.bookingType
-                + '&t=' + this.state.comment
+                + '&cmt=' + this.state.comment
                 + '&pr=0'
                 ;
   // console.log(url);
-  fetch(url)
+  fetch(url, {credentials: 'same-origin'})
     .then(result => {
       if (result.ok) {
         // console.log(result);
@@ -279,7 +277,7 @@ class BelForm extends Component {
                 + '/intern/api/platz.php?op=d' 
                 + '&i=' + this.state.r.id
                 ;
-    fetch(url)
+    fetch(url, {credentials: 'same-origin'})
     .then(result => {
       if (result.ok) {
         this.setState( { zurTafel: true } );
@@ -303,7 +301,7 @@ class BelForm extends Component {
       }
     }    
     this.setState({[s.id] : s.value}, () => {
-      if (s.id.match(/(startsAtStd)|(startsAtViertel)|(endsAtStd)|(endsAtViertel)|(court)|(p1)|(p2)|(p3)|(p4)|bookingType/ig)) {
+      if (s.id.match(/(startsAtStd)|(startsAtViertel)|(endsAtStd)|(endsAtViertel)|(court)|(p1)|(p2)|(p3)|(p4)|(bookingType)|(comment)/ig)) {
         this.clearFehler();
         this.validateSpielzeit();
         this.validateSpieler();

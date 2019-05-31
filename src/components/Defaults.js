@@ -1,3 +1,5 @@
+
+// ****** Konfigurationsdaten *******
 let config = {
 
   // hostname: 'localhost',
@@ -18,13 +20,17 @@ let config = {
   smartphoneWidth: 578,
   anzahlPlaetze: 6,
   platzArray: [],
-  maxDaypickerDays: 180,
+  daypickerMaxDays: 180,
+  daypickerDaysBeforeToday: 3, 
+
   dailyStartTime: 8,
   dailyEndTime: 20,
 };
 for (let i = 1; i <= config.anzahlPlaetze; i++) {
   config.platzArray.push(i);
 }
+
+// ******* Rechtevergabe **********
 export const permissions = {
   // Es gibt 16 Rechte. Übereinandergelegt
   

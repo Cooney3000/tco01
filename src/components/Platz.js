@@ -35,7 +35,7 @@ class Platz extends Component {
     window.addEventListener('resize', this.handleWindowSizeChange);
     
     this.setState({isLoading : true});
-    fetch(url)
+    fetch(url, {credentials: 'same-origin'})
     .then(result => {
       if (result.ok) {
           return result.json();
@@ -57,13 +57,15 @@ class Platz extends Component {
         {
           return ( 
             <div key={k} className={cn}>
-              <strong>{r.starts_at.substring(11,16)}</strong> {spieler}
+              <strong>{r.starts_at.substring(11,16)}</strong> {spieler} 
+              <div> {r.comment} </div>
             </div>
           )
         } else {
           return ( 
             <Link key={k} className={cn} to={{ pathname: '/belegungsdetails/update', state: {c: court, i: r.id, d: day} }}>
               <strong>{r.starts_at.substring(11,16)}</strong> {spieler}
+              <div> {r.comment} </div>
             </Link>
           )
         }

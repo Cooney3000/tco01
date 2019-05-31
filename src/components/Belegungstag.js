@@ -49,6 +49,8 @@ class Belegungstag extends Component {
     
   render() {
     const { width } = this.state;
+    let firstDaypickerDay = new Date();
+    firstDaypickerDay.setDate(firstDaypickerDay.getDate() - config.daypickerDaysBeforeToday);
     const isMobile = (width <= config.smartphoneWidth);
     if (isMobile) {
       const courtDiv = config.platzArray.map( (court) => {
@@ -74,7 +76,7 @@ class Belegungstag extends Component {
       })
       return (
         <div>
-          <DayPicker startswith={new Date()} day={this.state.day} onClickHandler={this.setDay} />
+          <DayPicker startswith={firstDaypickerDay} day={this.state.day} onClickHandler={this.setDay} />
           <SwipeableViews>
             {courtDiv}
           </SwipeableViews>
@@ -98,7 +100,7 @@ class Belegungstag extends Component {
       })
       return (
         <div>
-          <DayPicker startswith={new Date()} day={this.state.day} onClickHandler={this.setDay} />
+          <DayPicker startswith={firstDaypickerDay} day={this.state.day} onClickHandler={this.setDay} />
           <table className="table">
             <tbody>
               <tr className="platzDim">
@@ -139,7 +141,7 @@ const Zeitleiste = () => {
 
 const Legende = () => {
   return (
-    <div class="container">
+    <div className="container">
       {/* <div className="col l-einzeldoppel p-0 m-1 text-center">Einzel/Doppel</div> */}
       <div className="col l-turnier p-0 m-1 text-center">Turnier</div>
       <div className="col l-punktspiele p-0 m-1 text-center">Punktspiele</div>

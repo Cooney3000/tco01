@@ -31,7 +31,7 @@ class BelDetails extends Component {
   
     this.setState({isLoading : true});
     
-    fetch(url)
+    fetch(url, {credentials: 'same-origin'})
     .then(result => {
       if (result.ok) {
           return result.json();

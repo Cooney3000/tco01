@@ -50,7 +50,7 @@ class DayPicker extends Component {
   componentWillMount() {
     const {startswith, day} = this.props;
     let end = new Date(day);
-    end.setDate(end.getDate() + Config.maxDaypickerDays);
+    end.setDate(end.getDate() + Config.daypickerMaxDays);
     list = getDateArray(startswith, end);
     this.setState({selected: day});
   }
@@ -80,3 +80,5 @@ class DayPicker extends Component {
 
 export default DayPicker;
   
+
+
