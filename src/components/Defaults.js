@@ -6,22 +6,25 @@ let config = {
   // protokoll: 'http://',
   // loginPage: '/intern/login.php',
   // prod: false,
-
+  
   // hostname: 'localhost',
   // protokoll: 'http://',
   // loginPage: '/intern/login.php',
   // prod: true,
-
+  
   hostname: 'www.tcolching.de',
   protokoll: 'https://',
   loginPage: '/intern/login.php',
   prod: true,
-
+  
+  testuser: {id:211, vorname:'Conny', nachname:'Roloff'},
   smartphoneWidth: 578,
   anzahlPlaetze: 6,
   platzArray: [],
   daypickerMaxDays: 180,
   daypickerDaysBeforeToday: 3, 
+  buchungenlog: '/intern/api/buchungenlog.php',
+  platzbuchungen: '/intern/api/platz.php',
 
   dailyStartTime: 8,
   dailyEndTime: 20,

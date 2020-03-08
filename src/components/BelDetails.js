@@ -26,7 +26,7 @@ class BelDetails extends Component {
   }
   
   updateBel(id, day) {
-    const url = Config.protokoll + Config.hostname + "/intern/api/platz.php?op=r&i=" + id;
+    const url = Config.protokoll + Config.hostname + "/intern/api/platz.php?op=r&rid=" + id;
     // console.log(url);
   
     this.setState({isLoading : true});
