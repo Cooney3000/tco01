@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Config, { permissions } from './Defaults';
 import { Redirect } from 'react-router';
+import _ from 'lodash';
 
 
 class BelForm extends Component {
@@ -10,6 +11,10 @@ class BelForm extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.clearFehler = this.clearFehler.bind(this);
+    this.validateSpielzeit = this.validateSpielzeit.bind(this);
+    this.validateSpieler = this.validateSpieler.bind(this);
+    this.spielerzusatz = this.spielerzusatz.bind(this);
     const { r } = props;
     // Daten für Datum, Start und Ende extrahieren
     let [sd, st] = r.starts_at.split(' ');
@@ -57,6 +62,7 @@ class BelForm extends Component {
       admin: false,
       dateIsToday: dateIsToday,
     };
+
   }
 
   componentWillMount() {
@@ -163,9 +169,10 @@ class BelForm extends Component {
               <option className="{ (! this.state.dateIsToday) ? 'aaa' : 'bbb'}" disabled={ ! this.state.dateIsToday} value="ts-einzel">Einzel</option>
               <option className="{ (! this.state.dateIsToday) ? 'aaa' : 'bbb'}" disabled={ ! this.state.dateIsToday} value="ts-doppel">Doppel</option>
               <option value="ts-turnier">Turnier</option>
-              <option value="ts-punktspiele">Punktspiele</option>
-              <option value="ts-training">Training</option>
-              <option value="ts-nichtreservierbar">Nicht reservierbar</option>
+              {/* (permissions.VORSTAND & this.props.permissions) */}
+              <option className="{ (! (permissions.VORSTAND & this.props.permissions)) ? 'aaa' : 'bbb'}" disabled={ (permissions.VORSTAND & this.props.permissions)} value="ts-punktspiele">Punktspiele</option>
+              <option className="{ (! (permissions.VORSTAND & this.props.permissions)) ? 'aaa' : 'bbb'}" disabled={ (permissions.VORSTAND & this.props.permissions)} value="ts-training">Training</option>
+              <option className="{ (! (permissions.VORSTAND & this.props.permissions)) ? 'aaa' : 'bbb'}" disabled={ (permissions.VORSTAND & this.props.permissions)} value="ts-nichtreservierbar">Nicht reservierbar</option>
             </select>
             <br />
             <div><strong>Spieler</strong> <span id="playerInvalid" className="invalidText">{this.state.fehlerSpielerTxt}</span></div>
@@ -174,7 +181,7 @@ class BelForm extends Component {
                 <option value="none">- Bitte auswählen -</option>
                 {this.state.spieler.map(r => {
                   return (
-                    <option key={'p1' + r.id} value={r.id}>{r.spieler}</option>
+                    <option key={'p1' + r.id} value={r.id}>{r.spieler + this.spielerzusatz(r.geburtsdatum)}</option>
                   )
                 })}
               </select>
@@ -182,7 +189,7 @@ class BelForm extends Component {
                 <option value="0">- Bitte auswählen -</option>
                 {this.state.spieler.map(r => {
                   return (
-                    <option key={'p2' + r.id} value={r.id}>{r.spieler}</option>
+                    <option key={'p2' + r.id} value={r.id}>{r.spieler + this.spielerzusatz(r.geburtsdatum)}</option>
                   )
                 })}
               </select>
@@ -193,7 +200,7 @@ class BelForm extends Component {
                   <option value="0">- Bitte auswählen -</option>
                   {this.state.spieler.map(r => {
                     return (
-                      <option key={'p3' + r.id} value={r.id}>{r.spieler}</option>
+                      <option key={'p3' + r.id} value={r.id}>{r.spieler + this.spielerzusatz(r.geburtsdatum)}</option>
                     )
                   })}
                 </select>
@@ -204,7 +211,7 @@ class BelForm extends Component {
                   <option value="0">- Bitte auswählen -</option>
                   {this.state.spieler.map(r => {
                     return (
-                      <option key={'p4' + r.id} value={r.id}>{r.spieler}</option>
+                      <option key={'p4' + r.id} value={r.id}>{r.spieler + this.spielerzusatz(r.geburtsdatum)}</option>
                     )
                   })}
                 </select>
@@ -390,22 +397,33 @@ class BelForm extends Component {
     const p34 = (p3 !== 0) && (p4 !== 0);
     if (this.state.bookingType.match(/(ts-turnier)|(ts-einzel)/ig)) {
       // Spieler p1 und p2 müssen eingetragen sein
-      if ( ! p12 ) {
+      if ( (! p12) || (p1 === p2)  ) {
         err = true;
       }
     } else {
       // Kann hier nur noch Doppel sein. Spieler p1, p2, p3 und p4 müssen eingetragen sein
-      if ( ! (p12 && p34) ) {
+      const doppelteSpieler = (_.uniq([p1, p2, p3, p4]).length < 4);
+      if ( ( ! (p12 && p34)) || doppelteSpieler ) {
         err = true;
       }
     }
 
     if (err) {
-      this.setState({ fehlerSpielerTxt: '- Bitte 2 (Einzel) oder 4 (Doppel) Spieler eintragen!', fehlerSpieler: true });
+      this.setState({ fehlerSpielerTxt: '- Bitte 2 (Einzel) oder 4 (Doppel) verschiedene Spieler eintragen!', fehlerSpieler: true });
       this.setState({ invalidClassnameSpieler: 'invalidFeedback' });
       this.setState({ saveActive: false });
     }
+  }
 
+  spielerzusatz(geburtsdatum) 
+  {
+    let aktuellesJahr = new Date();
+    aktuellesJahr = aktuellesJahr.getFullYear();
+    let geburtsjahr = new Date(geburtsdatum);
+    geburtsjahr = geburtsjahr.getFullYear();
+    const jugendlicher = (aktuellesJahr - geburtsjahr) < 18 ? true : false;
+    console.log(`${geburtsdatum} ${geburtsjahr} ${aktuellesJahr} ${jugendlicher}` );
+    return jugendlicher ? ' (Jugend)' : '';
   }
 
 }

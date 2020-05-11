@@ -8,6 +8,7 @@
     "fetch": "^1.1.0",
     "history": "^4.10.1",
     "jquery": "^3.4.1",
+    "lodash": "^4.17.15",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-horizontal-scrolling-menu": "^0.5.91",

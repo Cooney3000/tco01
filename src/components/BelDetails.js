@@ -34,10 +34,10 @@ class BelDetails extends Component {
     fetch(url, {credentials: 'same-origin'})
     .then(result => {
       if (result.ok) {
-          return result.json();
-        } else {
-          throw new Error('Fehler beim Laden der Platzbuchungsdetails');
-        }
+        return result.json();
+      } else {
+        throw new Error('Fehler beim Laden der Platzbuchungsdetails');
+      }
     })
     .then(result => {
       let belegung = result.records.map( r => {

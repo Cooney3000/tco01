@@ -2,20 +2,20 @@
 // ****** Konfigurationsdaten *******
 let config = {
 
-  // hostname: 'localhost',
-  // protokoll: 'http://',
-  // loginPage: '/intern/login.php',
-  // prod: false,
+  hostname: 'localhost',
+  protokoll: 'http://',
+  loginPage: '/intern/login.php',
+  prod: false,
   
   // hostname: 'localhost',
   // protokoll: 'http://',
   // loginPage: '/intern/login.php',
   // prod: true,
   
-  hostname: 'www.tcolching.de',
-  protokoll: 'https://',
-  loginPage: '/intern/login.php',
-  prod: true,
+  // hostname: 'www.tcolching.de',
+  // protokoll: 'https://',
+  // loginPage: '/intern/login.php',
+  // prod: true,
   
   testuser: {id:211, vorname:'Conny', nachname:'Roloff'},
   smartphoneWidth: 578,
@@ -52,10 +52,10 @@ export const permissions = {
     ALLDATA_READ : 5,           // kombiniert
     ALLDATA_WRITE : 8,  
     ALLDATA_UPDATE : 15,        // kombiniert
-    VORSTAND : 16,
     PERMISSION_FREE_2 : 32,
     PERMISSION_FREE_3 : 64,
     T_ALL_PERMISSIONS : 128,    // Turnierverantwortliche
+    VORSTAND : 144,             // kombiniert Vorstand und Turnierverantwortliche
     T_REGISTER : 256,
     PERMISSION_FREE_5 : 512,
     PERMISSION_FREE_6 : 1024,
