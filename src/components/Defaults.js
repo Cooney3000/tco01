@@ -28,6 +28,9 @@ let config = {
 
   dailyStartTime: 8,
   dailyEndTime: 20,
+  eveningTime: '1800',
+  singletime: '100', // = 1 Stunde
+  doubletime: '150', // = 1,5 Stunden
 };
 for (let i = 1; i <= config.anzahlPlaetze; i++) {
   config.platzArray.push(i);

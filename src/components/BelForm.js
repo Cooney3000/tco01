@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Config, { permissions } from './Defaults';
 import { Redirect } from 'react-router';
+import { spielerzusatz, nvb } from './functions';
 import _ from 'lodash';
 
 
@@ -14,7 +15,6 @@ class BelForm extends Component {
     this.clearFehler = this.clearFehler.bind(this);
     this.validateSpielzeit = this.validateSpielzeit.bind(this);
     this.validateSpieler = this.validateSpieler.bind(this);
-    this.spielerzusatz = this.spielerzusatz.bind(this);
     const { r } = props;
     // Daten für Datum, Start und Ende extrahieren
     let [sd, st] = r.starts_at.split(' ');
@@ -46,6 +46,10 @@ class BelForm extends Component {
       p2: r.p2id,
       p3: r.p3id,
       p4: r.p4id,
+      p1geb: r.p1geb,
+      p2geb: r.p2geb,
+      p3geb: r.p3geb,
+      p4geb: r.p4geb,
       spieler: [],
       court: r.court,
       zurTafel: false,
@@ -61,6 +65,9 @@ class BelForm extends Component {
       deleteActive: deleteActive,
       admin: false,
       dateIsToday: dateIsToday,
+      overbooked: false,
+      jugend: false,
+      nichtVollBerechtigte: false,
     };
 
   }
@@ -180,8 +187,9 @@ class BelForm extends Component {
               <select id="p1" className={this.state.spielzeitClassnames + ' ' + this.state.invalidClassnameSpieler} onChange={this.handleChange} value={this.state.p1}>
                 <option value="none">- Bitte auswählen -</option>
                 {this.state.spieler.map(r => {
+                  // console.log(r.geburtsdatum)
                   return (
-                    <option key={'p1' + r.id} value={r.id}>{r.spieler + this.spielerzusatz(r.geburtsdatum)}</option>
+                    <option key={'p1' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
                   )
                 })}
               </select>
@@ -189,7 +197,7 @@ class BelForm extends Component {
                 <option value="0">- Bitte auswählen -</option>
                 {this.state.spieler.map(r => {
                   return (
-                    <option key={'p2' + r.id} value={r.id}>{r.spieler + this.spielerzusatz(r.geburtsdatum)}</option>
+                    <option key={'p2' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
                   )
                 })}
               </select>
@@ -200,7 +208,7 @@ class BelForm extends Component {
                   <option value="0">- Bitte auswählen -</option>
                   {this.state.spieler.map(r => {
                     return (
-                      <option key={'p3' + r.id} value={r.id}>{r.spieler + this.spielerzusatz(r.geburtsdatum)}</option>
+                      <option key={'p3' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
                     )
                   })}
                 </select>
@@ -211,7 +219,7 @@ class BelForm extends Component {
                   <option value="0">- Bitte auswählen -</option>
                   {this.state.spieler.map(r => {
                     return (
-                      <option key={'p4' + r.id} value={r.id}>{r.spieler + this.spielerzusatz(r.geburtsdatum)}</option>
+                      <option key={'p4' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
                     )
                   })}
                 </select>
@@ -337,7 +345,7 @@ class BelForm extends Component {
       if (s.value === "ts-doppel") {
         this.setState({ doppel: true, p3: 0, p4: 0 });
       } else {
-        this.setState({ doppel: false });
+        this.setState({ doppel: false, p3: 0, p4: 0 });
       }
     }
     this.setState({ [s.id]: s.value }, () => {
@@ -361,7 +369,8 @@ class BelForm extends Component {
     this.setState({ fehlerSpielzeitTxt: '', fehlerSpielzeit: false, invalidClassnameSpielzeit: '' });
     this.setState({ fehlerSpielerTxt: '', fehlerSpieler: false, invalidClassnameSpieler: '' });
     this.setState({ saveActive: true });
-    this.setState({ deleteActive: true })
+      this.setState({ overbooked: false });
+      this.setState({ deleteActive: true })
   }
 
 
@@ -371,59 +380,96 @@ class BelForm extends Component {
     // Ende vor Start?
     const start = this.state.startsAtStd + this.state.startsAtViertel;
     const ende = this.state.endsAtStd + this.state.endsAtViertel;
-    // console.log("Validate: " + start + ', ' + ende + ', ' + (start >= ende));
     if (start >= ende) 
     {
       this.setState({ fehlerSpielzeitTxt: '- Der Start muss vor dem Ende liegen!', fehlerSpielzeit: true });
       this.setState({ invalidClassnameSpielzeit: 'invalidFeedback' });
       this.setState({ saveActive: false });
       return;
+    } 
+    else if (this.state.bookingType === "ts-einzel") 
+    {
+      if ((ende - start) > Config.singleTime)  
+      {
+        this.setState({fehlerSpielzeitTxt: 'Alles über eine Stunde für ein Einzel kann gekürzt werden!', fehlerSpielzeit: true});
+        this.setState({invalidClassnameSpielzeit: ''});
+        this.setState({ overbooked: true });
+        this.setState({saveActive: true}); // nur eine Warnung
+      }
+    } 
+    else if (this.state.bookingType === "ts-doppel")
+    {
+      if ((ende - start) > Config.doubleTime)  
+      {
+        this.setState({fehlerSpielzeitTxt: 'Alles über zwei Stunden für ein Doppel kann gekürzt werden!', fehlerSpielzeit: true});
+        this.setState({invalidClassnameSpielzeit: ''});
+        this.setState({ overbooked: true });
+        this.setState({saveActive: true}); // nur eine Warnung
+      }
     }
-    // else if ((ende - start) > 200) {  // 200 sind 2 Stunden (z. B. "1500" - "1300")
-    //   this.setState({fehlerSpielzeitTxt: '- Maximal 120 Minuten buchbar!', fehlerSpielzeit: true});
-    //   this.setState({invalidClassnameSpielzeit: 'invalidFeedback'});
-    //   this.setState({saveActive: false});
-    // }
+    const { p1geb, p2geb, p3geb, p4geb } = this.state;
+    if ( (ende) > Config.eveningTime && (nvb(p1geb) && nvb(p2geb) && nvb(p3geb) && nvb(p4geb)) ) 
+    {
+      this.setState({fehlerSpielzeitTxt: `Jugend und Schnuppermitglieder können nach ${Config.eveningTime} Uhr aufgefordert werden, den Platz freizugeben!`, fehlerSpielzeit: true});
+      this.setState({invalidClassnameSpielzeit: ''});
+      this.setState({ overbooked: true });
+      this.setState({saveActive: true}); // nur eine Warnung
+    }
+
+
     // console.log(this.state.r.starts_at);
   }
 
 
   validateSpieler() 
   {
-    const { p1, p2, p3, p4 } = this.state;
-    let err = false;
+    const { p1, p2, p3, p4, p1geb, p2geb, p3geb, p4geb } = this.state;
 
+    let err1 = false;
+    let err2 = false;
     const p12 = (p1 !== 0) && (p2 !== 0);
     const p34 = (p3 !== 0) && (p4 !== 0);
-    if (this.state.bookingType.match(/(ts-turnier)|(ts-einzel)/ig)) {
+    const ende = this.state.endsAtStd + this.state.endsAtViertel;
+    
+    // Sing Spieler doppelt?
+    if (this.state.bookingType.match(/(ts-turnier)|(ts-einzel)/ig)) 
+    {
       // Spieler p1 und p2 müssen eingetragen sein
       if ( (! p12) || (p1 === p2)  ) {
-        err = true;
+        err1 = true;
       }
     } else {
       // Kann hier nur noch Doppel sein. Spieler p1, p2, p3 und p4 müssen eingetragen sein
       const doppelteSpieler = (_.uniq([p1, p2, p3, p4]).length < 4);
       if ( ( ! (p12 && p34)) || doppelteSpieler ) {
-        err = true;
+        err1 = true;
       }
     }
 
-    if (err) {
+    if (ende > Config.eveningTime) 
+    {
+      if (this.state.bookingType.match(/(ts-einzel)/ig) && nvb(p1geb) && nvb(p2geb)) 
+      {
+        err2 = true;
+      }
+      if (this.state.bookingType.match(/(ts-doppel)/ig) && (nvb(p1geb) && nvb(p2geb) && nvb(p3geb) && nvb(p4geb))) 
+      {
+        err2 = true;
+      }
+    }
+    
+    if (err1) {
       this.setState({ fehlerSpielerTxt: '- Bitte 2 (Einzel) oder 4 (Doppel) verschiedene Spieler eintragen!', fehlerSpieler: true });
       this.setState({ invalidClassnameSpieler: 'invalidFeedback' });
       this.setState({ saveActive: false });
     }
-  }
-
-  spielerzusatz(geburtsdatum) 
-  {
-    let aktuellesJahr = new Date();
-    aktuellesJahr = aktuellesJahr.getFullYear();
-    let geburtsjahr = new Date(geburtsdatum);
-    geburtsjahr = geburtsjahr.getFullYear();
-    const jugendlicher = (aktuellesJahr - geburtsjahr) < 18 ? true : false;
-    console.log(`${geburtsdatum} ${geburtsjahr} ${aktuellesJahr} ${jugendlicher}` );
-    return jugendlicher ? ' (Jugend)' : '';
+    if (err2) 
+    {
+      this.setState({fehlerSpielzeitTxt: `Jugend und Schnuppermitglieder können nach ${Config.eveningTime} Uhr aufgefordert werden, den Platz freizugeben!`, fehlerSpielzeit: true});
+      this.setState({invalidClassnameSpielzeit: ''});
+      this.setState({ overbooked: true });
+      this.setState({saveActive: true}); // nur eine Warnung
+    }
   }
 
 }

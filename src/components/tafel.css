@@ -103,6 +103,10 @@ a:hover {
 	overflow: hidden;
 	position: absolute;
 }
+.overbooked {
+  border: 3px dotted orangered;
+  font-style: bold;
+}
 .ts-einzeldoppel {
   color: black; 
   background-color: rgb(111, 196, 136);

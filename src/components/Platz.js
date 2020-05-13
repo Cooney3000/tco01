@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import { spielerzusatz, nvb } from './functions';
 import Config, { permissions } from './Defaults';
 
 
@@ -47,12 +48,12 @@ class Platz extends Component {
     .then (result => {
       let courtData = result.records.map ( r => {
         let k = r.id;
-        let cn = computeBelClasses (r.starts_at, r.ends_at, r.booking_type);
+        let cn = computeBelClasses (r.starts_at, r.ends_at, r.booking_type, r.p1geb, r.p2geb, r.p3geb, r.p4geb);
         let spieler = 
-            r.p1.replace(new RegExp("^[\\.\\s]+"), "") 
-          + (r.p2 ? ', ' + r.p2.replace(new RegExp("^[\\.\\s]+"), "") : ' ') 
-          + (r.p3 ? ', ' + r.p3.replace(new RegExp("^[\\.\\s]+"), "") : ' ') 
-          + (r.p4 ? ', ' + r.p4.replace(new RegExp("^[\\.\\s]+"), "") : ' ');
+            r.p1.replace(new RegExp("^[\\.\\s]+"), "") + spielerzusatz(r.p1geb)
+          + (r.p2 ? ', ' + r.p2.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p2geb)
+          + (r.p3 ? ', ' + r.p3.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p3geb)
+          + (r.p4 ? ', ' + r.p4.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p4geb);
         if ( !userIsAdmin && (r.booking_type.match(/(ts-training)|(ts-nichtreservierbar)/ig)))
         {
           return ( 
@@ -90,16 +91,19 @@ class Platz extends Component {
 }
 
 // CSS-Klassen bilden für die Positionierung und Höhe einer Blegung auf der Tafel
-function computeBelClasses (s, e, bookingType) {
+function computeBelClasses (s, e, bookingType, p1geb, p2geb, p3geb, p4geb) {
 
   // Dauer berechnen, also z. B. '2019-05-02 16:00:00' - '2019-05-02 14:00:00' = 120
   const dauer = (Number(e.substring(11,13))*60 + Number(e.substring(14,16))) - (Number(s.substring(11,13))*60 + Number(s.substring(14,16)));
-  const bt = bookingType 
+  const bt = bookingType
+  const overbooked = ( (bt === 'ts-einzel' && dauer > 60) || (bt === 'ts-doppel' && dauer > 120) 
+                        || (e.substring(11,16) > "17:00" && (nvb(p1geb) || nvb(p2geb) || nvb(p3geb) || nvb(p4geb))) ) ? 'overbooked' : '';
   let cn = classNames(
     'D-' + dauer,
     'ts', 
     'T-' + s.substring(11, 16).replace(':', '-'),
     bt,
+    overbooked
     );
   return cn;
 }

@@ -23,6 +23,34 @@ export function isValidDate(d) {
   return d instanceof Date && !isNaN(d);
 }
 
+export function spielerzusatz(geburtsdatum) 
+{
+  let aktuellesJahr = new Date();
+  aktuellesJahr = aktuellesJahr.getFullYear();
+  let geburtsjahr = new Date(geburtsdatum);
+  geburtsjahr = geburtsjahr.getFullYear();
+  const jugend = (aktuellesJahr - geburtsjahr) < 18 ? true : false;
+  // console.log(`${geburtsdatum} ${geburtsjahr} ${aktuellesJahr} ${jugend}` );
+  return jugend ? ' (Jugend)' : '';
+}
+
+export function nvb(geburtsdatum) // nvb = nicht voll Berechtigt
+{
+  if (typeof(geburtsdatum) === 'undefined' || geburtsdatum === null)
+  {
+    return false;
+  }
+  // später Schnuppermitglieder hier dazunehmen
+  let aktuellesJahr = new Date();
+  aktuellesJahr = aktuellesJahr.getFullYear();
+  let geburtsjahr = new Date(geburtsdatum);
+  geburtsjahr = geburtsjahr.getFullYear();
+  const jugend = (aktuellesJahr - geburtsjahr) < 18 ? true : false;
+  // console.log(`${geburtsdatum} ${geburtsjahr} ${aktuellesJahr} ${jugend}` );
+  return jugend;
+}
+
+
 
 // Auswahl über Mausposition???
 // handleClick (e) {
