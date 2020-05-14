@@ -147,7 +147,7 @@ const Legende = () => {
       <div className="row l-training p-0 pl-1 m-1">Training</div>
       <div className="row l-nichtreservierbar p-0 pl-1 m-1">Frei verfügbar / Anderes</div>
       <div className="row l-einzeldoppel p-0 pl-1 m-1">Einzel/Doppel</div>
-      <div className="row l-einzeldoppel overbooked p- pl-10 m-1">Reklamierbar</div>
+      {/* <div className="row l-einzeldoppel overbooked p- pl-10 m-1">Reklamierbar</div> */}
     </div>
   );
 }

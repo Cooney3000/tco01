@@ -57,7 +57,7 @@ class BelDetails extends Component {
   {
     let r = getEmptyBel(court, day);
     let belegung = [
-        <div key={-1} className="p-2 w-50">
+        <div key={-1} className="p-2">
             <Link to={'/' + day}><p className="btn btn-secondary">Zurück</p></Link>
             <BelForm r={r} userId={this.props.userId} permissions={this.props.permissions} />
         </div>
@@ -84,6 +84,7 @@ function getEmptyBel(court, day) {
     starts_at: day + ' 08:00:00',
     ends_at: day + ' 09:00:00',
     booking_type: '',
+    geburtsdatum: '0000-00-00',
     p1id: 0,
     p2id: 0,
     p3id: 0,

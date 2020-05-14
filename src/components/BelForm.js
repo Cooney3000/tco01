@@ -3,6 +3,7 @@ import Config, { permissions } from './Defaults';
 import { Redirect } from 'react-router';
 import { spielerzusatz, nvb } from './functions';
 import _ from 'lodash';
+import Holidays from 'date-holidays';
 
 
 class BelForm extends Component {
@@ -12,9 +13,10 @@ class BelForm extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.validateIfNecessary = this.validateIfNecessary.bind(this);
     this.clearFehler = this.clearFehler.bind(this);
-    this.validateSpielzeit = this.validateSpielzeit.bind(this);
-    this.validateSpieler = this.validateSpieler.bind(this);
+    this.validateForm = this.validateForm.bind(this);
+    
     const { r } = props;
     // Daten für Datum, Start und Ende extrahieren
     let [sd, st] = r.starts_at.split(' ');
@@ -91,8 +93,6 @@ class BelForm extends Component {
         this.setState({ spieler: spieler })
       })
       .catch(error => this.setState({ error, isLoading: false }));
-
-
   }
 
   render() {
@@ -189,6 +189,7 @@ class BelForm extends Component {
                 {this.state.spieler.map(r => {
                   // console.log(r.geburtsdatum)
                   return (
+                    // <option key={'p1' + r.id} value={r.id + Config.stringSeparator + r.geburtsdatum}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
                     <option key={'p1' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
                   )
                 })}
@@ -239,7 +240,6 @@ class BelForm extends Component {
       </div>
     )
   }
-
 
   handleSave(e) 
   {
@@ -293,7 +293,6 @@ class BelForm extends Component {
     // e.preventDefault();
   }
 
-
   handleDelete(e) 
   {
     // FEHLT: Prüfung: Wenn der Buchungsstart in der Vergangenheit liegt, wird nicht gelöscht, auf keinen Fall GAST-Buchungen
@@ -332,7 +331,6 @@ class BelForm extends Component {
 
   }
 
-
   handleChange(e) 
   {
     e.preventDefault();
@@ -348,93 +346,99 @@ class BelForm extends Component {
         this.setState({ doppel: false, p3: 0, p4: 0 });
       }
     }
-    this.setState({ [s.id]: s.value }, () => {
-      if (s.id.match(/(startsAtStd)|(startsAtViertel)|(endsAtStd)|(endsAtViertel)|(court)|(p1)|(p2)|(p3)|(p4)|(bookingType)|(comment)/ig)) 
-      {
-        this.clearFehler();
-        this.validateSpielzeit();
-        this.validateSpieler();
-        if (this.state.bookingType.match(/(ts-training)|(ts-nichtreservierbar)/ig)) 
-        {
-          this.setState({ deleteActive: (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions)) })
-          this.setState({ saveActive: (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions)) })
-        }
-      }
-    });
+    this.setState({[s.id]: s.value}, 
+      this.validateIfNecessary(s.id)
+      );
+    
   }
 
+  validateIfNecessary(id) 
+  {
+    if (id.match(/(startsAtStd)|(startsAtViertel)|(endsAtStd)|(endsAtViertel)|(court)|(p1)|(p2)|(p3)|(p4)|(bookingType)|(comment)/ig)) 
+    {
+      this.clearFehler();
+      this.validateForm();
+      if (this.state.bookingType.match(/(ts-training)|(ts-nichtreservierbar)/ig)) 
+      {
+        this.setState({ deleteActive: (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions)) })
+        this.setState({ saveActive: (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions)) })
+      }
+    }
+  }
 
   clearFehler() 
   {
     this.setState({ fehlerSpielzeitTxt: '', fehlerSpielzeit: false, invalidClassnameSpielzeit: '' });
     this.setState({ fehlerSpielerTxt: '', fehlerSpieler: false, invalidClassnameSpieler: '' });
     this.setState({ saveActive: true });
-      this.setState({ overbooked: false });
-      this.setState({ deleteActive: true })
+    this.setState({ overbooked: false });
+    this.setState({ deleteActive: true })
   }
 
-
-
-  validateSpielzeit() 
+  validateForm() 
   {
-    // Ende vor Start?
-    const start = this.state.startsAtStd + this.state.startsAtViertel;
-    const ende = this.state.endsAtStd + this.state.endsAtViertel;
-    if (start >= ende) 
-    {
-      this.setState({ fehlerSpielzeitTxt: '- Der Start muss vor dem Ende liegen!', fehlerSpielzeit: true });
-      this.setState({ invalidClassnameSpielzeit: 'invalidFeedback' });
-      this.setState({ saveActive: false });
-      return;
-    } 
-    else if (this.state.bookingType === "ts-einzel") 
-    {
-      if ((ende - start) > Config.singleTime)  
-      {
-        this.setState({fehlerSpielzeitTxt: 'Alles über eine Stunde für ein Einzel kann gekürzt werden!', fehlerSpielzeit: true});
-        this.setState({invalidClassnameSpielzeit: ''});
-        this.setState({ overbooked: true });
-        this.setState({saveActive: true}); // nur eine Warnung
+    // Es wird validiert, ob Erwachsene, Schnuppermitglieder und Jugendliche 
+    // wirklich spielberechtigt sind und ob die eingetragenen Zeiten stimmen
+
+    const start = Number(this.state.startsAtStd + this.state.startsAtViertel)
+    const ende = Number(this.state.endsAtStd + this.state.endsAtViertel)
+    const { p1, p2, p3, p4, court } = this.state
+    let p1geb, p2geb, p3geb, p4geb;
+
+    p1geb = this.state.spieler.map( (r) => {
+      if (r.id === p1) { 
+        p1geb = r.geburtsdatum 
       }
-    } 
-    else if (this.state.bookingType === "ts-doppel")
-    {
-      if ((ende - start) > Config.doubleTime)  
-      {
-        this.setState({fehlerSpielzeitTxt: 'Alles über zwei Stunden für ein Doppel kann gekürzt werden!', fehlerSpielzeit: true});
-        this.setState({invalidClassnameSpielzeit: ''});
-        this.setState({ overbooked: true });
-        this.setState({saveActive: true}); // nur eine Warnung
+      if (r.id === p2) { 
+        p2geb = r.geburtsdatum 
       }
-    }
-    const { p1geb, p2geb, p3geb, p4geb } = this.state;
-    if ( (ende) > Config.eveningTime && (nvb(p1geb) && nvb(p2geb) && nvb(p3geb) && nvb(p4geb)) ) 
-    {
-      this.setState({fehlerSpielzeitTxt: `Jugend und Schnuppermitglieder können nach ${Config.eveningTime} Uhr aufgefordert werden, den Platz freizugeben!`, fehlerSpielzeit: true});
-      this.setState({invalidClassnameSpielzeit: ''});
-      this.setState({ overbooked: true });
-      this.setState({saveActive: true}); // nur eine Warnung
-    }
+      if (r.id === p3) { 
+        p3geb = r.geburtsdatum 
+      }
+      if (r.id === p4) { 
+        p4geb = r.geburtsdatum 
+      }
+      return r
+    })
+    const sdStr = this.state.startsAtDate + 'T' + this.state.startsAtStd + ':' + this.state.startsAtViertel + "Z";
+    const sd = new Date(sdStr);
+    const hd = new Holidays()
+    hd.init('DE', 'BY')
 
-
-    // console.log(this.state.r.starts_at);
-  }
-
-
-  validateSpieler() 
-  {
-    const { p1, p2, p3, p4, p1geb, p2geb, p3geb, p4geb } = this.state;
-
+    // Bedingungen Spielberechtigung
+    const feiertag = hd.isHoliday(sd) ? true : false;
+    const sonnOderFeiertag = feiertag || sd.getDay() !== 0;
+    // const anzahlSpieler = (p1 !== 0) + (p2 !== 0) + (p3 !== 0) + (p4 !== 0) 
+    const platz6 = (court === 6);
+    let einSpielerJug = false;
+    let einSpielerErw = false;
+    [p1geb, p2geb, p3geb, p4geb].map(g => {
+      if (g !== 0) // 
+      {
+        if (! nvb(g)) {
+          einSpielerErw = true
+        } else {
+          einSpielerJug = true
+        }
+      }
+      return g
+    })
+    // const doppelteSpielerEinzel = (_.uniq([p1, p2]).length < 4)
+    // const doppelteSpielerDoppel = (_.uniq([p1, p2, p3, p4]).length < 4)
+    const abendZeit = (ende) > Config.eveningTime
     let err1 = false;
-    let err2 = false;
     const p12 = (p1 !== 0) && (p2 !== 0);
     const p34 = (p3 !== 0) && (p4 !== 0);
-    const ende = this.state.endsAtStd + this.state.endsAtViertel;
-    
-    // Sing Spieler doppelt?
+
+
+    // Auswertung Spielberechtigung
+
+    // Formal müssen Spieler eingetragen sein
+    // Sind Spieler doppelt?
     if (this.state.bookingType.match(/(ts-turnier)|(ts-einzel)/ig)) 
     {
-      // Spieler p1 und p2 müssen eingetragen sein
+    // console.log(this.state.r.starts_at);
+
       if ( (! p12) || (p1 === p2)  ) {
         err1 = true;
       }
@@ -446,32 +450,76 @@ class BelForm extends Component {
       }
     }
 
-    if (ende > Config.eveningTime) 
-    {
-      if (this.state.bookingType.match(/(ts-einzel)/ig) && nvb(p1geb) && nvb(p2geb)) 
-      {
-        err2 = true;
-      }
-      if (this.state.bookingType.match(/(ts-doppel)/ig) && (nvb(p1geb) && nvb(p2geb) && nvb(p3geb) && nvb(p4geb))) 
-      {
-        err2 = true;
-      }
-    }
-    
     if (err1) {
-      this.setState({ fehlerSpielerTxt: '- Bitte 2 (Einzel) oder 4 (Doppel) verschiedene Spieler eintragen!', fehlerSpieler: true });
-      this.setState({ invalidClassnameSpieler: 'invalidFeedback' });
-      this.setState({ saveActive: false });
-    }
-    if (err2) 
+      this.setState({ 
+        fehlerSpielerTxt: '- Bitte 2 (Einzel) oder 4 (Doppel) verschiedene Spieler eintragen!', 
+        fehlerSpieler: true, 
+        invalidClassnameSpieler: 'invalidFeedback',
+        saveActive: false 
+      });
+      // console.log("SPIELERPRÜFUNG");
+    } 
+    // Jetzt die Berechtigungen nach Alter, Status, Zeitpunkt
+    else if (    (platz6 && einSpielerErw && !einSpielerJug && sonnOderFeiertag && abendZeit)
+        ||  (platz6 && einSpielerErw && !einSpielerJug && sonnOderFeiertag && !abendZeit)
+        ||  (platz6 && einSpielerErw && !einSpielerJug && !sonnOderFeiertag && abendZeit)) 
     {
-      this.setState({fehlerSpielzeitTxt: `Jugend und Schnuppermitglieder können nach ${Config.eveningTime} Uhr aufgefordert werden, den Platz freizugeben!`, fehlerSpielzeit: true});
-      this.setState({invalidClassnameSpielzeit: ''});
-      this.setState({ overbooked: true });
-      this.setState({saveActive: true}); // nur eine Warnung
+      this.setState({
+        fehlerSpielerTxt: `Achtung: Jugendliche haben auf Platz 6 zu dieser Zeit Vorrecht!`, 
+        fehlerSpieler: true,
+        invalidClassnameSpieler: '',
+        overbooked: true,
+        saveActive: true,  // nur eine Warnung
+      });
+    }
+    else if (   (!platz6 && !einSpielerErw && einSpielerJug && sonnOderFeiertag && abendZeit)
+            ||  (!platz6 && !einSpielerErw && einSpielerJug && sonnOderFeiertag && !abendZeit)
+            ||  (!platz6 && !einSpielerErw && einSpielerJug && !sonnOderFeiertag && abendZeit)) 
+    {
+      this.setState({
+        fehlerSpielerTxt: `Achtung: Erwachsene Vollmitglieder haben zu dieser Zeit Vorrecht!`, 
+        fehlerSpieler: true,
+        invalidClassnameSpieler: '',
+        overbooked: true,
+        saveActive: true,   // nur eine Warnung
+      }); 
+    }
+
+    // Auswertung Spielzeit formal
+    if (start >= ende) 
+    {
+      this.setState({ 
+        fehlerSpielzeitTxt: '- Der Start muss vor dem Ende liegen!', 
+        fehlerSpielzeit: true,
+        invalidClassnameSpielzeit: 'invalidFeedback',
+        saveActive: false,
+      });
+    } 
+    else if (this.state.bookingType === "ts-einzel") 
+    {
+      if ((ende - start) > Config.singleTime)  
+      {
+        this.setState({
+          fehlerSpielzeitTxt: 'Für ein Einzel maximal 60 Minuten buchen', 
+          fehlerSpielzeit: true,
+          invalidClassnameSpielzeit: '',
+          saveActive: false,      // nur eine Warnung
+        }); 
+      }
+    } 
+    else if (this.state.bookingType === "ts-doppel")
+    {
+      if ((ende - start) > Config.doubleTime)  
+      {
+        this.setState({
+          fehlerSpielzeitTxt: 'Für ein Doppel maximal 90 Minuten buchen', 
+          fehlerSpielzeit: true,
+          invalidClassnameSpielzeit: '',
+          saveActive: false,    // nur eine Warnung
+        });
+      }
     }
   }
-
 }
 
 export default BelForm;

@@ -18,6 +18,7 @@ let config = {
   // prod: true,
   
   testuser: {id:211, vorname:'Conny', nachname:'Roloff'},
+  stringSeparator: ' ',
   smartphoneWidth: 578,
   anzahlPlaetze: 6,
   platzArray: [],
@@ -28,9 +29,9 @@ let config = {
 
   dailyStartTime: 8,
   dailyEndTime: 20,
-  eveningTime: '1800',
-  singletime: '100', // = 1 Stunde
-  doubletime: '150', // = 1,5 Stunden
+  eveningTime: 1800,  // 18:00 Uhr
+  singleTime: 100, // = 1 Stunde
+  doubleTime: 130, // = 1,5 Stunden (1 Stunde, 30 Minuten)
 };
 for (let i = 1; i <= config.anzahlPlaetze; i++) {
   config.platzArray.push(i);
