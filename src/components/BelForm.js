@@ -400,6 +400,7 @@ class BelForm extends Component {
       }
       return r
     })
+    
     const sdStr = this.state.startsAtDate + 'T' + this.state.startsAtStd + ':' + this.state.startsAtViertel + "Z";
     const sd = new Date(sdStr);
     const hd = new Holidays()
