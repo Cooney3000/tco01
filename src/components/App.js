@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Routing from "./Routing";
-import config from "./Defaults";
+import Config from "./Defaults";
 
 
 class App extends Component 
@@ -20,9 +20,9 @@ class App extends Component
   
   componentDidMount()
   {
-    this.setState({ isLoading1: true , isLoading2: true});
+    this.setState(() => ({ isLoading1: true , isLoading2: true}));
     
-    if (config.prod) 
+    if (Config.prod) 
     { 
       this.checkUser();
       this.setPermission();
@@ -30,22 +30,22 @@ class App extends Component
     else 
     {
       // In der Testumgebung simulierter User
-      this.setState({user: config.testuser, permissions: config.permissions});
+      this.setState(() => ({user: Config.testuser, permissions: Config.testuser.permissions}));
     }
   }
 
   checkUser() 
   {
-    const url = config.protokoll + config.hostname + "/intern/api/checkuser.php?prod=";
+    const url = Config.protokoll + Config.hostname + "/intern/api/checkuser.php?prod=";
     fetch(url, {credentials: 'same-origin'})
     .then( (res) => {
       if (res.ok) {
         res.json()
         .then( (user) => {
           if (user.retcode === 'OK') {
-            this.setState({user: user, isLoading1: false});
+            this.setState(() => ({user: user, isLoading1: false}));
           } else {
-            window.location.href = config.protokoll + config.hostname + config.loginPage;
+            window.location.href = Config.protokoll + Config.hostname + Config.loginPage;
           }
         });
       }
@@ -54,7 +54,7 @@ class App extends Component
   
   setPermission() 
   {
-    const url = config.protokoll + config.hostname + "/intern/api/checkpermission.php";
+    const url = Config.protokoll + Config.hostname + "/intern/api/checkpermission.php";
     // console.log(url)
     fetch(url, {credentials: 'same-origin'})
     .then( (res) => {
@@ -62,7 +62,7 @@ class App extends Component
         res.json()
         .then( (permissions) => {
           // console.log(permitted.retcode)
-          this.setState({permissions: permissions.retcode, isLoading2: false})
+          this.setState(() => ({permissions: permissions.retcode, isLoading2: false}))
         })
       }
     })
@@ -71,7 +71,7 @@ class App extends Component
   render() 
   {
     const { isLoading1, isLoading2 } = this.state;
-    if (config.prod && (isLoading1 || isLoading2)) {
+    if (Config.prod && (isLoading1 || isLoading2)) {
       return <p>Loading...</p>
     } else {
       return (

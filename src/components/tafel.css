@@ -157,6 +157,7 @@ a:hover {
   background-color: rgb(156, 156, 156);
 }
 .l-veranstaltung {
+  width:20%;
   color: rgb(176, 233, 150); 
   background-color: rgb(94, 94, 94);
 }

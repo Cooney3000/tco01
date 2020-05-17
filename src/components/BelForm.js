@@ -84,7 +84,7 @@ class BelForm extends Component {
     if (this.state.zurTafel === true) {
       return <Redirect to={'/' + this.state.startsAtDate} />
     }
-    const vorstand = (Permissions.VORSTAND & this.props.permissions)
+    const condVorstand = (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
     return (
       <div>
         <h1>Spieltag: {this.state.spieltag}</h1>
@@ -160,10 +160,10 @@ class BelForm extends Component {
               <option disabled={!this.state.dateIsToday} value="ts-einzel">Einzel</option>
               <option disabled={!this.state.dateIsToday} value="ts-doppel">Doppel</option>
               <option value="ts-turnier">Turnier</option>
-              <option value="ts-veranstaltung">Veranstaltung</option>
               <option disabled={false} value="ts-training">Training</option>
-              <option disabled={!vorstand} value="ts-punktspiele">Punktspiele</option>
-              <option disabled={!vorstand} value="ts-nichtreservierbar">Nicht reservierbar</option>
+              <option value="ts-veranstaltung">Veranstaltung</option>
+              <option disabled={!condVorstand} value="ts-punktspiele">Punktspiele</option>
+              <option disabled={!condVorstand} value="ts-nichtreservierbar">Nicht reservierbar</option>
             </select>
             <div><strong>Spieler</strong> <span id="p1Msg" className={this.state.p1MsgClass}>{this.state.p1MsgTxt}</span></div>
             <div className="form-row">
@@ -284,7 +284,6 @@ class BelForm extends Component {
   }
 
   handleDelete(e) {
-    // FEHLT: Prüfung: Wenn der Buchungsstart in der Vergangenheit liegt, wird nicht gelöscht, auf keinen Fall GAST-Buchungen
     const sdStr = this.state.startsAtDate + 'T' + this.state.startsAtStd + ':' + this.state.startsAtViertel + "Z";
     const sd = new Date(sdStr);
     const jetzt = new Date();
@@ -334,9 +333,9 @@ class BelForm extends Component {
       s.commentMsgTxt = ''
       s.commentMsgClass = ''
       s.saveActive = true
-      s.overbooked = false
       s.deleteActive = true
       s.p1MsgFormCtrl = ''
+      s.overbooked = false
 
       // Bedingungen
       let condEinGast = false
@@ -473,15 +472,17 @@ class BelForm extends Component {
         }
       }
       else if (this.state.bookingType === "ts-turnier") {
-        if ((ende - start) === Config.turnierTime) {
+        if ((ende - start) !== Config.turnierTime) {
           [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.turnierspieldauer;
         }
       }
 
-      // Trainingszeiten und Nicht Reservierbar ist nur für Berechtigte
-      if (this.state.bookingType.match(/(ts-training)|(ts-nichtreservierbar)/ig)) {
+      // Trainingszeiten und Nicht Reservierbar ist nur für Berechtigte speicher- und löschbar
+      if (this.state.bookingType.match(/(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
+        s.saveActive   = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
+      }
+      if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
         s.deleteActive = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
-        s.saveActive = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
       }
 
       // Alle Ergebnisse in den State

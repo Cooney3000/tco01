@@ -17,8 +17,8 @@ const config = {
   // loginPage: '/intern/login.php',
   // prod: true,
   
-  testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
-  // testuser: {id:307, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
+  // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
+  testuser: {id:307, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
   stringSeparator: ' ',
   smartphoneWidth: 578,
   anzahlPlaetze: 6,
