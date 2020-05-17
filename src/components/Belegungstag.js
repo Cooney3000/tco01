@@ -142,12 +142,12 @@ const Zeitleiste = () => {
 const Legende = () => {
   return (
     <div className="container">
+      <div className="row l-einzeldoppel p-0 pl-1 m-1">Einzel/Doppel</div>
       <div className="row l-turnier p-0 pl-1 m-1">Turnier</div>
+      <div className="row l-veranstaltung p-0 pl-1 m-1">Veranstaltung</div>
       <div className="row l-punktspiele p-0 pl-1 m-1">Punktspiele</div>
       <div className="row l-training p-0 pl-1 m-1">Training</div>
       <div className="row l-nichtreservierbar p-0 pl-1 m-1">Frei verfügbar / Anderes</div>
-      <div className="row l-einzeldoppel p-0 pl-1 m-1">Einzel/Doppel</div>
-      {/* <div className="row l-einzeldoppel overbooked p- pl-10 m-1">Reklamierbar</div> */}
     </div>
   );
 }

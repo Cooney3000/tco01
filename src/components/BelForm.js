@@ -1,5 +1,6 @@
+//
 import React, { Component } from 'react';
-import Config, { permissions } from './Defaults';
+import Config, { messages as Messages, permissions as Permissions } from './Defaults';
 import { Redirect } from 'react-router';
 import { spielerzusatz, nvb } from './functions';
 import _ from 'lodash';
@@ -13,10 +14,7 @@ class BelForm extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-    this.validateIfNecessary = this.validateIfNecessary.bind(this);
-    this.clearFehler = this.clearFehler.bind(this);
-    this.validateForm = this.validateForm.bind(this);
-    
+
     const { r } = props;
     // Daten für Datum, Start und Ende extrahieren
     let [sd, st] = r.starts_at.split(' ');
@@ -25,14 +23,12 @@ class BelForm extends Component {
     // Initialer Wert für neue Buchungen. Wenn Einzel/Doppel erlaubt/nicht erlaubt sind, hier ändern
     const bookingType = (r.booking_type === '') ? (dateIsToday ? 'ts-einzel' : 'ts-turnier') : r.booking_type;
     // const bookingType = (r.booking_type === '') ? 'ts-turnier' : r.booking_type;
-    const deleteActive = r.booking_type.match(/(ts-training)|(ts-nichtreservierbar)/ig) ? (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions)) : true;
-
-    // console.log(deleteActive)
+    const deleteActive = r.booking_type.match(/(ts-training)|(ts-nichtreservierbar)/ig) 
+        ? (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions)) 
+        : true;
 
     let [ed, et] = r.ends_at.split(' ');
     let sdA = sd.split('-');
-    let doppel = (r.booking_type === "ts-doppel") ? true : false;
-    // console.log("DATE: " + sd + " TIME: " + st);
     this.state = {
       r: r,
       spieltag: sdA[2] + '.' + sdA[1] + '.' + sdA[0],
@@ -48,21 +44,9 @@ class BelForm extends Component {
       p2: r.p2id,
       p3: r.p3id,
       p4: r.p4id,
-      p1geb: r.p1geb,
-      p2geb: r.p2geb,
-      p3geb: r.p3geb,
-      p4geb: r.p4geb,
       spieler: [],
       court: r.court,
       zurTafel: false,
-      doppel: doppel,
-      fehlerSpielzeit: false,
-      fehlerSpielzeitTxt: '',
-      fehlerSpieler: false,
-      fehlerSpielerTxt: '',
-      spielzeitClassnames: 'form-control',
-      invalidClassnameSpielzeit: '',
-      invalidClassnameSpieler: '',
       saveActive: false,
       deleteActive: deleteActive,
       admin: false,
@@ -100,6 +84,7 @@ class BelForm extends Component {
     if (this.state.zurTafel === true) {
       return <Redirect to={'/' + this.state.startsAtDate} />
     }
+    const vorstand = (Permissions.VORSTAND & this.props.permissions)
     return (
       <div>
         <h1>Spieltag: {this.state.spieltag}</h1>
@@ -117,9 +102,9 @@ class BelForm extends Component {
                 <option value="6">6</option>
               </select>
             </div>
-            <div><strong>Start</strong> <span id="startsAtInvalid" className="invalidText">{this.state.fehlerSpielzeitTxt}</span></div>
+            <div><strong>Start</strong> <span id="startsAtMsg" className={this.state.startsAtMsgClass}>{this.state.startsAtMsgTxt}</span></div>
             <div className="form-group">
-              <select id="startsAtStd" className={this.state.spielzeitClassnames + ' ' + this.state.invalidClassnameSpielzeit} onChange={this.handleChange} value={this.state.startsAtStd}>
+              <select id="startsAtStd" className={'form-control ' + this.state.startsAtMsgClass} onChange={this.handleChange} value={this.state.startsAtStd}>
                 <option value="--">--</option>
                 <option value="08">08</option>
                 <option value="09">09</option>
@@ -135,7 +120,7 @@ class BelForm extends Component {
                 <option value="19">19</option>
                 <option value="20">20</option>
               </select>
-              <select id="startsAtViertel" className={this.state.spielzeitClassnames + ' ' + this.state.invalidClassnameSpielzeit} onChange={this.handleChange} value={this.state.startsAtViertel}>
+              <select id="startsAtViertel" className={'form-control ' + this.state.startsAtMsgClass} onChange={this.handleChange} value={this.state.startsAtViertel}>
                 <option value="--">--</option>
                 <option value="00">00</option>
                 <option value="15">15</option>
@@ -145,7 +130,7 @@ class BelForm extends Component {
             </div>
             <div><strong>Ende</strong></div>
             <div className="form-group">
-              <select id="endsAtStd" className={this.state.spielzeitClassnames + ' ' + this.state.invalidClassnameSpielzeit} onChange={this.handleChange} value={this.state.endsAtStd}>
+              <select id="endsAtStd" className={'form-control ' + this.state.endsAtMsgClass} onChange={this.handleChange} value={this.state.endsAtStd}>
                 <option value="--">--</option>
                 <option value="08">08</option>
                 <option value="09">09</option>
@@ -162,7 +147,7 @@ class BelForm extends Component {
                 <option value="20">20</option>
                 <option value="21">21</option>
               </select>
-              <select id="endsAtViertel" className={this.state.spielzeitClassnames + ' ' + this.state.invalidClassnameSpielzeit} onChange={this.handleChange} value={this.state.endsAtViertel}>
+              <select id="endsAtViertel" className={'form-control ' + this.state.endsAtMsgClass} onChange={this.handleChange} value={this.state.endsAtViertel}>
                 <option value="--">--</option>
                 <option value="00">00</option>
                 <option value="15">15</option>
@@ -170,42 +155,41 @@ class BelForm extends Component {
                 <option value="45">45</option>
               </select>
             </div>
-            <br />
             <div><strong>Buchungstyp</strong></div>
             <select id="bookingType" className="form-control" onChange={this.handleChange} value={this.state.bookingType}>
-              <option className="{ (! this.state.dateIsToday) ? 'aaa' : 'bbb'}" disabled={ ! this.state.dateIsToday} value="ts-einzel">Einzel</option>
-              <option className="{ (! this.state.dateIsToday) ? 'aaa' : 'bbb'}" disabled={ ! this.state.dateIsToday} value="ts-doppel">Doppel</option>
+              <option disabled={!this.state.dateIsToday} value="ts-einzel">Einzel</option>
+              <option disabled={!this.state.dateIsToday} value="ts-doppel">Doppel</option>
               <option value="ts-turnier">Turnier</option>
-              {/* (permissions.VORSTAND & this.props.permissions) */}
-              <option className="{ (! (permissions.VORSTAND & this.props.permissions)) ? 'aaa' : 'bbb'}" disabled={ (permissions.VORSTAND & this.props.permissions)} value="ts-punktspiele">Punktspiele</option>
-              <option className="{ (! (permissions.VORSTAND & this.props.permissions)) ? 'aaa' : 'bbb'}" disabled={ (permissions.VORSTAND & this.props.permissions)} value="ts-training">Training</option>
-              <option className="{ (! (permissions.VORSTAND & this.props.permissions)) ? 'aaa' : 'bbb'}" disabled={ (permissions.VORSTAND & this.props.permissions)} value="ts-nichtreservierbar">Nicht reservierbar</option>
+              <option value="ts-veranstaltung">Veranstaltung</option>
+              <option disabled={false} value="ts-training">Training</option>
+              <option disabled={!vorstand} value="ts-punktspiele">Punktspiele</option>
+              <option disabled={!vorstand} value="ts-nichtreservierbar">Nicht reservierbar</option>
             </select>
-            <br />
-            <div><strong>Spieler</strong> <span id="playerInvalid" className="invalidText">{this.state.fehlerSpielerTxt}</span></div>
+            <div><strong>Spieler</strong> <span id="p1Msg" className={this.state.p1MsgClass}>{this.state.p1MsgTxt}</span></div>
             <div className="form-row">
-              <select id="p1" className={this.state.spielzeitClassnames + ' ' + this.state.invalidClassnameSpieler} onChange={this.handleChange} value={this.state.p1}>
+              <select id="p1" className={'form-control ' + this.state.p1MsgFormCtrl} onChange={this.handleChange} value={this.state.p1}>
                 <option value="none">- Bitte auswählen -</option>
                 {this.state.spieler.map(r => {
-                  // console.log(r.geburtsdatum)
                   return (
-                    // <option key={'p1' + r.id} value={r.id + Config.stringSeparator + r.geburtsdatum}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
                     <option key={'p1' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
                   )
                 })}
               </select>
-              <select id="p2" className="form-control" onChange={this.handleChange} value={this.state.p2}>
-                <option value="0">- Bitte auswählen -</option>
-                {this.state.spieler.map(r => {
-                  return (
-                    <option key={'p2' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
-                  )
-                })}
-              </select>
+              {(this.state.bookingType.match(/(ts-einzel)|(ts-turnier)|(ts-doppel)/ig)) ?
+                <select id="p2" className={'form-control ' + this.state.p1MsgFormCtrl} onChange={this.handleChange} value={this.state.p2}>
+                  <option value="0">- Bitte auswählen -</option>
+                  {this.state.spieler.map(r => {
+                    return (
+                      <option key={'p2' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
+                    )
+                  })}
+                </select>
+                : ''
+              }
             </div>
             <div className="form-row">
-              {(this.state.doppel) ?
-                <select id="p3" className="form-control" onChange={this.handleChange} value={this.state.p3}>
+              {(this.state.bookingType==="ts-doppel") ?
+                <select id="p3" className={'form-control ' + this.state.p1MsgFormCtrl} onChange={this.handleChange} value={this.state.p3}>
                   <option value="0">- Bitte auswählen -</option>
                   {this.state.spieler.map(r => {
                     return (
@@ -215,8 +199,8 @@ class BelForm extends Component {
                 </select>
                 : ''
               }
-              {(this.state.doppel) ?
-                <select id="p4" className="form-control" onChange={this.handleChange} value={this.state.p4}>
+              {(this.state.bookingType==="ts-doppel") ?
+                <select id="p4" className={'form-control ' + this.state.p1MsgFormCtrl} onChange={this.handleChange} value={this.state.p4}>
                   <option value="0">- Bitte auswählen -</option>
                   {this.state.spieler.map(r => {
                     return (
@@ -228,7 +212,7 @@ class BelForm extends Component {
               }
             </div>
 
-            <div><strong>Bemerkung</strong></div>
+            <div><strong>Bemerkung</strong> <span id="commentMsg" className={this.state.commentMsgClass}>{this.state.commentMsgTxt}</span></div>
             <div className="form-group">
               <input type="text" id="comment" className="form-control w-100" onChange={this.handleChange} value={this.state.comment} placeholder="Spielergebnis, Gastname, ..." />
             </div>
@@ -241,10 +225,16 @@ class BelForm extends Component {
     )
   }
 
-  handleSave(e) 
-  {
+  handleSave(e) {
     e.preventDefault();
     // console.log("SAVE FORM DATA NOW!");
+    const s = {}
+    // Meldungen zurücksetzen
+    s.startsAtMsgTxt = ''
+    s.startsAtMsgClass = ''
+    s.saveActive = true
+    s.p1MsgFormCtrl = ''
+
     let parameters =
       '?op=cu'
       + '&rid=' + this.state.r.id
@@ -285,16 +275,15 @@ class BelForm extends Component {
           fetch(logurl, { credentials: 'same-origin' }); // Wenn Logging fehlschlagen sollte, dann verzichten wir eben darauf
           this.setState({ zurTafel: true })
         } else {
-          this.setState({ fehlerSpielzeitTxt: '- Spielzeit bereits belegt!', fehlerSpielzeit: true });
-          this.setState({ invalidClassnameSpielzeit: 'invalidFeedback' });
+          // Fehlermeldung
+          [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.platzbelegt;
         }
       })
     // .catch(error => this.setState({ error, isLoading: false }));
     // e.preventDefault();
   }
 
-  handleDelete(e) 
-  {
+  handleDelete(e) {
     // FEHLT: Prüfung: Wenn der Buchungsstart in der Vergangenheit liegt, wird nicht gelöscht, auf keinen Fall GAST-Buchungen
     const sdStr = this.state.startsAtDate + 'T' + this.state.startsAtStd + ':' + this.state.startsAtViertel + "Z";
     const sd = new Date(sdStr);
@@ -302,8 +291,8 @@ class BelForm extends Component {
 
     e.preventDefault();
     // console.log("DELETE ROW NOW!" + this.state.r.id);
-    
-    if (sd >= jetzt || (permissions.VORSTAND & this.props.permissions)) {
+
+    if (sd >= jetzt || (Permissions.VORSTAND & this.props.permissions)) {
       let parameters =
         '?op=d'
         + '&rid=' + this.state.r.id
@@ -331,195 +320,174 @@ class BelForm extends Component {
 
   }
 
-  handleChange(e) 
-  {
+  handleChange(e) {
     e.preventDefault();
-    let s = {};
-    s = {
-      id: e.target.id,
-      value: e.target.value,
-    };
-    if (s.id === "bookingType") {
-      if (s.value === "ts-doppel") {
-        this.setState({ doppel: true, p3: 0, p4: 0 });
-      } else {
-        this.setState({ doppel: false, p3: 0, p4: 0 });
-      }
-    }
-    this.setState({[s.id]: s.value}, 
-      this.validateIfNecessary(s.id)
-      );
-    
-  }
 
-  validateIfNecessary(id) 
-  {
-    if (id.match(/(startsAtStd)|(startsAtViertel)|(endsAtStd)|(endsAtViertel)|(court)|(p1)|(p2)|(p3)|(p4)|(bookingType)|(comment)/ig)) 
-    {
-      this.clearFehler();
-      this.validateForm();
-      if (this.state.bookingType.match(/(ts-training)|(ts-nichtreservierbar)/ig)) 
-      {
-        this.setState({ deleteActive: (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions)) })
-        this.setState({ saveActive: (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions)) })
-      }
-    }
-  }
+    this.setState({ [e.target.id]: e.target.value }, () => {
+      const s = {}
 
-  clearFehler() 
-  {
-    this.setState({ fehlerSpielzeitTxt: '', fehlerSpielzeit: false, invalidClassnameSpielzeit: '' });
-    this.setState({ fehlerSpielerTxt: '', fehlerSpieler: false, invalidClassnameSpieler: '' });
-    this.setState({ saveActive: true });
-    this.setState({ overbooked: false });
-    this.setState({ deleteActive: true })
-  }
+      // Meldungen zurücksetzen
+      s.p1MsgTxt = ''
+      s.p1MsgClass = ''
+      s.startsAtMsgTxt = ''
+      s.startsAtMsgClass = ''
+      s.commentMsgTxt = ''
+      s.commentMsgClass = ''
+      s.saveActive = true
+      s.overbooked = false
+      s.deleteActive = true
+      s.p1MsgFormCtrl = ''
 
-  validateForm() 
-  {
-    // Es wird validiert, ob Erwachsene, Schnuppermitglieder und Jugendliche 
-    // wirklich spielberechtigt sind und ob die eingetragenen Zeiten stimmen
+      // Bedingungen
+      let condEinGast = false
+      let condEinSpielerJug = false
+      let condEinSpielerErw = false
+      let condDoppelteSpieler = false
+      let condAbendZeit = false
 
-    const start = Number(this.state.startsAtStd + this.state.startsAtViertel)
-    const ende = Number(this.state.endsAtStd + this.state.endsAtViertel)
-    const { p1, p2, p3, p4, court } = this.state
-    let p1geb, p2geb, p3geb, p4geb;
+      const datestring = this.state.startsAtDate + 'T' + this.state.startsAtStd + ':' + this.state.startsAtViertel + "Z"
+      const sd = new Date(datestring)
+      const hd = new Holidays()
+      hd.init('DE', 'BY')
+      const condFeiertag = hd.isHoliday(sd) ? true : false
+      const condSonnOderFeiertag = (condFeiertag || (sd.getDay() === 0) || (sd.getDay() === 6))
+      const condPlatz6 = (Number(this.state.court) === 6)
 
-    p1geb = this.state.spieler.map( (r) => {
-      if (r.id === p1) { 
-        p1geb = r.geburtsdatum 
-      }
-      if (r.id === p2) { 
-        p2geb = r.geburtsdatum 
-      }
-      if (r.id === p3) { 
-        p3geb = r.geburtsdatum 
-      }
-      if (r.id === p4) { 
-        p4geb = r.geburtsdatum 
-      }
-      return r
-    })
-    
-    const sdStr = this.state.startsAtDate + 'T' + this.state.startsAtStd + ':' + this.state.startsAtViertel + "Z";
-    const sd = new Date(sdStr);
-    const hd = new Holidays()
-    hd.init('DE', 'BY')
+      // Validierung
+      // -----------
+      // Es wird validiert, ob Erwachsene, Schnuppermitglieder und Jugendliche 
+      // wirklich spielberechtigt sind und ob die eingetragenen Zeiten stimmen
 
-    // Bedingungen Spielberechtigung
-    const feiertag = hd.isHoliday(sd) ? true : false;
-    const sonnOderFeiertag = feiertag || sd.getDay() !== 0;
-    // const anzahlSpieler = (p1 !== 0) + (p2 !== 0) + (p3 !== 0) + (p4 !== 0) 
-    const platz6 = (court === 6);
-    let einSpielerJug = false;
-    let einSpielerErw = false;
-    [p1geb, p2geb, p3geb, p4geb].map(g => {
-      if (g !== 0) // 
-      {
-        if (! nvb(g)) {
-          einSpielerErw = true
-        } else {
-          einSpielerJug = true
+      const start = Number(this.state.startsAtStd + this.state.startsAtViertel)
+      const ende = Number(this.state.endsAtStd + this.state.endsAtViertel)
+      const pKeys = [];
+
+      pKeys[0] = _.find(this.state.spieler, { 'id': this.state.p1 })
+      pKeys[1] = _.find(this.state.spieler, { 'id': this.state.p2 })
+      pKeys[2] = _.find(this.state.spieler, { 'id': this.state.p3 })
+      pKeys[3] = _.find(this.state.spieler, { 'id': this.state.p4 })
+
+      // Haben wir einen GAST?
+      const {p1, p2, p3, p4} = this.state;
+      [p1,p2,p3,p4].forEach( (p) => {
+        // console.log(`p: ${p} gastId: ${Config.gastId} ` + (p === Config.gastId))
+        if (Number(p) === Config.gastId) {
+          condEinGast = true
+        }
+      })
+
+      // Ist ein Jugendlicher dabei? Ist ein Erwachsener dabei?
+      // Welche Geburtsdaten haben die Spieler?
+      pKeys.map(k => {
+        if (k != null) // 
+        {
+          if (!nvb(k['geburtsdatum'])) {
+            condEinSpielerErw = true
+          } else {
+            condEinSpielerJug = true
+          }
+          return k['geburtsdatum']
+        }
+        return undefined
+      })
+      condAbendZeit = (ende) > Config.eveningTime
+
+      // Message an der Spielzeit
+      // Formal müssen Spieler korrekt eingetragen sein
+      if (this.state.bookingType.match(/(ts-veranstaltung)|(ts-training)|(ts-nichtreservierbar)/ig)) { 
+        // Ein Spieler muss eingetragen werden
+        if (Number(this.state.p1) === 0) {
+          [ s.p1msgClass, s.p1MsgClass, s.p1MsgTxt ] = Messages.spieleranzahl
+          s.p1MsgFormCtrl = 'is-invalid'
+        }
+        // Spieler 2 bis 4 werden "gelöscht"
+        s.p2 = s.p3 = s.p4 = 0
+      }
+      if (this.state.bookingType.match(/(ts-turnier)|(ts-einzel)/ig)) {
+        // Zwei Spieler müssen eingetragen werden
+        if ((this.state.p1 & this.state.p2) === 0) {
+          [ s.p1msgClass, s.saveActive, s.p1MsgTxt ] = Messages.spieleranzahl;
+          s.p1MsgFormCtrl = 'is-invalid'
+        } else if (this.state.p1 === this.state.p2) {  
+          // Sind die Spieler doppelt?
+          condDoppelteSpieler = true;
+          [ s.p1msgClass, s.saveActive, s.p1MsgTxt ] = Messages.spieleranzahl;
+          s.p1MsgFormCtrl = 'is-invalid'
+        }
+        // Spieler 3 bis 4 werden "gelöscht"
+        s.p3 = s.p4 = 0
+      }
+      if (this.state.bookingType === "ts-doppel") {
+        // Vier Spieler
+        // Sind unter 4 Spielern welche doppelt?
+        condDoppelteSpieler = (_.uniq([this.state.p1, this.state.p2, this.state.p3, this.state.p4]).length < 4)
+        
+        if (!condEinGast) {
+          if (condDoppelteSpieler || (Number(this.state.p3) === 0 || Number(this.state.p4) === 0)) {
+            [ s.p1MsgClass, s.saveActive, s.p1MsgTxt ] = Messages.spieleranzahl;
+            s.p1MsgFormCtrl = 'is-invalid'
+          }
         }
       }
-      return g
-    })
-    // const doppelteSpielerEinzel = (_.uniq([p1, p2]).length < 4)
-    // const doppelteSpielerDoppel = (_.uniq([p1, p2, p3, p4]).length < 4)
-    const abendZeit = (ende) > Config.eveningTime
-    let err1 = false;
-    const p12 = (p1 !== 0) && (p2 !== 0);
-    const p34 = (p3 !== 0) && (p4 !== 0);
-
-
-    // Auswertung Spielberechtigung
-
-    // Formal müssen Spieler eingetragen sein
-    // Sind Spieler doppelt?
-    if (this.state.bookingType.match(/(ts-turnier)|(ts-einzel)/ig)) 
-    {
-    // console.log(this.state.r.starts_at);
-
-      if ( (! p12) || (p1 === p2)  ) {
-        err1 = true;
+      if (condEinGast) {
+        if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig)) {
+          [ s.commentMsgClass, s.saveActive, s.commentMsgTxt ] = Messages.gast
+        }
+         else {
+          [ s.p1MsgClass, s.saveActive, s.p1MsgTxt ] = Messages.spieleranzahl;
+          s.p1MsgFormCtrl = 'is-invalid'
+        }
       }
-    } else {
-      // Kann hier nur noch Doppel sein. Spieler p1, p2, p3 und p4 müssen eingetragen sein
-      const doppelteSpieler = (_.uniq([p1, p2, p3, p4]).length < 4);
-      if ( ( ! (p12 && p34)) || doppelteSpieler ) {
-        err1 = true;
+      if (this.state.bookingType === "ts-veranstaltung") {
+          [ s.commentMsgClass, s.saveActive, s.commentMsgTxt ] = Messages.veranstaltung
       }
-    }
+      
+      if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig)) {
+        // Jetzt die Berechtigungen nach Alter, Status, Zeitpunkt, Message an der Spielzeit
+        if ((condPlatz6 && condEinSpielerErw && !condEinSpielerJug && condSonnOderFeiertag && condAbendZeit)
+          || (condPlatz6 && condEinSpielerErw && !condEinSpielerJug && condSonnOderFeiertag && !condAbendZeit)
+          || (condPlatz6 && condEinSpielerErw && !condEinSpielerJug && !condSonnOderFeiertag && condAbendZeit)) {
+            [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.jugendvorrecht;
+            s.overbooked = true
+        }
+        else if ((!condPlatz6 && !condEinSpielerErw && condEinSpielerJug && condSonnOderFeiertag && condAbendZeit)
+          || (!condPlatz6 && !condEinSpielerErw && condEinSpielerJug && condSonnOderFeiertag && !condAbendZeit)
+          || (!condPlatz6 && !condEinSpielerErw && condEinSpielerJug && !condSonnOderFeiertag && condAbendZeit)) {
+            [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.erwachsenenvorrecht;
+            s.overbooked = true
+        }
+      }
 
-    if (err1) {
-      this.setState({ 
-        fehlerSpielerTxt: '- Bitte 2 (Einzel) oder 4 (Doppel) verschiedene Spieler eintragen!', 
-        fehlerSpieler: true, 
-        invalidClassnameSpieler: 'invalidFeedback',
-        saveActive: false 
-      });
-      // console.log("SPIELERPRÜFUNG");
-    } 
-    // Jetzt die Berechtigungen nach Alter, Status, Zeitpunkt
-    else if (    (platz6 && einSpielerErw && !einSpielerJug && sonnOderFeiertag && abendZeit)
-        ||  (platz6 && einSpielerErw && !einSpielerJug && sonnOderFeiertag && !abendZeit)
-        ||  (platz6 && einSpielerErw && !einSpielerJug && !sonnOderFeiertag && abendZeit)) 
-    {
-      this.setState({
-        fehlerSpielerTxt: `Achtung: Jugendliche haben auf Platz 6 zu dieser Zeit Vorrecht!`, 
-        fehlerSpieler: true,
-        invalidClassnameSpieler: '',
-        overbooked: true,
-        saveActive: true,  // nur eine Warnung
-      });
-    }
-    else if (   (!platz6 && !einSpielerErw && einSpielerJug && sonnOderFeiertag && abendZeit)
-            ||  (!platz6 && !einSpielerErw && einSpielerJug && sonnOderFeiertag && !abendZeit)
-            ||  (!platz6 && !einSpielerErw && einSpielerJug && !sonnOderFeiertag && abendZeit)) 
-    {
-      this.setState({
-        fehlerSpielerTxt: `Achtung: Erwachsene Vollmitglieder haben zu dieser Zeit Vorrecht!`, 
-        fehlerSpieler: true,
-        invalidClassnameSpieler: '',
-        overbooked: true,
-        saveActive: true,   // nur eine Warnung
-      }); 
-    }
+      // Auswertung Spielzeit formal, Message an der Spielzeit
+      if (start >= ende) {
+          [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.zeit;
+      }
+      else if (this.state.bookingType === "ts-einzel") {
+        if ((ende - start) > Config.singleTime) {
+          [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.einzeldauer;
+        }
+      }
+      else if (this.state.bookingType === "ts-doppel") {
+        if ((ende - start) > Config.doubleTime) {
+          [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.doppeldauer;
+        }
+      }
+      else if (this.state.bookingType === "ts-turnier") {
+        if ((ende - start) === Config.turnierTime) {
+          [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.turnierspieldauer;
+        }
+      }
 
-    // Auswertung Spielzeit formal
-    if (start >= ende) 
-    {
-      this.setState({ 
-        fehlerSpielzeitTxt: '- Der Start muss vor dem Ende liegen!', 
-        fehlerSpielzeit: true,
-        invalidClassnameSpielzeit: 'invalidFeedback',
-        saveActive: false,
-      });
-    } 
-    else if (this.state.bookingType === "ts-einzel") 
-    {
-      if ((ende - start) > Config.singleTime)  
-      {
-        this.setState({
-          fehlerSpielzeitTxt: 'Für ein Einzel maximal 60 Minuten buchen', 
-          fehlerSpielzeit: true,
-          invalidClassnameSpielzeit: '',
-          saveActive: false,      // nur eine Warnung
-        }); 
+      // Trainingszeiten und Nicht Reservierbar ist nur für Berechtigte
+      if (this.state.bookingType.match(/(ts-training)|(ts-nichtreservierbar)/ig)) {
+        s.deleteActive = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
+        s.saveActive = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
       }
-    } 
-    else if (this.state.bookingType === "ts-doppel")
-    {
-      if ((ende - start) > Config.doubleTime)  
-      {
-        this.setState({
-          fehlerSpielzeitTxt: 'Für ein Doppel maximal 90 Minuten buchen', 
-          fehlerSpielzeit: true,
-          invalidClassnameSpielzeit: '',
-          saveActive: false,    // nur eine Warnung
-        });
-      }
-    }
+
+      // Alle Ergebnisse in den State
+      this.setState(s)
+
+    });
   }
 }
 

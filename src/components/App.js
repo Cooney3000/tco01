@@ -30,7 +30,7 @@ class App extends Component
     else 
     {
       // In der Testumgebung simulierter User
-      this.setState({user: config.testuser, permissions: 65535});
+      this.setState({user: config.testuser, permissions: config.permissions});
     }
   }
 

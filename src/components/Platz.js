@@ -54,7 +54,7 @@ class Platz extends Component {
           + (r.p2 ? ', ' + r.p2.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p2geb)
           + (r.p3 ? ', ' + r.p3.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p3geb)
           + (r.p4 ? ', ' + r.p4.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p4geb);
-        if ( !userIsAdmin && (r.booking_type.match(/(ts-training)|(ts-nichtreservierbar)/ig)))
+        if ( !userIsAdmin && (r.booking_type.match(/(ts-punktspiele)|(ts-nichtreservierbar)/ig)))
         {
           return ( 
             <div key={k} className={cn}>
@@ -96,14 +96,11 @@ function computeBelClasses (s, e, bookingType, p1geb, p2geb, p3geb, p4geb) {
   // Dauer berechnen, also z. B. '2019-05-02 16:00:00' - '2019-05-02 14:00:00' = 120
   const dauer = (Number(e.substring(11,13))*60 + Number(e.substring(14,16))) - (Number(s.substring(11,13))*60 + Number(s.substring(14,16)));
   const bt = bookingType
-  const overbooked = ( (bt === 'ts-einzel' && dauer > 60) || (bt === 'ts-doppel' && dauer > 120) 
-                        || (e.substring(11,16) > "17:00" && (nvb(p1geb) || nvb(p2geb) || nvb(p3geb) || nvb(p4geb))) ) ? 'overbooked' : '';
   let cn = classNames(
     'D-' + dauer,
     'ts', 
     'T-' + s.substring(11, 16).replace(':', '-'),
-    bt,
-    overbooked
+    bt
     );
   return cn;
 }

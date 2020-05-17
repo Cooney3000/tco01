@@ -1,6 +1,6 @@
 
 // ****** Konfigurationsdaten *******
-let config = {
+const config = {
 
   hostname: 'localhost',
   protokoll: 'http://',
@@ -17,7 +17,8 @@ let config = {
   // loginPage: '/intern/login.php',
   // prod: true,
   
-  testuser: {id:211, vorname:'Conny', nachname:'Roloff'},
+  testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
+  // testuser: {id:307, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
   stringSeparator: ' ',
   smartphoneWidth: 578,
   anzahlPlaetze: 6,
@@ -32,6 +33,26 @@ let config = {
   eveningTime: 1800,  // 18:00 Uhr
   singleTime: 100, // = 1 Stunde
   doubleTime: 130, // = 1,5 Stunden (1 Stunde, 30 Minuten)
+  turnierTime: 200, // = 2 Stunden 
+  gastId: 1,
+}
+
+const ERR = "text-danger"
+const MSG = "text-info"
+const NOSAVE = false
+const SAVE = true
+
+export const messages = {
+  gast: [MSG, SAVE, '- Bitte den Gastnamen ins Kommentarfeld schreiben!'],
+  veranstaltung: [MSG, SAVE, '- Bitte den Veranstaltungsanlass ins Kommentarfeld schreiben!'],
+  spieleranzahl: [ERR, NOSAVE, '- Bitte alle Spieler eintragen!'],
+  jugendvorrecht: [ERR, SAVE, '- Achtung: Jugendliche haben auf Platz 6 zu dieser Zeit Vorrecht!'],
+  erwachsenenvorrecht: [ERR, SAVE, '- Achtung: Erwachsene Vollmitglieder haben zu dieser Zeit Vorrecht!'],
+  einzeldauer: [ERR, NOSAVE, '- Für ein Einzel maximal 60 Minuten buchen'],
+  doppeldauer: [ERR, NOSAVE, '- Für ein Doppel maximal 90 Minuten buchen'],
+  turnierspieldauer: [ERR, NOSAVE, '- Für ein Turnierspiel 120 Minuten buchen'],
+  zeit: [ERR, NOSAVE, '- Der Start muss vor dem Ende liegen!'],
+  platzbelegt:  [ERR, NOSAVE, '- Platz bereits belegt!'],
 };
 for (let i = 1; i <= config.anzahlPlaetze; i++) {
   config.platzArray.push(i);
