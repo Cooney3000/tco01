@@ -2,20 +2,20 @@
 // ****** Konfigurationsdaten *******
 const config = {
 
-  hostname: 'localhost',
-  protokoll: 'http://',
-  loginPage: '/intern/login.php',
-  prod: false,
+  // hostname: 'localhost',
+  // protokoll: 'http://',
+  // loginPage: '/intern/login.php',
+  // prod: false,
   
   // hostname: 'localhost',
   // protokoll: 'http://',
   // loginPage: '/intern/login.php',
   // prod: true,
   
-  // hostname: 'www.tcolching.de',
-  // protokoll: 'https://',
-  // loginPage: '/intern/login.php',
-  // prod: true,
+  hostname: 'www.tcolching.de',
+  protokoll: 'https://',
+  loginPage: '/intern/login.php',
+  prod: true,
   
   // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
   testuser: {id:307, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
@@ -44,7 +44,7 @@ const SAVE = true
 
 export const messages = {
   gast: [MSG, SAVE, '- Bitte den Gastnamen ins Kommentarfeld schreiben!'],
-  veranstaltung: [MSG, SAVE, '- Bitte den Veranstaltungsanlass ins Kommentarfeld schreiben!'],
+  veranstaltung: [ERR, SAVE, '- Bitte den Veranstaltungsanlass ins Kommentarfeld schreiben und den Vorstand informieren!'],
   spieleranzahl: [ERR, NOSAVE, '- Bitte alle Spieler eintragen!'],
   jugendvorrecht: [ERR, SAVE, '- Achtung: Jugendliche haben auf Platz 6 zu dieser Zeit Vorrecht!'],
   erwachsenenvorrecht: [ERR, SAVE, '- Achtung: Erwachsene Vollmitglieder haben zu dieser Zeit Vorrecht!'],

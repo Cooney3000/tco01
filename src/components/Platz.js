@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { spielerzusatz, nvb } from './functions';
+import { spielerzusatz } from './functions';
 import Config, { permissions } from './Defaults';
 
 
