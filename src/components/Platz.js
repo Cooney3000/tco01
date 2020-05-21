@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { spielerzusatz, nvb } from './functions';
-import Config, { permissions } from './Defaults';
+import { spielerzusatz } from './functions';
+import Config, { Permissions } from './Defaults';
 
 
 // Alle Belegungen an diesem Tag für einen Platz
@@ -31,7 +31,7 @@ class Platz extends Component {
   }
 
   fetchPlatz(court, day) {
-    const userIsAdmin = (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions));
+    const userIsAdmin = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions));
     const url = Config.protokoll + Config.hostname + "/intern/api/platz.php?op=ra&p=" + court + "&ds=" + day + "&de=" + day;
     window.addEventListener('resize', this.handleWindowSizeChange);
     

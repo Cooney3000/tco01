@@ -1,6 +1,6 @@
 //
 import React, { Component } from 'react';
-import Config, { messages as Messages, permissions as Permissions } from './Defaults';
+import Config, { Messages, Permissions } from './Defaults';
 import { Redirect } from 'react-router';
 import { spielerzusatz, nvb } from './functions';
 import _ from 'lodash';
@@ -11,11 +11,14 @@ class BelForm extends Component {
 
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSave = this.handleSave.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
 
-    const { r } = props;
+    const { r } = props
+
+    // Haben wir einen Gast?
+    const condEinGast = ([r.p1id, r.p2id, r.p3id, r.p4id].findIndex(e => Number(e) === Config.gastId)) !== -1
     // Daten für Datum, Start und Ende extrahieren
     let [sd, st] = r.starts_at.split(' ');
     const dateIsToday = ((new Date(sd)).getDate() === (new Date()).getDate());
@@ -44,16 +47,23 @@ class BelForm extends Component {
       p2: r.p2id,
       p3: r.p3id,
       p4: r.p4id,
+      p1MsgClass: '',
+      // p2MsgClass: '',
+      // p3MsgClass: '',
+      // p4MsgClass: '',
       spieler: [],
       court: r.court,
+      paid: r.paid,
       zurTafel: false,
-      saveActive: false,
+      saveActive: true,
       deleteActive: deleteActive,
+      paidActive: r.paid,
       admin: false,
       dateIsToday: dateIsToday,
       overbooked: false,
       jugend: false,
       nichtVollBerechtigte: false,
+      condEinGast: condEinGast,
     };
 
   }
@@ -187,7 +197,7 @@ class BelForm extends Component {
                 : ''
               }
             </div>
-            <div className="form-row">
+            <div className="form-group">
               {(this.state.bookingType==="ts-doppel") ?
                 <select id="p3" className={'form-control ' + this.state.p1MsgFormCtrl} onChange={this.handleChange} value={this.state.p3}>
                   <option value="0">- Bitte auswählen -</option>
@@ -210,8 +220,19 @@ class BelForm extends Component {
                 </select>
                 : ''
               }
+              {(this.state.condEinGast) ?
+                <React.Fragment>
+                  <div><strong>Gastgebühr</strong> </div>
+                  <div class="form-check">
+                    <input id="paid" className="form-check-input text-left ml-1" type="checkbox" onChange={this.handleChange} checked={this.state.paid} />
+                    <label className="form-check-label  text-left" for="paid" disabled={!this.state.paidActive}>
+                      bezahlt
+                    </label>
+                  </div>
+                </React.Fragment>
+                : ''
+              }
             </div>
-
             <div><strong>Bemerkung</strong> <span id="commentMsg" className={this.state.commentMsgClass}>{this.state.commentMsgTxt}</span></div>
             <div className="form-group">
               <input type="text" id="comment" className="form-control w-100" onChange={this.handleChange} value={this.state.comment} placeholder="Spielergebnis, Gastname, ..." />
@@ -334,11 +355,12 @@ class BelForm extends Component {
       s.commentMsgClass = ''
       s.saveActive = true
       s.deleteActive = true
+      s.paidActive = false
       s.p1MsgFormCtrl = ''
       s.overbooked = false
+      s.condEinGast = false
 
       // Bedingungen
-      let condEinGast = false
       let condEinSpielerJug = false
       let condEinSpielerErw = false
       let condDoppelteSpieler = false
@@ -368,12 +390,7 @@ class BelForm extends Component {
 
       // Haben wir einen GAST?
       const {p1, p2, p3, p4} = this.state;
-      [p1,p2,p3,p4].forEach( (p) => {
-        // console.log(`p: ${p} gastId: ${Config.gastId} ` + (p === Config.gastId))
-        if (Number(p) === Config.gastId) {
-          condEinGast = true
-        }
-      })
+      s.condEinGast = ([p1, p2, p3, p4].findIndex(e => Number(e) === Config.gastId)) !== -1
 
       // Ist ein Jugendlicher dabei? Ist ein Erwachsener dabei?
       // Welche Geburtsdaten haben die Spieler?
@@ -421,14 +438,14 @@ class BelForm extends Component {
         // Sind unter 4 Spielern welche doppelt?
         condDoppelteSpieler = (_.uniq([this.state.p1, this.state.p2, this.state.p3, this.state.p4]).length < 4)
         
-        if (!condEinGast) {
+        if (!s.condEinGast) {
           if (condDoppelteSpieler || (Number(this.state.p3) === 0 || Number(this.state.p4) === 0)) {
             [ s.p1MsgClass, s.saveActive, s.p1MsgTxt ] = Messages.spieleranzahl;
             s.p1MsgFormCtrl = 'is-invalid'
           }
         }
       }
-      if (condEinGast) {
+      if (s.condEinGast) {
         if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig)) {
           [ s.commentMsgClass, s.saveActive, s.commentMsgTxt ] = Messages.gast
         }
@@ -483,6 +500,9 @@ class BelForm extends Component {
       }
       if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
         s.deleteActive = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
+      }
+      if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig) && s.condEinGast) {
+        s.paidActive = (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
       }
 
       // Alle Ergebnisse in den State

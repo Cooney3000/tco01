@@ -1,6 +1,6 @@
 
 // ****** Konfigurationsdaten *******
-const config = {
+const Config = {
 
   hostname: 'localhost',
   protokoll: 'http://',
@@ -17,8 +17,8 @@ const config = {
   // loginPage: '/intern/login.php',
   // prod: true,
   
-  // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
-  testuser: {id:307, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
+  testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
+  // testuser: {id:307, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
   stringSeparator: ' ',
   smartphoneWidth: 578,
   anzahlPlaetze: 6,
@@ -37,29 +37,30 @@ const config = {
   gastId: 1,
 }
 
-const ERR = "text-danger"
-const MSG = "text-info"
+const ATTENTION = "text-danger"
+//const INFO = "text-info"
 const NOSAVE = false
 const SAVE = true
 
-export const messages = {
-  gast: [MSG, SAVE, '- Bitte den Gastnamen ins Kommentarfeld schreiben!'],
-  veranstaltung: [MSG, SAVE, '- Bitte den Veranstaltungsanlass ins Kommentarfeld schreiben!'],
-  spieleranzahl: [ERR, NOSAVE, '- Bitte alle Spieler eintragen!'],
-  jugendvorrecht: [ERR, SAVE, '- Achtung: Jugendliche haben auf Platz 6 zu dieser Zeit Vorrecht!'],
-  erwachsenenvorrecht: [ERR, SAVE, '- Achtung: Erwachsene Vollmitglieder haben zu dieser Zeit Vorrecht!'],
-  einzeldauer: [ERR, NOSAVE, '- Für ein Einzel maximal 60 Minuten buchen'],
-  doppeldauer: [ERR, NOSAVE, '- Für ein Doppel maximal 90 Minuten buchen'],
-  turnierspieldauer: [ERR, NOSAVE, '- Für ein Turnierspiel 120 Minuten buchen'],
-  zeit: [ERR, NOSAVE, '- Der Start muss vor dem Ende liegen!'],
-  platzbelegt:  [ERR, NOSAVE, '- Platz bereits belegt!'],
+export const Messages = {
+  gast: [ATTENTION, SAVE, '- Bitte den Gastnamen ins Kommentarfeld schreiben. Geld bitte mit Bezug im Verwendungszweck überweisen.'],
+  mitgliedOhneRegistrierung: [ATTENTION, SAVE, '- Nur für Kinder oder Erwachsene ohne Registrierung. Bitte den Namen ins Kommentarfeld schreiben.'],
+  veranstaltung: [ATTENTION, SAVE, '- Bitte den Veranstaltungsanlass ins Kommentarfeld schreiben!'],
+  spieleranzahl: [ATTENTION, NOSAVE, '- Bitte alle Spieler eintragen!'],
+  jugendvorrecht: [ATTENTION, SAVE, '- Achtung: Jugendliche haben auf Platz 6 zu dieser Zeit Vorrecht!'],
+  erwachsenenvorrecht: [ATTENTION, SAVE, '- Achtung: Erwachsene Vollmitglieder haben zu dieser Zeit Vorrecht!'],
+  einzeldauer: [ATTENTION, NOSAVE, '- Für ein Einzel maximal 60 Minuten buchen'],
+  doppeldauer: [ATTENTION, NOSAVE, '- Für ein Doppel maximal 90 Minuten buchen'],
+  turnierspieldauer: [ATTENTION, NOSAVE, '- Für ein Turnierspiel 120 Minuten buchen'],
+  zeit: [ATTENTION, NOSAVE, '- Der Start muss vor dem Ende liegen!'],
+  platzbelegt:  [ATTENTION, NOSAVE, '- Platz bereits belegt!'],
 };
-for (let i = 1; i <= config.anzahlPlaetze; i++) {
-  config.platzArray.push(i);
+for (let i = 1; i <= Config.anzahlPlaetze; i++) {
+  Config.platzArray.push(i);
 }
 
 // ******* Rechtevergabe **********
-export const permissions = {
+export const Permissions = {
   // Es gibt 16 Rechte. Übereinandergelegt
   
   // Recht:        1 2 3 4  5  6  7   8   9  10   11   12   13   14    15    16
@@ -92,4 +93,4 @@ export const permissions = {
     ADMINISTRATOR : 65535,
 };
 
-export default config;
+export default Config;
