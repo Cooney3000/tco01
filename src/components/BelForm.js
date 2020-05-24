@@ -112,6 +112,16 @@ class BelForm extends Component {
                 <option value="6">6</option>
               </select>
             </div>
+            <div><strong>Buchungstyp</strong></div>
+            <select id="bookingType" className="form-control" onChange={this.handleChange} value={this.state.bookingType}>
+              <option disabled={!this.state.dateIsToday} value="ts-einzel">Einzel</option>
+              <option disabled={!this.state.dateIsToday} value="ts-doppel">Doppel</option>
+              <option value="ts-turnier">Turnier</option>
+              <option value="ts-veranstaltung">Veranstaltung</option>
+              <option disabled={!condVorstand} value="ts-training">Training</option>
+              <option disabled={!condVorstand} value="ts-punktspiele">Punktspiele</option>
+              <option disabled={!condVorstand} value="ts-nichtreservierbar">Nicht reservierbar</option>
+            </select>
             <div><strong>Start</strong> <span id="startsAtMsg" className={this.state.startsAtMsgClass}>{this.state.startsAtMsgTxt}</span></div>
             <div className="form-group">
               <select id="startsAtStd" className={'form-control ' + this.state.startsAtMsgClass} onChange={this.handleChange} value={this.state.startsAtStd}>
@@ -165,16 +175,6 @@ class BelForm extends Component {
                 <option value="45">45</option>
               </select>
             </div>
-            <div><strong>Buchungstyp</strong></div>
-            <select id="bookingType" className="form-control" onChange={this.handleChange} value={this.state.bookingType}>
-              <option disabled={!this.state.dateIsToday} value="ts-einzel">Einzel</option>
-              <option disabled={!this.state.dateIsToday} value="ts-doppel">Doppel</option>
-              <option value="ts-turnier">Turnier</option>
-              <option disabled={false} value="ts-training">Training</option>
-              <option value="ts-veranstaltung">Veranstaltung</option>
-              <option disabled={!condVorstand} value="ts-punktspiele">Punktspiele</option>
-              <option disabled={!condVorstand} value="ts-nichtreservierbar">Nicht reservierbar</option>
-            </select>
             <div><strong>Spieler</strong> <span id="p1Msg" className={this.state.p1MsgClass}>{this.state.p1MsgTxt}</span></div>
             <div className="form-row">
               <select id="p1" className={'form-control ' + this.state.p1MsgFormCtrl} onChange={this.handleChange} value={this.state.p1}>
@@ -421,7 +421,7 @@ class BelForm extends Component {
       }
       if (this.state.bookingType.match(/(ts-turnier)|(ts-einzel)/ig)) {
         // Zwei Spieler müssen eingetragen werden
-        if ((this.state.p1 & this.state.p2) === 0) {
+        if ((this.state.p1 ^ this.state.p2) === 0) {
           [ s.p1msgClass, s.saveActive, s.p1MsgTxt ] = Messages.spieleranzahl;
           s.p1MsgFormCtrl = 'is-invalid'
         } else if (this.state.p1 === this.state.p2) {  
@@ -495,7 +495,7 @@ class BelForm extends Component {
       }
 
       // Trainingszeiten und Nicht Reservierbar ist nur für Berechtigte speicher- und löschbar
-      if (this.state.bookingType.match(/(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
+      if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
         s.saveActive   = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
       }
       if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {

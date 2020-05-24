@@ -78,10 +78,9 @@ export const Permissions = {
     ALLDATA_READ : 5,           // kombiniert
     ALLDATA_WRITE : 8,  
     ALLDATA_UPDATE : 15,        // kombiniert
-    PERMISSION_FREE_2 : 32,
+    MANNSCHAFTSFUEHRER : 32,
     PERMISSION_FREE_3 : 64,
     T_ALL_PERMISSIONS : 128,    // Turnierverantwortliche
-    VORSTAND : 144,             // kombiniert Vorstand und Turnierverantwortliche
     T_REGISTER : 256,
     PERMISSION_FREE_5 : 512,
     PERMISSION_FREE_6 : 1024,
@@ -90,7 +89,9 @@ export const Permissions = {
     PERMISSION_FREE_9 : 8192,
     PERMISSION_FREE_10 : 16384,
     PERMISSION_UPDATE : 32768,
-    ADMINISTRATOR : 65535,
+    ADMINISTRATOR : 65535,      // Admin
+    // Kombinierte Rollen
+    VORSTAND : 176,             // kombiniert Vorstand, Mannschftsführer, Turnierverantwortliche, Turnierregistrierung
 };
 
 export default Config;
