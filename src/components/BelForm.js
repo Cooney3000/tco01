@@ -29,6 +29,7 @@ class BelForm extends Component {
     const deleteActive = r.booking_type.match(/(ts-training)|(ts-nichtreservierbar)/ig) 
         ? (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions)) 
         : true;
+    const paidActive = (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
 
     let [ed, et] = r.ends_at.split(' ');
     let sdA = sd.split('-');
@@ -53,11 +54,11 @@ class BelForm extends Component {
       // p4MsgClass: '',
       spieler: [],
       court: r.court,
-      paid: r.paid,
+      paid: (r.paid === "1" ? "on" : "off"),
       zurTafel: false,
       saveActive: true,
       deleteActive: deleteActive,
-      paidActive: r.paid,
+      paidActive: paidActive,
       admin: false,
       dateIsToday: dateIsToday,
       overbooked: false,
@@ -95,6 +96,7 @@ class BelForm extends Component {
       return <Redirect to={'/' + this.state.startsAtDate} />
     }
     const condVorstand = (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
+    const condMannschaftsfuehrer = (Permissions.MANNSCHAFTSFUEHRER === (Permissions.MANNSCHAFTSFUEHRER & this.props.permissions))
     return (
       <div>
         <h1>Spieltag: {this.state.spieltag}</h1>
@@ -118,9 +120,8 @@ class BelForm extends Component {
               <option disabled={!this.state.dateIsToday} value="ts-doppel">Doppel</option>
               <option value="ts-turnier">Turnier</option>
               <option value="ts-veranstaltung">Veranstaltung</option>
-              <option disabled={!condVorstand} value="ts-training">Training</option>
+              <option disabled={!condMannschaftsfuehrer} value="ts-training">Training</option>
               <option disabled={!condVorstand} value="ts-punktspiele">Punktspiele</option>
-              <option disabled={!condVorstand} value="ts-nichtreservierbar">Nicht reservierbar</option>
             </select>
             <div><strong>Start</strong> <span id="startsAtMsg" className={this.state.startsAtMsgClass}>{this.state.startsAtMsgTxt}</span></div>
             <div className="form-group">
@@ -224,8 +225,9 @@ class BelForm extends Component {
                 <React.Fragment>
                   <div><strong>Gastgebühr</strong> </div>
                   <div class="form-check">
-                    <input id="paid" className="form-check-input text-left ml-1" type="checkbox" onChange={this.handleChange} checked={this.state.paid} />
-                    <label className="form-check-label  text-left" for="paid" disabled={!this.state.paidActive}>
+                    <input id="paid" className="form-check-input text-left ml-1" type="checkbox" onChange={this.handleChange}  
+                            disabled={!this.state.paidActive} checked={(this.state.paid)} />
+                    <label className="form-check-label  text-left" for="paid">
                       bezahlt
                     </label>
                   </div>
@@ -267,6 +269,7 @@ class BelForm extends Component {
       + '&p3=' + this.state.p3
       + '&p4=' + this.state.p4
       + '&c=' + this.state.court
+      + '&pd=' + (this.state.paid === "on" ? "1" : "0")
       + '&t=' + this.state.bookingType
       + '&cmt=' + this.state.comment
       + '&pr=0'
@@ -278,6 +281,9 @@ class BelForm extends Component {
     fetch(url, { credentials: 'same-origin' })
       .then(result => {
         if (result.ok) {
+          if (result.redirected) {
+            window.location.href = result.url
+          }
           // console.log(result.body);
           return result.json();
         } else {
@@ -359,12 +365,14 @@ class BelForm extends Component {
       s.p1MsgFormCtrl = ''
       s.overbooked = false
       s.condEinGast = false
+      s.paid = e.paid
 
       // Bedingungen
       let condEinSpielerJug = false
       let condEinSpielerErw = false
       let condDoppelteSpieler = false
       let condAbendZeit = false
+
 
       const datestring = this.state.startsAtDate + 'T' + this.state.startsAtStd + ':' + this.state.startsAtViertel + "Z"
       const sd = new Date(datestring)
@@ -494,11 +502,11 @@ class BelForm extends Component {
         }
       }
 
-      // Trainingszeiten und Nicht Reservierbar ist nur für Berechtigte speicher- und löschbar
-      if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
-        s.saveActive   = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
+      // Nur für Berechtigte speicher- und löschbar
+      if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)/ig)) {
+        s.saveActive   = (Permissions.MANNSCHAFTSFUEHRER === (Permissions.MANNSCHAFTSFUEHRER & this.props.permissions))
       }
-      if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
+      if (this.state.bookingType.match(/(ts-nichtreservierbar)/ig)) {
         s.deleteActive = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
       }
       if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig) && s.condEinGast) {

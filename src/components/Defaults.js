@@ -17,8 +17,10 @@ const Config = {
   // loginPage: '/intern/login.php',
   // prod: true,
   
-  testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
-  // testuser: {id:307, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
+  // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
+  // testuser: {id:215, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
+  // testuser: {id:212, vorname:'Norbert', nachname:'Maier', permissions: 384}, // Turnierverantwortlicher
+  testuser: {id:307, vorname:'Heiko', nachname:'Tesche', permissions: 432}, // Vorstand
   stringSeparator: ' ',
   smartphoneWidth: 578,
   anzahlPlaetze: 6,
@@ -91,7 +93,7 @@ export const Permissions = {
     PERMISSION_UPDATE : 32768,
     ADMINISTRATOR : 65535,      // Admin
     // Kombinierte Rollen
-    VORSTAND : 176,             // kombiniert Vorstand, Mannschftsführer, Turnierverantwortliche, Turnierregistrierung
+    VORSTAND : 432,             // kombiniert Vorstand, Mannschftsführer, Turnierverantwortliche, Turnierregistrierung
 };
 
 export default Config;

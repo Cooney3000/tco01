@@ -22,6 +22,7 @@ class App extends Component
   {
     this.setState(() => ({ isLoading1: true , isLoading2: true}));
     
+    console.log(Config.protokoll + Config.hostname + Config.loginPage)
     if (Config.prod) 
     { 
       this.checkUser();
@@ -37,6 +38,7 @@ class App extends Component
   checkUser() 
   {
     const url = Config.protokoll + Config.hostname + "/intern/api/checkuser.php?prod=";
+    debugger
     fetch(url, {credentials: 'same-origin'})
     .then( (res) => {
       if (res.ok) {
@@ -45,7 +47,7 @@ class App extends Component
           if (user.retcode === 'OK') {
             this.setState(() => ({user: user, isLoading1: false}));
           } else {
-            window.location.href = Config.protokoll + Config.hostname + Config.loginPage;
+            window.location.href = Config.protokoll + Config.hostname + Config.loginPage
           }
         });
       }
@@ -56,6 +58,7 @@ class App extends Component
   {
     const url = Config.protokoll + Config.hostname + "/intern/api/checkpermission.php";
     // console.log(url)
+    debugger
     fetch(url, {credentials: 'same-origin'})
     .then( (res) => {
       if (res.ok) {
