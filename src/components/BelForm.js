@@ -226,7 +226,7 @@ class BelForm extends Component {
                   <div><strong>Gastgebühr</strong> </div>
                   <div class="form-check">
                     <input id="paid" className="form-check-input text-left ml-1" type="checkbox" onChange={this.handleChange}  
-                            disabled={!this.state.paidActive} checked={(this.state.paid)} />
+                            disabled={!this.state.paidActive} checked={this.state.paid} />
                     <label className="form-check-label  text-left" for="paid">
                       bezahlt
                     </label>
@@ -365,7 +365,7 @@ class BelForm extends Component {
       s.p1MsgFormCtrl = ''
       s.overbooked = false
       s.condEinGast = false
-      s.paid = e.paid
+      // s.paid = this.state.paid
 
       // Bedingungen
       let condEinSpielerJug = false
