@@ -39,7 +39,11 @@ class Platz extends Component {
     fetch(url, {credentials: 'same-origin'})
     .then(result => {
       if (result.ok) {
-          return result.json();
+        if (result.redirected) {
+          console.log("Platz.js/Checkuser: Authentifizierungsfehler")
+          // window.location.href = result.url
+        }
+        return result.json();
         } else {
           // In diesem Fall haben wir einen neuen, noch unbebuchten Tag
           this.setState({isLoading : false});

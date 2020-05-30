@@ -34,6 +34,10 @@ class BelDetails extends Component {
     fetch(url, {credentials: 'same-origin'})
     .then(result => {
       if (result.ok) {
+        if (result.redirected) {
+          console.log("BelDetails.js/Checkuser: Authentifizierungsfehler")
+          // window.location.href = result.url
+        }
         return result.json();
       } else {
         throw new Error('Fehler beim Laden der Platzbuchungsdetails');

@@ -36,7 +36,7 @@ class App extends Component
 
   checkUser() 
   {
-    const url = Config.protokoll + Config.hostname + "/intern/api/checkuser.php?prod=";
+    const url = Config.protokoll + Config.hostname + "/intern/api/checkuser.php";
     fetch(url, {credentials: 'same-origin'})
     .then( (res) => {
       if (res.ok) {
@@ -45,6 +45,7 @@ class App extends Component
           if (user.retcode === 'OK') {
             this.setState(() => ({user: user, isLoading1: false}));
           } else {
+            // console.log("App.js/Checkuser: Authentifizierungsfehler")
             window.location.href = Config.protokoll + Config.hostname + Config.loginPage;
           }
         });

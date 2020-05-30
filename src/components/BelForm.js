@@ -23,7 +23,7 @@ class BelForm extends Component {
     // Initialer Wert für neue Buchungen. Wenn Einzel/Doppel erlaubt/nicht erlaubt sind, hier ändern
     const bookingType = (r.booking_type === '') ? (dateIsToday ? 'ts-einzel' : 'ts-turnier') : r.booking_type;
     // const bookingType = (r.booking_type === '') ? 'ts-turnier' : r.booking_type;
-    const deleteActive = r.booking_type.match(/(ts-training)|(ts-nichtreservierbar)/ig) 
+    const deleteActive = r.booking_type.match(/(ts-nichtreservierbar)/ig) 
         ? (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions)) 
         : true;
 
@@ -47,7 +47,7 @@ class BelForm extends Component {
       spieler: [],
       court: r.court,
       zurTafel: false,
-      saveActive: false,
+      saveActive: true,
       deleteActive: deleteActive,
       admin: false,
       dateIsToday: dateIsToday,
@@ -108,7 +108,7 @@ class BelForm extends Component {
               <option disabled={!this.state.dateIsToday} value="ts-doppel">Doppel</option>
               <option value="ts-turnier">Turnier</option>
               <option value="ts-veranstaltung">Veranstaltung</option>
-              <option disabled={!condVorstand} value="ts-training">Training</option>
+              <option disabled={false} value="ts-training">Training</option>
               <option disabled={!condVorstand} value="ts-punktspiele">Punktspiele</option>
               <option disabled={!condVorstand} value="ts-nichtreservierbar">Nicht reservierbar</option>
             </select>
@@ -257,8 +257,10 @@ class BelForm extends Component {
     fetch(url, { credentials: 'same-origin' })
       .then(result => {
         if (result.ok) {
-          // console.log(result.body);
-          return result.json();
+          if (result.redirected) {
+            window.location.href = result.url
+          }
+          return result.json()
         } else {
           throw new Error('Fehler beim Erzeugen/Updaten der Belegung' + this.state.r.id);
         }
@@ -339,6 +341,7 @@ class BelForm extends Component {
 
       // Bedingungen
       let condEinGast = false
+      let condEinMitglied = false
       let condEinSpielerJug = false
       let condEinSpielerErw = false
       let condDoppelteSpieler = false
@@ -372,6 +375,9 @@ class BelForm extends Component {
         // console.log(`p: ${p} gastId: ${Config.gastId} ` + (p === Config.gastId))
         if (Number(p) === Config.gastId) {
           condEinGast = true
+        }
+        if (Number(p) === Config.mitgliedId) {
+          condEinMitglied = true
         }
       })
 
@@ -428,11 +434,11 @@ class BelForm extends Component {
           }
         }
       }
-      if (condEinGast) {
+      if (condEinGast || condEinMitglied) {
         if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig)) {
-          [ s.commentMsgClass, s.saveActive, s.commentMsgTxt ] = Messages.gast
+          [ s.commentMsgClass, s.saveActive, s.commentMsgTxt ] = condEinGast ? Messages.gast : Messages.mitglied
         }
-         else {
+        else {
           [ s.p1MsgClass, s.saveActive, s.p1MsgTxt ] = Messages.spieleranzahl;
           s.p1MsgFormCtrl = 'is-invalid'
         }
@@ -478,10 +484,10 @@ class BelForm extends Component {
       }
 
       // Trainingszeiten und Nicht Reservierbar ist nur für Berechtigte speicher- und löschbar
-      if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
+      if (this.state.bookingType.match(/(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
         s.saveActive   = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
       }
-      if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
+      if (this.state.bookingType.match(/(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
         s.deleteActive = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
       }
 
