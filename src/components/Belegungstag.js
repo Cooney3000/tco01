@@ -62,7 +62,7 @@ class Belegungstag extends Component {
                 <td className="platz">
                   <div className="platznummer">
                     <span className="platzziffer">{court}</span> 
-                    <Link to={{pathname: '/belegungsdetails/new', state: {c: court, d: this.state.day} }}><img  className="neuBtn p-1 rounded-circle" src="images/add.png" alt="Neue Belegung" /></Link> 
+                    <Link to={{pathname: 'belegung', state: {c: court, d: this.state.day, op: 'new'} }}><img  className="neuBtn p-1 rounded-circle" src="images/add.png" alt="Neue Belegung" /></Link> 
                   </div>
                   <div>
                     <Platz court={court} day={this.state.day} permissions={this.props.permissions} />
@@ -89,7 +89,7 @@ class Belegungstag extends Component {
           <div>
             <div className="platznummer">
               <span className="platzziffer rounded-circle">{court}</span> 
-              <Link to={{pathname: '/belegungsdetails/new', state: {c: court, d: this.state.day} }}><img  className="neuBtn p-1 rounded-circle" src="images/add.png" alt="Neue Belegung" /></Link> 
+              <Link to={{pathname: 'belegung', state: {c: court, d: this.state.day, op: 'new'} }}><img  className="neuBtn p-1 rounded-circle" src="images/add.png" alt="Neue Belegung" /></Link> 
             </div>
             <div>            
               <Platz court={court} day={this.state.day} permissions={this.props.permissions} />

@@ -68,7 +68,7 @@ class Platz extends Component {
           )
         } else {
           return ( 
-            <Link key={k} className={cn} to={{ pathname: '/belegungsdetails/update', state: {c: court, i: r.id, d: day} }}>
+            <Link key={k} className={cn} to={{ pathname: 'belegung', state: {c: court, i: r.id, d: day, op: 'update'} }}>
               <strong>{r.starts_at.substring(11,16)}</strong> {spieler}
               <div> {r.comment} </div>
             </Link>

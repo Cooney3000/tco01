@@ -3,7 +3,7 @@ import BelForm from './BelForm';
 import { Link } from 'react-router-dom';
 import Config from './Defaults';
 
-class BelDetails extends Component {
+class Belegung extends Component {
   
   constructor(props) {
     super(props);
@@ -15,7 +15,7 @@ class BelDetails extends Component {
     };
   }  
   componentWillMount() {
-    const op = this.props.match.params.op;
+    const {op} = this.props.location.state;
     if (op === "update") {
       const {i, d} = this.props.location.state;
       this.updateBel(i, d);
@@ -95,5 +95,5 @@ function getEmptyBel(court, day) {
     p4id: 0,    
   }
 }
-export default BelDetails;
+export default Belegung;
   
