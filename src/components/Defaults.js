@@ -2,15 +2,10 @@
 // ****** Konfigurationsdaten *******
 const config = {
 
-  // hostname: 'localhost',
-  // protokoll: 'http://',
-  // loginPage: '/intern/login.php',
-  // prod: false,
-  
   hostname: 'localhost',
   protokoll: 'http://',
   loginPage: '/intern/login.php',
-  prod: true,
+  prod: false,
   
   // hostname: 'www.tcolching.de',
   // protokoll: 'https://',
@@ -18,7 +13,8 @@ const config = {
   // prod: true,
   
   // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
-  testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
+  // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
+  testuser: {id:357, vorname:'Hart', nachname:'VerdrahtetUsr2', permissions: 432}, // mit normalen Benutzerrechten
   stringSeparator: ' ',
   smartphoneWidth: 578,
   anzahlPlaetze: 6,
@@ -52,7 +48,8 @@ export const messages = {
   erwachsenenvorrecht: [ERR, SAVE, '- Achtung: Erwachsene Vollmitglieder haben zu dieser Zeit Vorrecht!'],
   einzeldauer: [ERR, NOSAVE, '- Für ein Einzel maximal 60 Minuten buchen'],
   doppeldauer: [ERR, NOSAVE, '- Für ein Doppel maximal 90 Minuten buchen'],
-  turnierspieldauer: [ERR, NOSAVE, '- Für ein Turnierspiel 120 Minuten buchen'],
+  turnier: [MSG, SAVE, '- Turnierspiele 120 Minuten. Falls möglich auf Platz 1 buchen. Parallel sollte ein Platz auf der Anlage nicht durch Turniere oder Training belegt sein! Wer Mannschaftstraining hat, darf nur auf den Plätzen der Mannschaft Turnier spielen.'],
+  turnierspieldauer: [ERR, NOSAVE, '- Turnierspiele 120 Minuten. Falls möglich auf Platz 1 buchen. Parallel sollte ein Platz auf der Anlage nicht durch Turniere oder Training belegt sein! Wer Mannschaftstraining hat, darf nur auf den Plätzen der Mannschaft Turnier spielen.'],
   zeit: [ERR, NOSAVE, '- Der Start muss vor dem Ende liegen!'],
   platzbelegt:  [ERR, NOSAVE, '- Platz bereits belegt!'],
 };

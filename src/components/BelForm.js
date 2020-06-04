@@ -77,6 +77,7 @@ class BelForm extends Component {
         this.setState({ spieler: spieler })
       })
       .catch(error => this.setState({ error, isLoading: false }));
+    
   }
 
   render() {
@@ -480,14 +481,16 @@ class BelForm extends Component {
       else if (this.state.bookingType === "ts-turnier") {
         if ((ende - start) !== Config.turnierTime) {
           [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.turnierspieldauer;
+        } else {
+          [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.turnier;
         }
       }
 
       // Trainingszeiten und Nicht Reservierbar ist nur für Berechtigte speicher- und löschbar
-      if (this.state.bookingType.match(/(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
+      if (this.state.bookingType.match(/(ts-punktspiele)|(ts-nichtreservierbar)|(ts-veranstaltung)/ig)) {
         s.saveActive   = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
       }
-      if (this.state.bookingType.match(/(ts-punktspiele)|(ts-nichtreservierbar)/ig)) {
+      if (this.state.bookingType.match(/(ts-punktspiele)|(ts-nichtreservierbar)|(ts-veranstaltung)/ig)) {
         s.deleteActive = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
       }
 
