@@ -27,7 +27,6 @@ class Belegung extends Component {
   
   updateBel(id, day) {
     const url = Config.protokoll + Config.hostname + "/intern/api/platz.php?op=r&rid=" + id;
-    // console.log(url);
   
     this.setState({isLoading : true});
     
@@ -36,7 +35,7 @@ class Belegung extends Component {
       if (result.ok) {
         if (result.redirected) {
           console.log("BelDetails.js/Checkuser: Authentifizierungsfehler")
-          // window.location.href = result.url
+          window.location.href = result.url
         }
         return result.json();
       } else {
@@ -47,7 +46,7 @@ class Belegung extends Component {
       let belegung = result.records.map( r => {
         return (
           <div key={r.id} className="p-2">
-              <Link to={'/' + day}><p className="btn btn-secondary">Zurück</p></Link>
+              <Link to={{ pathname: '/intern/tafel/', state: {d: day} }}><p className="btn btn-secondary">Zurück</p></Link>
               <BelForm r={r} userId={this.props.userId} permissions={this.props.permissions} />
           </div>
         )
@@ -62,7 +61,7 @@ class Belegung extends Component {
     let r = getEmptyBel(court, day);
     let belegung = [
         <div key={-1} className="p-2">
-            <Link to={'/' + day}><p className="btn btn-secondary">Zurück</p></Link>
+            <Link to={{ pathname: '/intern/tafel/', state: {d: day} }}><p className="btn btn-secondary">Zurück</p></Link>
             <BelForm r={r} userId={this.props.userId} permissions={this.props.permissions} />
         </div>
     ];

@@ -54,24 +54,25 @@ class Belegungstag extends Component {
     const isMobile = (width <= config.smartphoneWidth);
     if (isMobile) {
       const courtDiv = config.platzArray.map( (court) => {
-        return (<div key={court} id={"platz" + court}>
-          <table className="table">
-            <tbody>
-              <tr className="platzDim">
-                <td className="zeitleisteCol"><Zeitleiste /></td>
-                <td className="platz">
-                  <div className="platznummer">
-                    <span className="platzziffer">{court}</span> 
-                    <Link to={{pathname: 'belegung', state: {c: court, d: this.state.day, op: 'new'} }}><img  className="neuBtn p-1 rounded-circle" src="images/add.png" alt="Neue Belegung" /></Link> 
-                  </div>
-                  <div>
-                    <Platz court={court} day={this.state.day} permissions={this.props.permissions} />
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        return (
+          <div key={court} id={"platz" + court}>
+            <table className="table">
+              <tbody>
+                <tr className="platzDim">
+                  <td className="zeitleisteCol"><Zeitleiste /></td>
+                  <td className="platz">
+                    <div className="platznummer">
+                      <span className="platzziffer">{court}</span> 
+                      <Link to={{pathname: '/intern/tafel/belegung', state: {c: court, d: this.state.day, op: 'new'} }}><img  className="neuBtn p-1 rounded-circle" src="images/add.png" alt="Neue Belegung" /></Link> 
+                    </div>
+                    <div>
+                      <Platz court={court} day={this.state.day} permissions={this.props.permissions} />
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         )
       })
       return (
@@ -89,7 +90,7 @@ class Belegungstag extends Component {
           <div>
             <div className="platznummer">
               <span className="platzziffer rounded-circle">{court}</span> 
-              <Link to={{pathname: 'belegung', state: {c: court, d: this.state.day, op: 'new'} }}><img  className="neuBtn p-1 rounded-circle" src="images/add.png" alt="Neue Belegung" /></Link> 
+              <Link to={{pathname: '/intern/tafel/belegung', state: {c: court, d: this.state.day, op: 'new'} }}><img  className="neuBtn p-1 rounded-circle" src="images/add.png" alt="Neue Belegung" /></Link> 
             </div>
             <div>            
               <Platz court={court} day={this.state.day} permissions={this.props.permissions} />
@@ -147,7 +148,7 @@ const Legende = () => {
       <div className="row l-veranstaltung p-0 pl-1 m-1">Veranstaltung</div>
       <div className="row l-punktspiele p-0 pl-1 m-1">Punktspiele</div>
       <div className="row l-training p-0 pl-1 m-1">Training</div>
-      <div className="row l-nichtreservierbar p-0 pl-1 m-1">Frei verfügbar / Anderes</div>
+      {/* <div className="row l-nichtreservierbar p-0 pl-1 m-1">Frei verfügbar / Anderes</div> */}
     </div>
   );
 }

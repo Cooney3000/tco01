@@ -83,7 +83,7 @@ class BelForm extends Component {
   render() {
     // console.log("startsAtStd:" + this.state.startsAtStd);
     if (this.state.zurTafel === true) {
-      return <Redirect to={'/' + this.state.startsAtDate} />
+      return <Redirect to={{pathname: "/intern/tafel/", state: this.state.startsAtDate}} />
     }
     const condVorstand = (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
     return (
@@ -111,7 +111,7 @@ class BelForm extends Component {
               <option value="ts-veranstaltung">Veranstaltung</option>
               <option disabled={false} value="ts-training">Training</option>
               <option disabled={!condVorstand} value="ts-punktspiele">Punktspiele</option>
-              <option disabled={!condVorstand} value="ts-nichtreservierbar">Nicht reservierbar</option>
+              {/* <option disabled={!condVorstand} value="ts-nichtreservierbar">Nicht reservierbar</option> */}
             </select>
             <div><strong>Start</strong> <span id="startsAtMsg" className={this.state.startsAtMsgClass}>{this.state.startsAtMsgTxt}</span></div>
             <div className="form-group">

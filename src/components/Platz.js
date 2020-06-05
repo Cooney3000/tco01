@@ -40,8 +40,8 @@ class Platz extends Component {
     .then(result => {
       if (result.ok) {
         if (result.redirected) {
-          console.log("Platz.js/Checkuser: Authentifizierungsfehler")
-          // window.location.href = result.url
+          // console.log("Platz.js/Checkuser: Authentifizierungsfehler")
+          window.location.href = result.url
         }
         return result.json();
         } else {
@@ -68,7 +68,7 @@ class Platz extends Component {
           )
         } else {
           return ( 
-            <Link key={k} className={cn} to={{ pathname: 'belegung', state: {c: court, i: r.id, d: day, op: 'update'} }}>
+            <Link key={k} className={cn} to={{ pathname: '/intern/tafel/belegung', state: {c: court, i: r.id, d: day, op: 'update'} }}>
               <strong>{r.starts_at.substring(11,16)}</strong> {spieler}
               <div> {r.comment} </div>
             </Link>

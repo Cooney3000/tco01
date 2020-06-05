@@ -115,9 +115,12 @@ a:hover {
   color: black; 
   background-color: rgb(175, 245, 196);
 }
+.ts-turnier:hover {
+  color: white;
+}
 .ts-turnier {
   color: white;
-  background-color: rgb(255, 0, 0); 
+  background-color: #de1f00; 
 }
 .ts-punktspiele {
   color: black; 
@@ -144,8 +147,9 @@ a:hover {
 .l-turnier {
   width:20%;
   color: white;
-  background-color: rgb(255, 0, 0); 
+  background-color: #de1f00; 
 }
+
 .l-punktspiele {
   width:20%;
   color: black; 

@@ -2,15 +2,15 @@
 // ****** Konfigurationsdaten *******
 const config = {
 
-  hostname: 'localhost',
-  protokoll: 'http://',
-  loginPage: '/intern/login.php',
-  prod: false,
-  
-  // hostname: 'www.tcolching.de',
-  // protokoll: 'https://',
+  // hostname: 'localhost',
+  // protokoll: 'http://',
   // loginPage: '/intern/login.php',
-  // prod: true,
+  // prod: false,
+  
+  hostname: 'www.tcolching.de',
+  protokoll: 'https://',
+  loginPage: '/intern/login.php',
+  prod: true,
   
   // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
   // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
