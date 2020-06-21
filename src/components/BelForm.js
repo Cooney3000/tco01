@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Config, { messages as Messages, permissions as Permissions } from './Defaults';
 import { Redirect } from 'react-router';
 import { spielerzusatz, jugendlicher as isJugendlicher } from './functions';
-import _ from 'lodash';
+import _, { isNull } from 'lodash';
 import Holidays from 'date-holidays';
 
 
@@ -373,12 +373,19 @@ class BelForm extends Component {
       // Haben wir einen GAST?
       const {p1, p2, p3, p4} = this.state;
       [p1,p2,p3,p4].forEach( (p) => {
-        // console.log(`p: ${p} gastId: ${Config.gastId} ` + (p === Config.gastId))
         if (Number(p) === Config.gastId) {
           condEinGast = true
         }
         if (Number(p) === Config.mitgliedId) {
           condEinMitglied = true
+        }
+      })
+
+      // Haben wir ein Schnuppermitglied?
+      const {p1Schn, p2Schn, p3Schn, p4Schn} = this.state;
+      [p1Schn,p2Schn,p3Schn,p4Schn].forEach( (p) => {
+        if (p != null) {
+          condEinSchnuppermitglied = (Number(p) === 1) 
         }
       })
 
@@ -454,15 +461,15 @@ class BelForm extends Component {
       
       if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig)) {
         // Jetzt die Berechtigungen nach Alter, Status, Zeitpunkt, Message an der Spielzeit
-        if ((condPlatz6 && condEinSpielerErw && !condEinSpielerJug && condSonnOderFeiertag && condAbendZeit)
-          || (condPlatz6 && condEinSpielerErw && !condEinSpielerJug && condSonnOderFeiertag && !condAbendZeit)
-          || (condPlatz6 && condEinSpielerErw && !condEinSpielerJug && !condSonnOderFeiertag && condAbendZeit)) {
+        if ((condPlatz6 && condEinSpielerErw && !(condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && condAbendZeit)
+          || (condPlatz6 && condEinSpielerErw && !(condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && !condAbendZeit)
+          || (condPlatz6 && condEinSpielerErw && !(condEinSpielerJug || condEinSchnuppermitglied) && !condSonnOderFeiertag && condAbendZeit)) {
             [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.jugendvorrecht;
             s.overbooked = true
         }
-        else if ((!condPlatz6 && !condEinSpielerErw && condEinSpielerJug && condSonnOderFeiertag && condAbendZeit)
-          || (!condPlatz6 && !condEinSpielerErw && condEinSpielerJug && condSonnOderFeiertag && !condAbendZeit)
-          || (!condPlatz6 && !condEinSpielerErw && condEinSpielerJug && !condSonnOderFeiertag && condAbendZeit)) {
+        else if ((!condPlatz6 && !condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && condAbendZeit)
+          || (!condPlatz6 && !condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && !condAbendZeit)
+          || (!condPlatz6 && !condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && !condSonnOderFeiertag && condAbendZeit)) {
             [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.erwachsenenvorrecht;
             s.overbooked = true
         }
