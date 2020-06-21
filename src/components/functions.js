@@ -1,4 +1,5 @@
-export function formatDate (d) {
+export const formatDate = (d) =>
+{
   var month = '' + (d.getMonth() + 1),
       day = '' + d.getDate(),
       year = d.getFullYear();
@@ -8,8 +9,10 @@ export function formatDate (d) {
 
   return [year, month, day].join('-');  
 }
+
 // ***** date array 
-export const getDateArray = function(start, end) {
+export const getDateArray = (start, end) => 
+{
   let dt = new Date(start),
       arr = [];
   while (dt <= end) {
@@ -19,11 +22,12 @@ export const getDateArray = function(start, end) {
   return arr;
 }
 
-export function isValidDate(d) {
+export const isValidDate = (d) => 
+{
   return d instanceof Date && !isNaN(d);
 }
 
-export function spielerzusatz(geburtsdatum) 
+export const spielerzusatz = (geburtsdatum, schnupper) => 
 {
   let aktuellesJahr = new Date();
   aktuellesJahr = aktuellesJahr.getFullYear();
@@ -31,11 +35,14 @@ export function spielerzusatz(geburtsdatum)
   geburtsjahr = geburtsjahr.getFullYear();
   const jugend = (aktuellesJahr - geburtsjahr) < 18 ? true : false;
   // console.log(`${geburtsdatum} ${geburtsjahr} ${aktuellesJahr} ${jugend}` );
-  return jugend ? ' (Jugend)' : '';
+  let zusatz = ' (' + (jugend ? 'Jug' : '') + (Number(schnupper) === 1 ? ',Schn' : '') + ')'
+  zusatz = zusatz.replace('(,', '(')
+  zusatz = zusatz.replace('()', '')
+  return zusatz
 }
 
-export function nvb(geburtsdatum) // nvb = nicht voll Berechtigt
-{
+// jugendlicher = nicht voll Berechtigt
+export const jugendlicher = (geburtsdatum) => {
   if (typeof(geburtsdatum) === 'undefined' || geburtsdatum === null)
   {
     return false;
@@ -45,12 +52,22 @@ export function nvb(geburtsdatum) // nvb = nicht voll Berechtigt
   aktuellesJahr = aktuellesJahr.getFullYear();
   let geburtsjahr = new Date(geburtsdatum);
   geburtsjahr = geburtsjahr.getFullYear();
-  const jugend = (aktuellesJahr - geburtsjahr) < 18 ? true : false;
+  const jugend = ((aktuellesJahr - geburtsjahr) < 18) ? true : false;
   // console.log(`${geburtsdatum} ${geburtsjahr} ${aktuellesJahr} ${jugend}` );
   return jugend;
 }
 
 
+///////////////////////// KANN DAS FUNKTIONIEREN??? //////////////////////
+// const Model = () => {
+//   let liste = {};
+//   registerListener(callback) {
+//     liste                               ;
+//   }
+//   unregisterListener(callback) {
+//     callback.setTafelDatum(this.tafelDatum)///////////////////////////////////
+//   }
+// }
 
 // Auswahl über Mausposition???
 // handleClick (e) {

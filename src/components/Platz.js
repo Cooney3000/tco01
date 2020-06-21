@@ -29,7 +29,7 @@ class Platz extends Component {
     const { court, day } = this.props;
     this.fetchPlatz(court, day);
   }
-
+  
   fetchPlatz(court, day) {
     const userIsAdmin = (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions));
     const url = Config.protokoll + Config.hostname + "/intern/api/platz.php?op=ra&p=" + court + "&ds=" + day + "&de=" + day;
@@ -51,13 +51,16 @@ class Platz extends Component {
       })
     .then (result => {
       let courtData = result.records.map ( r => {
-        let k = r.id;
-        let cn = computeBelClasses (r.starts_at, r.ends_at, r.booking_type, r.p1geb, r.p2geb, r.p3geb, r.p4geb);
-        let spieler = 
-            r.p1.replace(new RegExp("^[\\.\\s]+"), "") + spielerzusatz(r.p1geb)
-          + (r.p2 ? ', ' + r.p2.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p2geb)
-          + (r.p3 ? ', ' + r.p3.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p3geb)
-          + (r.p4 ? ', ' + r.p4.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p4geb);
+        let k = r.id
+        let spieler
+        let cn = computeBelClasses (r.starts_at, r.ends_at, r.booking_type);
+        spieler = formatSpieler(r, this.props.platzWide)
+
+        // let spieler = 
+        //     (r.p1 ? r.p1.replace(new RegExp("^[\\.\\s]+"), "") + spielerzusatz(r.p1geb) : ' ')
+        //   + (r.p2 ? ', ' + r.p2.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p2geb)
+        //   + (r.p3 ? ', ' + r.p3.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p3geb)
+        //   + (r.p4 ? ', ' + r.p4.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p4geb);
         if ( !userIsAdmin && (r.booking_type.match(/(ts-punktspiele)|(ts-nichtreservierbar)/ig)))
         {
           return ( 
@@ -94,9 +97,32 @@ class Platz extends Component {
   }
 }
 
-// CSS-Klassen bilden für die Positionierung und Höhe einer Blegung auf der Tafel
-function computeBelClasses (s, e, bookingType, p1geb, p2geb, p3geb, p4geb) {
+// Spielernamen bilden
+const formatSpieler = (r, platzWide) =>
+{
+  let spieler = []
+  
+  // Vorname und Name verketten. Vorname bei wenig Platz abkürzen
+  spieler[0] = (r.p1vn ? (platzWide ? r.p1vn : r.p1vn.charAt(0) + '.') + ' ' + r.p1nn : (r.p1nn) ? r.p1nn : '') + spielerzusatz(r.p1geb, r.schnupper1)
+  spieler[1] = (r.p2vn ? (platzWide ? r.p2vn : r.p2vn.charAt(0) + '.') + ' ' + r.p2nn : (r.p2nn) ? r.p2nn : '') + spielerzusatz(r.p2geb, r.schnupper2)
+  spieler[2] = (r.p3vn ? (platzWide ? r.p3vn : r.p3vn.charAt(0) + '.') + ' ' + r.p3nn : (r.p3nn) ? r.p3nn : '') + spielerzusatz(r.p3geb, r.schnupper3)
+  spieler[3] = (r.p4vn ? (platzWide ? r.p4vn : r.p1vn.charAt(0) + '.') + ' ' + r.p4nn : (r.p4nn) ? r.p4nn : '') + spielerzusatz(r.p4geb, r.schnupper4)
+  
+  // Führende Punkt und Whitespace entfernen, falls es sowas gibt
+  spieler = spieler.map( s => s.replace(new RegExp(/^[\.\s]+/g), '') )
+  
+  spieler = spieler.join(', ')
 
+  // ... und trailing Kommas, Whitespaces entfernen
+  spieler = spieler.replace(new RegExp(/[,\s]*$/g), '')
+
+  return spieler
+
+}
+
+// CSS-Klassen bilden für die Positionierung und Höhe einer Belegung auf der Tafel
+const computeBelClasses = (s, e, bookingType) =>
+{
   // Dauer berechnen, also z. B. '2019-05-02 16:00:00' - '2019-05-02 14:00:00' = 120
   const dauer = (Number(e.substring(11,13))*60 + Number(e.substring(14,16))) - (Number(s.substring(11,13))*60 + Number(s.substring(14,16)));
   const bt = bookingType

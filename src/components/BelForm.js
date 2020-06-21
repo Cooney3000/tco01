@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import Config, { messages as Messages, permissions as Permissions } from './Defaults';
 import { Redirect } from 'react-router';
-import { spielerzusatz, nvb } from './functions';
+import { spielerzusatz, jugendlicher as isJugendlicher } from './functions';
 import _ from 'lodash';
 import Holidays from 'date-holidays';
 
@@ -44,6 +44,10 @@ class BelForm extends Component {
       p2: r.p2id,
       p3: r.p3id,
       p4: r.p4id,
+      p1Schn: r.schnupper1,
+      p2Schn: r.schnupper2,
+      p3Schn: r.schnupper3,
+      p4Schn: r.schnupper4,
       spieler: [],
       court: r.court,
       zurTafel: false,
@@ -116,7 +120,6 @@ class BelForm extends Component {
             <div><strong>Start</strong> <span id="startsAtMsg" className={this.state.startsAtMsgClass}>{this.state.startsAtMsgTxt}</span></div>
             <div className="form-group">
               <select id="startsAtStd" className={'form-control ' + this.state.startsAtMsgClass} onChange={this.handleChange} value={this.state.startsAtStd}>
-                <option value="--">--</option>
                 <option value="08">08</option>
                 <option value="09">09</option>
                 <option value="10">10</option>
@@ -132,7 +135,6 @@ class BelForm extends Component {
                 <option value="20">20</option>
               </select>
               <select id="startsAtViertel" className={'form-control ' + this.state.startsAtMsgClass} onChange={this.handleChange} value={this.state.startsAtViertel}>
-                <option value="--">--</option>
                 <option value="00">00</option>
                 <option value="15">15</option>
                 <option value="30">30</option>
@@ -142,7 +144,6 @@ class BelForm extends Component {
             <div><strong>Ende</strong></div>
             <div className="form-group">
               <select id="endsAtStd" className={'form-control ' + this.state.endsAtMsgClass} onChange={this.handleChange} value={this.state.endsAtStd}>
-                <option value="--">--</option>
                 <option value="08">08</option>
                 <option value="09">09</option>
                 <option value="10">10</option>
@@ -159,7 +160,6 @@ class BelForm extends Component {
                 <option value="21">21</option>
               </select>
               <select id="endsAtViertel" className={'form-control ' + this.state.endsAtMsgClass} onChange={this.handleChange} value={this.state.endsAtViertel}>
-                <option value="--">--</option>
                 <option value="00">00</option>
                 <option value="15">15</option>
                 <option value="30">30</option>
@@ -169,10 +169,10 @@ class BelForm extends Component {
             <div><strong>Spieler</strong> <span id="p1Msg" className={this.state.p1MsgClass}>{this.state.p1MsgTxt}</span></div>
             <div className="form-row">
               <select id="p1" className={'form-control ' + this.state.p1MsgFormCtrl} onChange={this.handleChange} value={this.state.p1}>
-                <option value="none">- Bitte auswählen -</option>
+                <option value="0">- Bitte auswählen -</option>
                 {this.state.spieler.map(r => {
                   return (
-                    <option key={'p1' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
+                    <option key={'p1' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum, r.schnupper)}</option>
                   )
                 })}
               </select>
@@ -181,7 +181,7 @@ class BelForm extends Component {
                   <option value="0">- Bitte auswählen -</option>
                   {this.state.spieler.map(r => {
                     return (
-                      <option key={'p2' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
+                      <option key={'p2' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum, r.schnupper)}</option>
                     )
                   })}
                 </select>
@@ -194,7 +194,7 @@ class BelForm extends Component {
                   <option value="0">- Bitte auswählen -</option>
                   {this.state.spieler.map(r => {
                     return (
-                      <option key={'p3' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
+                      <option key={'p3' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum, r.schnupper)}</option>
                     )
                   })}
                 </select>
@@ -205,7 +205,7 @@ class BelForm extends Component {
                   <option value="0">- Bitte auswählen -</option>
                   {this.state.spieler.map(r => {
                     return (
-                      <option key={'p4' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum)}</option>
+                      <option key={'p4' + r.id} value={r.id}>{r.spieler + spielerzusatz(r.geburtsdatum, r.schnupper)}</option>
                     )
                   })}
                 </select>
@@ -215,7 +215,7 @@ class BelForm extends Component {
 
             <div><strong>Bemerkung</strong> <span id="commentMsg" className={this.state.commentMsgClass}>{this.state.commentMsgTxt}</span></div>
             <div className="form-group">
-              <input type="text" id="comment" className="form-control w-100" onChange={this.handleChange} value={this.state.comment} placeholder="Spielergebnis, Gastname, ..." />
+              <input type="text" id="comment" className={'form-control w-100 ' + this.state.p1MsgFormCtrl} onChange={this.handleChange} value={this.state.comment} placeholder="Spielergebnis, Gastname, ..." />
             </div>
 
             <button type="submit" onClick={e => { this.handleSave(e) }} className="btn btn-primary m-1" disabled={!this.state.saveActive}>Speichern</button>
@@ -258,9 +258,6 @@ class BelForm extends Component {
     fetch(url, { credentials: 'same-origin' })
       .then(result => {
         if (result.ok) {
-          if (result.redirected) {
-            window.location.href = result.url
-          }
           return result.json()
         } else {
           throw new Error('Fehler beim Erzeugen/Updaten der Belegung' + this.state.r.id);
@@ -277,13 +274,16 @@ class BelForm extends Component {
             + parameters;
           fetch(logurl, { credentials: 'same-origin' }); // Wenn Logging fehlschlagen sollte, dann verzichten wir eben darauf
           this.setState({ zurTafel: true })
-        } else {
+        } else if (rc === 'bereits belegt') {
           // Fehlermeldung
           [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.platzbelegt;
+        } else {
+          // User nicht authentifiziert oder etwas stimmt generell nicht
+          window.location.href = Config.loginPage
         }
+        // Alle Ergebnisse in den State
+        this.setState(s)
       })
-    // .catch(error => this.setState({ error, isLoading: false }));
-    // e.preventDefault();
   }
 
   handleDelete(e) {
@@ -292,7 +292,6 @@ class BelForm extends Component {
     const jetzt = new Date();
 
     e.preventDefault();
-    // console.log("DELETE ROW NOW!" + this.state.r.id);
 
     if (sd >= jetzt || (Permissions.VORSTAND & this.props.permissions)) {
       let parameters =
@@ -347,6 +346,7 @@ class BelForm extends Component {
       let condEinSpielerErw = false
       let condDoppelteSpieler = false
       let condAbendZeit = false
+      let condEinSchnuppermitglied = false
 
       const datestring = this.state.startsAtDate + 'T' + this.state.startsAtStd + ':' + this.state.startsAtViertel + "Z"
       const sd = new Date(datestring)
@@ -361,8 +361,8 @@ class BelForm extends Component {
       // Es wird validiert, ob Erwachsene, Schnuppermitglieder und Jugendliche 
       // wirklich spielberechtigt sind und ob die eingetragenen Zeiten stimmen
 
-      const start = Number(this.state.startsAtStd + this.state.startsAtViertel)
-      const ende = Number(this.state.endsAtStd + this.state.endsAtViertel)
+      const start = Number(this.state.startsAtStd) * 60 + Number(this.state.startsAtViertel)
+      const ende = Number(this.state.endsAtStd) * 60 + Number(this.state.endsAtViertel)
       const pKeys = [];
 
       pKeys[0] = _.find(this.state.spieler, { 'id': this.state.p1 })
@@ -382,12 +382,12 @@ class BelForm extends Component {
         }
       })
 
-      // Ist ein Jugendlicher dabei? Ist ein Erwachsener dabei?
+      // Ist ein Jugendlicher/Schnuppermitglied dabei? Ist ein Erwachsener dabei?
       // Welche Geburtsdaten haben die Spieler?
       pKeys.map(k => {
         if (k != null) // 
         {
-          if (!nvb(k['geburtsdatum'])) {
+          if (!isJugendlicher(k['geburtsdatum'])) {
             condEinSpielerErw = true
           } else {
             condEinSpielerJug = true
@@ -396,6 +396,7 @@ class BelForm extends Component {
         }
         return undefined
       })
+
       condAbendZeit = (ende) > Config.eveningTime
 
       // Message an der Spielzeit
@@ -411,7 +412,7 @@ class BelForm extends Component {
       }
       if (this.state.bookingType.match(/(ts-turnier)|(ts-einzel)/ig)) {
         // Zwei Spieler müssen eingetragen werden, beide nicht 0 und unterschiedlich
-        if ((this.state.p1 ^ this.state.p2) === 0) {
+        if (Number(this.state.p1) === 0 || Number(this.state.p2) === 0) {
           [ s.p1msgClass, s.saveActive, s.p1MsgTxt ] = Messages.spieleranzahl;
           s.p1MsgFormCtrl = 'is-invalid'
         } else if (this.state.p1 === this.state.p2) {  
@@ -437,7 +438,10 @@ class BelForm extends Component {
       }
       if (condEinGast || condEinMitglied) {
         if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig)) {
-          [ s.commentMsgClass, s.saveActive, s.commentMsgTxt ] = condEinGast ? Messages.gast : Messages.mitglied
+          if (this.state.comment.length < 2) {
+            [ s.commentMsgClass, s.saveActive, s.commentMsgTxt ] = condEinGast ? Messages.gast : Messages.mitglied
+            s.p1MsgFormCtrl = 'is-invalid'
+          }
         }
         else {
           [ s.p1MsgClass, s.saveActive, s.p1MsgTxt ] = Messages.spieleranzahl;

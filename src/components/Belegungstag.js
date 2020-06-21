@@ -50,9 +50,9 @@ class Belegungstag extends Component {
   render() {
     const { width } = this.state;
     let firstDaypickerDay = new Date();
-    firstDaypickerDay.setDate(firstDaypickerDay.getDate() - config.daypickerDaysBeforeToday);
     const isMobile = (width <= config.smartphoneWidth);
     if (isMobile) {
+      firstDaypickerDay.setDate(firstDaypickerDay.getDate() - config.daypickerDaysBeforeToday);
       const courtDiv = config.platzArray.map( (court) => {
         return (
           <div key={court} id={"platz" + court}>
@@ -66,7 +66,7 @@ class Belegungstag extends Component {
                       <Link to={{pathname: '/intern/tafel/belegung', state: {c: court, d: this.state.day, op: 'new'} }}><img  className="neuBtn p-1 rounded-circle" src="images/add.png" alt="Neue Belegung" /></Link> 
                     </div>
                     <div>
-                      <Platz court={court} day={this.state.day} permissions={this.props.permissions} />
+                      <Platz court={court} day={this.state.day} permissions={this.props.permissions} platzWide={true} />
                     </div>
                   </td>
                 </tr>
@@ -85,6 +85,7 @@ class Belegungstag extends Component {
         </div>
       )
     } else {
+      firstDaypickerDay.setDate(firstDaypickerDay.getDate() - config.daypickerDaysBeforeTodayWide);
       const courtDiv = config.platzArray.map( (court) => {
         return (<td key={court} id={"platz" + court} className="platz">
           <div>
@@ -93,7 +94,7 @@ class Belegungstag extends Component {
               <Link to={{pathname: '/intern/tafel/belegung', state: {c: court, d: this.state.day, op: 'new'} }}><img  className="neuBtn p-1 rounded-circle" src="images/add.png" alt="Neue Belegung" /></Link> 
             </div>
             <div>            
-              <Platz court={court} day={this.state.day} permissions={this.props.permissions} />
+              <Platz court={court} day={this.state.day} permissions={this.props.permissions} platzWide={false} />
               </div>
             </div>
           </td>

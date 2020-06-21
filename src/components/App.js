@@ -31,6 +31,9 @@ class App extends Component
     {
       // In der Testumgebung simulierter User
       this.setState(() => ({user: Config.testuser, permissions: Config.testuser.permissions}));
+
+      // Re-rendering - sollte nur auf passiv genutzten Geräten (z. B. Monitor an Platz) verwendet werden
+      // this.interval = setInterval(()  => this.forceUpdate(), 1000)
     }
   }
 
@@ -43,7 +46,7 @@ class App extends Component
         res.json()
         .then( (user) => {
           if (user.retcode === 'OK') {
-            this.setState(() => ({user: user, isLoading1: false}));
+            this.setState(() => ({user: user.user, isLoading1: false}));
           } else {
             // console.log("App.js/Checkuser: Authentifizierungsfehler")
             window.location.href = Config.protokoll + Config.hostname + Config.loginPage;

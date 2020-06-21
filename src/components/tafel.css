@@ -115,7 +115,7 @@ a:hover {
   color: black; 
   background-color: rgb(175, 245, 196);
 }
-.ts-turnier:hover {
+.ts-turnier:hover, .ts-turnier:link {
   color: white;
 }
 .ts-turnier {
