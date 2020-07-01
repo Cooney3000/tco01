@@ -1,0 +1,42 @@
+
+https://www.red-bean.com/cvs2cl/changelogs.html#maintaining-the-changelog
+
+    1999-03-24  Stan Shebs  <shebs@andros.cygnus.com>
+
+            * configure.host (mips-dec-mach3*): Use mipsm3, not mach3.
+
+            Attempt to sort out SCO-related configs.
+            * configure.host (i[3456]86-*-sysv4.2*): Use this instead of
+            i[3456]86-*-sysv4.2MP and i[3456]86-*-sysv4.2uw2*.
+            (i[3456]86-*-sysv5*): Recognize this.
+            * configure.tgt (i[3456]86-*-sco3.2v5*, i[3456]86-*-sco3.2v4*):
+            Recognize these.
+
+
+TCO Platzbuchungssystem
+=======================
+
+2020-05-23  Conny Roloff <conny.roloff@live.de>
+        
+        Platzbuchungssystem
+        * Berechtigungen für Mannschaftsführer eingeführt:
+          MYSQL: Tabelle permissionnames
+        * Mannschaftsführer für "Training"-Buchungen im Buchungsformular berechtigt
+
+2020-06-21  Conny Roloff
+
+        PHP htdocs
+        * APIs stabilisiert
+        * APIs geändert
+          * spieler.php: schnupper hinzugefügt
+        * Admin-Frontend eingeführt:
+          * Gastbuchungen abhakbar 
+          * Mitglieder editierbar
+          * Schnuppermitglied-Kennzeichnung
+          * Berechtigungsvergabe
+        
+        Platzbuchungssystem
+        * Lange Vornamen in der Einzelplatzansicht
+        * Schnuppermitglieder Kennzeichnung
+        * Schnuppermitglieder Buchungsbeschränkung wie Jugendliche
+        

@@ -31,7 +31,7 @@ class Platz extends Component {
   }
   
   fetchPlatz(court, day) {
-    const userIsAdmin = (permissions.T_ALL_PERMISSIONS === (permissions.T_ALL_PERMISSIONS & this.props.permissions));
+    const userIsAllowed = ((permissions.MANNSCHAFTSFUEHRER & this.props.permissions) > 0);
     const url = Config.protokoll + Config.hostname + "/intern/api/platz.php?op=ra&p=" + court + "&ds=" + day + "&de=" + day;
     window.addEventListener('resize', this.handleWindowSizeChange);
     
@@ -61,7 +61,7 @@ class Platz extends Component {
         //   + (r.p2 ? ', ' + r.p2.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p2geb)
         //   + (r.p3 ? ', ' + r.p3.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p3geb)
         //   + (r.p4 ? ', ' + r.p4.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p4geb);
-        if ( !userIsAdmin && (r.booking_type.match(/(ts-punktspiele)|(ts-nichtreservierbar)/ig)))
+        if ( !userIsAllowed && (r.booking_type.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)|(ts-veranstaltung)/ig)))
         {
           return ( 
             <div key={k} className={cn}>

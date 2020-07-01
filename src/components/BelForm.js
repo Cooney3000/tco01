@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Config, { messages as Messages, permissions as Permissions } from './Defaults';
 import { Redirect } from 'react-router';
 import { spielerzusatz, jugendlicher as isJugendlicher } from './functions';
-import _, { isNull } from 'lodash';
+import _ from 'lodash';
 import Holidays from 'date-holidays';
 
 
@@ -90,6 +90,7 @@ class BelForm extends Component {
       return <Redirect to={{pathname: "/intern/tafel/", state: this.state.startsAtDate}} />
     }
     const condVorstand = (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
+    const condMF = (Permissions.MANNSCHAFTSFUEHRER === (Permissions.MANNSCHAFTSFUEHRER & this.props.permissions))
     return (
       <div>
         <h1>Spieltag: {this.state.spieltag}</h1>
@@ -112,10 +113,9 @@ class BelForm extends Component {
               <option disabled={!this.state.dateIsToday} value="ts-einzel">Einzel</option>
               <option disabled={!this.state.dateIsToday} value="ts-doppel">Doppel</option>
               <option value="ts-turnier">Turnier</option>
-              <option value="ts-veranstaltung">Veranstaltung</option>
-              <option disabled={false} value="ts-training">Training</option>
-              <option disabled={!condVorstand} value="ts-punktspiele">Punktspiele</option>
-              {/* <option disabled={!condVorstand} value="ts-nichtreservierbar">Nicht reservierbar</option> */}
+              <option disabled={!condMF} value="ts-veranstaltung">Veranstaltung</option>
+              <option disabled={!condMF} value="ts-training">Training</option>
+              <option disabled={!condMF} value="ts-punktspiele">Punktspiele</option>
             </select>
             <div><strong>Start</strong> <span id="startsAtMsg" className={this.state.startsAtMsgClass}>{this.state.startsAtMsgTxt}</span></div>
             <div className="form-group">
@@ -497,13 +497,16 @@ class BelForm extends Component {
         }
       }
 
-      // Trainingszeiten und Nicht Reservierbar ist nur für Berechtigte speicher- und löschbar
-      if (this.state.bookingType.match(/(ts-punktspiele)|(ts-nichtreservierbar)|(ts-veranstaltung)/ig)) {
-        s.saveActive   = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
+      // Nicht-Einzel/Doppel ist nur für Berechtigte speicher- und löschbar
+      if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)|(ts-veranstaltung)/ig)) {
+        s.saveActive   = (Permissions.MANNSCHAFTSFUEHRER === (Permissions.MANNSCHAFTSFUEHRER & this.props.permissions))
       }
-      if (this.state.bookingType.match(/(ts-punktspiele)|(ts-nichtreservierbar)|(ts-veranstaltung)/ig)) {
-        s.deleteActive = (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions))
+      if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)|(ts-veranstaltung)/ig)) {
+        s.deleteActive = (Permissions.MANNSCHAFTSFUEHRER === (Permissions.MANNSCHAFTSFUEHRER & this.props.permissions))
       }
+
+      // Einzel-/Doppelbuchungen sind nur durch einen der Spieler änderbar
+      // ########## VORSICHT: IMMER GEGEN DIE GESPEICHERTE VERSION PRÜFEN 
 
       // Alle Ergebnisse in den State
       this.setState(s)
