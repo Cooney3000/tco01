@@ -6,7 +6,6 @@ import { spielerzusatz, jugendlicher as isJugendlicher } from './functions';
 import _ from 'lodash';
 import Holidays from 'date-holidays';
 
-
 class BelForm extends Component {
 
   constructor(props) {
