@@ -56,11 +56,6 @@ class Platz extends Component {
         let cn = computeBelClasses (r.starts_at, r.ends_at, r.booking_type);
         spieler = formatSpieler(r, this.props.platzWide)
 
-        // let spieler = 
-        //     (r.p1 ? r.p1.replace(new RegExp("^[\\.\\s]+"), "") + spielerzusatz(r.p1geb) : ' ')
-        //   + (r.p2 ? ', ' + r.p2.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p2geb)
-        //   + (r.p3 ? ', ' + r.p3.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p3geb)
-        //   + (r.p4 ? ', ' + r.p4.replace(new RegExp("^[\\.\\s]+"), "") : ' ') + spielerzusatz(r.p4geb);
         if ( !userIsAllowed && (r.booking_type.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)|(ts-veranstaltung)/ig)))
         {
           return ( 
@@ -106,7 +101,7 @@ const formatSpieler = (r, platzWide) =>
   spieler[0] = (r.p1vn ? (platzWide ? r.p1vn : r.p1vn.charAt(0) + '.') + ' ' + r.p1nn : (r.p1nn) ? r.p1nn : '') + spielerzusatz(r.p1geb, r.schnupper1)
   spieler[1] = (r.p2vn ? (platzWide ? r.p2vn : r.p2vn.charAt(0) + '.') + ' ' + r.p2nn : (r.p2nn) ? r.p2nn : '') + spielerzusatz(r.p2geb, r.schnupper2)
   spieler[2] = (r.p3vn ? (platzWide ? r.p3vn : r.p3vn.charAt(0) + '.') + ' ' + r.p3nn : (r.p3nn) ? r.p3nn : '') + spielerzusatz(r.p3geb, r.schnupper3)
-  spieler[3] = (r.p4vn ? (platzWide ? r.p4vn : r.p1vn.charAt(0) + '.') + ' ' + r.p4nn : (r.p4nn) ? r.p4nn : '') + spielerzusatz(r.p4geb, r.schnupper4)
+  spieler[3] = (r.p4vn ? (platzWide ? r.p4vn : r.p4vn.charAt(0) + '.') + ' ' + r.p4nn : (r.p4nn) ? r.p4nn : '') + spielerzusatz(r.p4geb, r.schnupper4)
   
   // Führende Punkt und Whitespace entfernen, falls es sowas gibt
   spieler = spieler.map( s => s.replace(new RegExp(/^[\.\s]+/g), '') )
