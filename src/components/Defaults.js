@@ -1,17 +1,9 @@
 
 // ****** Konfigurationsdaten *******
-const config = {
 
-  hostname: 'localhost',
-  protokoll: 'http://',
-  loginPage: '/intern/login.php',
-  prod: false,
-  
-  // hostname: 'www.tcolching.de',
-  // protokoll: 'https://',
-  // loginPage: '/intern/login.php',
-  // prod: true,
-  
+let hostLocal = true
+
+const config = {
   testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
   // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
   // testuser: {id:357, vorname:'Hart', nachname:'VerdrahtetUsr2', permissions: 432}, // mit normalen Benutzerrechten
@@ -27,12 +19,24 @@ const config = {
 
   dailyStartTime: 8,
   dailyEndTime: 20,
-  eveningTime: 1800,  // 18:00 Uhr
+  eveningTime: 1700,  // 17:00 Uhr, alte Platzordnung war 18:00 Uhr
+  allowBookingForGuestsAndYouthMinutesBeforeEvening = 15, // Gäste und Jugendliche dürfen erst kurz vor der Abendspielzeit buchen
   singleTime: 60, // = 1 Stunde
-  doubleTime: 90, // = 1,5 Stunden (1 Stunde, 30 Minuten)
+  doubleTime: 120, // = 1,5 Stunden (1 Stunde, 30 Minuten)
   turnierTime: 120, // = 2 Stunden 
   gastId: 1,
   mitgliedId: 25,
+}
+if (hostLocal) {
+  config.hostname = 'localhost'
+  config.protokoll = 'http://'
+  config.loginPage = '/intern/login.php'
+  config.prod = false
+} else {    
+  config.hostname = 'www.tcolching.de'
+  config.protokoll = 'https://'
+  config.loginPage = '/intern/login.php'
+  config.prod = true
 }
 
 const IMPORTANT = "text-danger"

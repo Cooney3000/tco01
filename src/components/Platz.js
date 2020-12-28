@@ -20,18 +20,20 @@ class Platz extends Component {
     };
   }
   
-  componentWillReceiveProps(nextProps) {
-    const {court, day} = nextProps;
-    this.fetchPlatz(court, day);
+  componentDidUpdate(prevProps) {
+    if (this.props.day !== prevProps.day) {
+      const {court, day, permissions} = this.props;
+      this.fetchPlatz(court, day, permissions);
+    }
   }
 
-  componentWillMount() {
-    const { court, day } = this.props;
-    this.fetchPlatz(court, day);
+  componentDidMount() {
+    const { court, day, permissions } = this.props;
+    this.fetchPlatz(court, day, permissions);
   }
   
-  fetchPlatz(court, day) {
-    const userIsAllowed = ((permissions.MANNSCHAFTSFUEHRER & this.props.permissions) > 0);
+  fetchPlatz(court, day, uPermissions) {
+    const userIsAllowed = ((permissions.MANNSCHAFTSFUEHRER & uPermissions) > 0);
     const url = Config.protokoll + Config.hostname + "/intern/api/platz.php?op=ra&p=" + court + "&ds=" + day + "&de=" + day;
     window.addEventListener('resize', this.handleWindowSizeChange);
     

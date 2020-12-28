@@ -88,7 +88,6 @@ class BelForm extends Component {
     if (this.state.zurTafel === true) {
       return <Redirect to={{pathname: "/intern/tafel/", state: this.state.startsAtDate}} />
     }
-    const condVorstand = (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
     const condMF = (Permissions.MANNSCHAFTSFUEHRER === (Permissions.MANNSCHAFTSFUEHRER & this.props.permissions))
     return (
       <div>
@@ -369,7 +368,7 @@ class BelForm extends Component {
       pKeys[2] = _.find(this.state.spieler, { 'id': this.state.p3 })
       pKeys[3] = _.find(this.state.spieler, { 'id': this.state.p4 })
 
-      // Haben wir einen GAST?
+      // Haben wir einen GAST oder ein Mitglied ohne Namen?
       const {p1, p2, p3, p4} = this.state;
       [p1,p2,p3,p4].forEach( (p) => {
         if (Number(p) === Config.gastId) {
@@ -388,7 +387,7 @@ class BelForm extends Component {
         }
       })
 
-      // Ist ein Jugendlicher/Schnuppermitglied dabei? Ist ein Erwachsener dabei?
+      // Ist ein Jugendlicher dabei? Ist ein Erwachsener dabei?
       // Welche Geburtsdaten haben die Spieler?
       pKeys.map(k => {
         if (k != null) // 
@@ -444,6 +443,7 @@ class BelForm extends Component {
       }
       if (condEinGast || condEinMitglied) {
         if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig)) {
+          // Gäste und unbenannte Mitglieder müssen einen Kommentar/Namen vermerken. Mind. 2 Zeichen
           if (this.state.comment.length < 2) {
             [ s.commentMsgClass, s.saveActive, s.commentMsgTxt ] = condEinGast ? Messages.gast : Messages.mitglied
             s.p1MsgFormCtrl = 'is-invalid'
@@ -459,16 +459,21 @@ class BelForm extends Component {
       }
       
       if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig)) {
-        // Jetzt die Berechtigungen nach Alter, Status, Zeitpunkt, Message an der Spielzeit
-        if ((condPlatz6 && condEinSpielerErw && !(condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && condAbendZeit)
+        // Jetzt die Berechtigungen nach Alter, Status, Zeitpunkt. Message an der Spielzeit
+        if  ((condPlatz6 && condEinSpielerErw && !(condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && condAbendZeit)
           || (condPlatz6 && condEinSpielerErw && !(condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && !condAbendZeit)
           || (condPlatz6 && condEinSpielerErw && !(condEinSpielerJug || condEinSchnuppermitglied) && !condSonnOderFeiertag && condAbendZeit)) {
-            [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.jugendvorrecht;
-            s.overbooked = true
+            // Nach alter Platzordnung haben Jugendliche und Schnuppermitglieder abends und am Wochenende auf Platz 6 Vorrecht
+            // *** Diese Regel wird außer Kraft gesetzt ***
+            // [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.jugendvorrecht;
+            // s.overbooked = true
         }
-        else if ((!condPlatz6 && !condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && condAbendZeit)
-          || (!condPlatz6 && !condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && !condAbendZeit)
-          || (!condPlatz6 && !condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && !condSonnOderFeiertag && condAbendZeit)) {
+        // else if ((!condPlatz6 && !condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && condAbendZeit)
+        // || (!condPlatz6 && !condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && !condAbendZeit)
+        // || (!condPlatz6 && !condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && !condSonnOderFeiertag && condAbendZeit)) {
+      else if ((!condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && condAbendZeit)
+          ||   (!condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && !condAbendZeit)
+          ||   (!condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && !condSonnOderFeiertag && condAbendZeit)) {
             [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.erwachsenenvorrecht;
             s.overbooked = true
         }
@@ -503,6 +508,8 @@ class BelForm extends Component {
       if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)|(ts-veranstaltung)/ig)) {
         s.deleteActive = (Permissions.MANNSCHAFTSFUEHRER === (Permissions.MANNSCHAFTSFUEHRER & this.props.permissions))
       }
+
+      // Gäste und Jugendliche dürfen an Arbeitstagen abends erst kurz vor Beginn der Abendspielzeit buchen
 
       // Einzel-/Doppelbuchungen sind nur durch einen der Spieler änderbar
       // ########## VORSICHT: IMMER GEGEN DIE GESPEICHERTE VERSION PRÜFEN 

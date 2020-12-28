@@ -13,8 +13,8 @@ class App extends Component
       isLoggedIn: false,
       permissions: 0,
       renderData: [],
-      isLoading1: false,
-      isLoading2: false,
+      isLoading1: true,
+      isLoading2: true,
     };
   }
   
