@@ -47,7 +47,6 @@ export const jugendlicher = (geburtsdatum) => {
   {
     return false;
   }
-  // später Schnuppermitglieder hier dazunehmen
   let aktuellesJahr = new Date();
   aktuellesJahr = aktuellesJahr.getFullYear();
   let geburtsjahr = new Date(geburtsdatum);
@@ -56,6 +55,24 @@ export const jugendlicher = (geburtsdatum) => {
   // console.log(`${geburtsdatum} ${geburtsjahr} ${aktuellesJahr} ${jugend}` );
   return jugend;
 }
+
+// Serverzeit?
+export const servertimeNow = () => {
+  const cookies = parseCookie(document.cookie)
+  const servertime = cookies['servertime']
+  const st = new Date(Number(servertime)) 
+  return st
+}
+
+//#Source https://bit.ly/2neWfJ2 
+const parseCookie = str =>
+  str
+    .split(';')
+    .map(v => v.split('='))
+    .reduce((acc, v) => {
+      acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+      return acc;
+    }, {});
 
 
 ///////////////////////// KANN DAS FUNKTIONIEREN??? //////////////////////

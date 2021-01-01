@@ -15,13 +15,14 @@ https://www.red-bean.com/cvs2cl/changelogs.html#maintaining-the-changelog
 
 TCO Platzbuchungssystem
 =======================
-
-2020-05-23  Conny Roloff <conny.roloff@live.de>
-        
+2021-01-01  Conny Roloff
         Platzbuchungssystem
-        * Berechtigungen für Mannschaftsführer eingeführt:
-          MYSQL: Tabelle permissionnames
-        * Mannschaftsführer für "Training"-Buchungen im Buchungsformular berechtigt
+        * Jugendliche, Gäste, Schnuppermitglieder dürfen abends erst 15 Minuten vor Spielbeginn buchen
+        * "Abends" beginnt um 17:00 Uhr
+        * Doppel jetzt 120 Minuten
+        * Keine Sonderregeln mehr für Platz 6
+        * Meldung im Buchungsdialog: "Einzel-/Doppel-Buchungen nur am aktuellen Tag möglich"
+
 
 2020-06-21  Conny Roloff
 
@@ -40,3 +41,9 @@ TCO Platzbuchungssystem
         * Schnuppermitglieder Kennzeichnung
         * Schnuppermitglieder Buchungsbeschränkung wie Jugendliche
         
+2020-05-23  Conny Roloff <conny.roloff@live.de>
+        
+        Platzbuchungssystem
+        * Berechtigungen für Mannschaftsführer eingeführt:
+          MYSQL: Tabelle permissionnames
+        * Mannschaftsführer für "Training"-Buchungen im Buchungsformular berechtigt

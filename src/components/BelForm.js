@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import Config, { messages as Messages, permissions as Permissions } from './Defaults';
 import { Redirect } from 'react-router';
-import { spielerzusatz, jugendlicher as isJugendlicher } from './functions';
+import { spielerzusatz, servertimeNow, jugendlicher as isJugendlicher } from './functions';
 import _ from 'lodash';
 import Holidays from 'date-holidays';
 
@@ -16,12 +16,16 @@ class BelForm extends Component {
 
     const { r } = props;
     // Daten für Datum, Start und Ende extrahieren
-    let [sd, st] = r.starts_at.split(' ');
-    const dateIsToday = ((new Date(sd)).getDate() === (new Date()).getDate());
+    let [sd, st] = r.starts_at.split(' ')
+    let scd = new Date(sd)
+    let ssd = servertimeNow()
+    scd.setHours(0,0,0,0)
+    ssd.setHours(0,0,0,0)
+    
+    const dateIsToday = (scd.valueOf() === ssd.valueOf())
 
     // Initialer Wert für neue Buchungen. Wenn Einzel/Doppel erlaubt/nicht erlaubt sind, hier ändern
     const bookingType = (r.booking_type === '') ? (dateIsToday ? 'ts-einzel' : 'ts-turnier') : r.booking_type;
-    // const bookingType = (r.booking_type === '') ? 'ts-turnier' : r.booking_type;
     const deleteActive = r.booking_type.match(/(ts-nichtreservierbar)/ig) 
         ? (Permissions.T_ALL_PERMISSIONS === (Permissions.T_ALL_PERMISSIONS & this.props.permissions)) 
         : true;
@@ -107,6 +111,9 @@ class BelForm extends Component {
               </select>
             </div>
             <div><strong>Buchungstyp</strong></div>
+            { !this.state.dateIsToday && 
+              <p>Einzel-/Doppel-Buchung nur am aktuellen Tag möglich</p>
+            }
             <select id="bookingType" className="form-control" onChange={this.handleChange} value={this.state.bookingType}>
               <option disabled={!this.state.dateIsToday} value="ts-einzel">Einzel</option>
               <option disabled={!this.state.dateIsToday} value="ts-doppel">Doppel</option>
@@ -341,7 +348,7 @@ class BelForm extends Component {
       let condEinGast = false
       let condEinMitglied = false
       let condEinSpielerJug = false
-      let condEinSpielerErw = false
+      let condEinSpielerErwVoll = false
       let condDoppelteSpieler = false
       let condAbendZeit = false
       let condEinSchnuppermitglied = false
@@ -352,7 +359,7 @@ class BelForm extends Component {
       hd.init('DE', 'BY')
       const condFeiertag = hd.isHoliday(sd) ? true : false
       const condSonnOderFeiertag = (condFeiertag || (sd.getDay() === 0) || (sd.getDay() === 6))
-      const condPlatz6 = (Number(this.state.court) === 6)
+      // const condPlatz6 = (Number(this.state.court) === 6)
 
       // Validierung
       // -----------
@@ -387,13 +394,13 @@ class BelForm extends Component {
         }
       })
 
-      // Ist ein Jugendlicher dabei? Ist ein Erwachsener dabei?
+      // Ist ein Jugendlicher dabei? Ist ein erwachsenes Vollmitglied dabei?
       // Welche Geburtsdaten haben die Spieler?
       pKeys.map(k => {
         if (k != null) // 
         {
-          if (!isJugendlicher(k['geburtsdatum'])) {
-            condEinSpielerErw = true
+          if ( ! ((isJugendlicher(k['geburtsdatum']) || k['schnupper']) !== "0" )) {
+            condEinSpielerErwVoll = true
           } else {
             condEinSpielerJug = true
           }
@@ -460,20 +467,12 @@ class BelForm extends Component {
       
       if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig)) {
         // Jetzt die Berechtigungen nach Alter, Status, Zeitpunkt. Message an der Spielzeit
-        if  ((condPlatz6 && condEinSpielerErw && !(condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && condAbendZeit)
-          || (condPlatz6 && condEinSpielerErw && !(condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && !condAbendZeit)
-          || (condPlatz6 && condEinSpielerErw && !(condEinSpielerJug || condEinSchnuppermitglied) && !condSonnOderFeiertag && condAbendZeit)) {
-            // Nach alter Platzordnung haben Jugendliche und Schnuppermitglieder abends und am Wochenende auf Platz 6 Vorrecht
-            // *** Diese Regel wird außer Kraft gesetzt ***
-            // [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.jugendvorrecht;
-            // s.overbooked = true
-        }
-        // else if ((!condPlatz6 && !condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && condAbendZeit)
-        // || (!condPlatz6 && !condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && !condAbendZeit)
-        // || (!condPlatz6 && !condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && !condSonnOderFeiertag && condAbendZeit)) {
-      else if ((!condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && condAbendZeit)
-          ||   (!condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && condSonnOderFeiertag && !condAbendZeit)
-          ||   (!condEinSpielerErw && (condEinSpielerJug || condEinSchnuppermitglied) && !condSonnOderFeiertag && condAbendZeit)) {
+        // Diese Bedingungen sind von der Entscheidungstabelle (Dokumentation, Excel) abgeleitet
+        const dToday = new Date()
+        const dH = dToday.getHours()
+        const dM = dToday.getMinutes()
+        const minutesToday = (dH * 60 + dM)
+        if    ( (start - minutesToday) > Config.maxMinutesDistance && !condEinSpielerErwVoll && !condSonnOderFeiertag && ende > (Config.eveningTime / 100 * 60) ) {
             [ s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt ] = Messages.erwachsenenvorrecht;
             s.overbooked = true
         }

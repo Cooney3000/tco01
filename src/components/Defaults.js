@@ -20,9 +20,9 @@ const config = {
   dailyStartTime: 8,
   dailyEndTime: 20,
   eveningTime: 1700,  // 17:00 Uhr, alte Platzordnung war 18:00 Uhr
-  allowBookingForGuestsAndYouthMinutesBeforeEvening = 15, // Gäste und Jugendliche dürfen erst kurz vor der Abendspielzeit buchen
+  maxMinutesDistance: 15, // Gäste und Jugendliche dürfen abends erst kurz vor der Spielzeit buchen
   singleTime: 60, // = 1 Stunde
-  doubleTime: 120, // = 1,5 Stunden (1 Stunde, 30 Minuten)
+  doubleTime: 120, // = 2 Stunden 
   turnierTime: 120, // = 2 Stunden 
   gastId: 1,
   mitgliedId: 25,
@@ -50,9 +50,9 @@ export const messages = {
   veranstaltung: [IMPORTANT, SAVE, '- Bitte den Veranstaltungsanlass ins Kommentarfeld schreiben und den Vorstand informieren!'],
   spieleranzahl: [IMPORTANT, NOSAVE, '- Bitte alle Spieler eintragen!'],
   jugendvorrecht: [MSG, SAVE, '- Achtung: Jugendliche haben auf Platz 6 zu dieser Zeit Vorrecht!'],
-  erwachsenenvorrecht: [IMPORTANT, SAVE, '- Achtung: Erwachsene Vollmitglieder haben zu dieser Zeit Vorrecht!'],
+  erwachsenenvorrecht: [IMPORTANT, NOSAVE, '- Buchung erst 15 Minuten vor Spielbeginn möglich, da erwachsene Vollmitglieder abends ab 17:00 Uhr Vorrecht haben.'],
   einzeldauer: [IMPORTANT, NOSAVE, '- Für ein Einzel maximal 60 Minuten buchen'],
-  doppeldauer: [IMPORTANT, NOSAVE, '- Für ein Doppel maximal 90 Minuten buchen'],
+  doppeldauer: [IMPORTANT, NOSAVE, '- Für ein Doppel maximal 120 Minuten buchen'],
   turnier: [MSG, SAVE, '- Turnierspiele 120 Minuten. Falls möglich auf Platz 1 buchen. Parallel sollte ein Platz auf der Anlage nicht durch Turniere oder Training belegt sein! Wer Mannschaftstraining hat, darf nur auf den Plätzen der Mannschaft Turnier spielen.'],
   turnierspieldauer: [IMPORTANT, NOSAVE, '- Turnierspiele 120 Minuten. Falls möglich auf Platz 1 buchen. Parallel sollte ein Platz auf der Anlage nicht durch Turniere oder Training belegt sein! Wer Mannschaftstraining hat, darf nur auf den Plätzen der Mannschaft Turnier spielen.'],
   zeit: [IMPORTANT, NOSAVE, '- Der Start muss vor dem Ende liegen!'],
