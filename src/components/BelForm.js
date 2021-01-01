@@ -56,6 +56,7 @@ class BelForm extends Component {
       zurTafel: false,
       saveActive: true,
       deleteActive: deleteActive,
+      endeActive: true,
       admin: false,
       dateIsToday: dateIsToday,
       overbooked: false,
@@ -149,26 +150,26 @@ class BelForm extends Component {
             <div><strong>Ende</strong></div>
             <div className="form-group">
               <select id="endsAtStd" className={'form-control ' + this.state.endsAtMsgClass} onChange={this.handleChange} value={this.state.endsAtStd}>
-                <option value="08">08</option>
-                <option value="09">09</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-                <option value="13">13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-                <option value="16">16</option>
-                <option value="17">17</option>
-                <option value="18">18</option>
-                <option value="19">19</option>
-                <option value="20">20</option>
-                <option value="21">21</option>
+                <option disabled={!this.state.endeActive} value="08">08</option>
+                <option disabled={!this.state.endeActive} value="09">09</option>
+                <option disabled={!this.state.endeActive} value="10">10</option>
+                <option disabled={!this.state.endeActive} value="11">11</option>
+                <option disabled={!this.state.endeActive} value="12">12</option>
+                <option disabled={!this.state.endeActive} value="13">13</option>
+                <option disabled={!this.state.endeActive} value="14">14</option>
+                <option disabled={!this.state.endeActive} value="15">15</option>
+                <option disabled={!this.state.endeActive} value="16">16</option>
+                <option disabled={!this.state.endeActive} value="17">17</option>
+                <option disabled={!this.state.endeActive} value="18">18</option>
+                <option disabled={!this.state.endeActive} value="19">19</option>
+                <option disabled={!this.state.endeActive} value="20">20</option>
+                <option disabled={!this.state.endeActive} value="21">21</option>
               </select>
               <select id="endsAtViertel" className={'form-control ' + this.state.endsAtMsgClass} onChange={this.handleChange} value={this.state.endsAtViertel}>
-                <option value="00">00</option>
-                <option value="15">15</option>
-                <option value="30">30</option>
-                <option value="45">45</option>
+                <option disabled={!this.state.endeActive} value="00">00</option>
+                <option disabled={!this.state.endeActive} value="15">15</option>
+                <option disabled={!this.state.endeActive} value="30">30</option>
+                <option disabled={!this.state.endeActive} value="45">45</option>
               </select>
             </div>
             <div><strong>Spieler</strong> <span id="p1Msg" className={this.state.p1MsgClass}>{this.state.p1MsgTxt}</span></div>
@@ -341,17 +342,15 @@ class BelForm extends Component {
       s.commentMsgClass = ''
       s.saveActive = true
       s.deleteActive = true
+      s.endeActive = true
       s.p1MsgFormCtrl = ''
       s.overbooked = false
 
       // Bedingungen
       let condEinGast = false
       let condEinMitglied = false
-      let condEinSpielerJug = false
       let condEinSpielerErwVoll = false
       let condDoppelteSpieler = false
-      let condAbendZeit = false
-      let condEinSchnuppermitglied = false
 
       const datestring = this.state.startsAtDate + 'T' + this.state.startsAtStd + ':' + this.state.startsAtViertel + "Z"
       const sd = new Date(datestring)
@@ -366,8 +365,9 @@ class BelForm extends Component {
       // Es wird validiert, ob Erwachsene, Schnuppermitglieder und Jugendliche 
       // wirklich spielberechtigt sind und ob die eingetragenen Zeiten stimmen
 
+      // Buchungszeiten in Minuten
       const start = Number(this.state.startsAtStd) * 60 + Number(this.state.startsAtViertel)
-      const ende = Number(this.state.endsAtStd) * 60 + Number(this.state.endsAtViertel)
+      let   ende = Number(this.state.endsAtStd) * 60 + Number(this.state.endsAtViertel)
       const pKeys = [];
 
       pKeys[0] = _.find(this.state.spieler, { 'id': this.state.p1 })
@@ -386,30 +386,33 @@ class BelForm extends Component {
         }
       })
 
-      // Haben wir ein Schnuppermitglied?
-      const {p1Schn, p2Schn, p3Schn, p4Schn} = this.state;
-      [p1Schn,p2Schn,p3Schn,p4Schn].forEach( (p) => {
-        if (p != null) {
-          condEinSchnuppermitglied = (Number(p) === 1) 
-        }
-      })
-
-      // Ist ein Jugendlicher dabei? Ist ein erwachsenes Vollmitglied dabei?
+      // Ist ein erwachsenes Vollmitglied dabei?
       // Welche Geburtsdaten haben die Spieler?
       pKeys.map(k => {
         if (k != null) // 
         {
           if ( ! ((isJugendlicher(k['geburtsdatum']) || k['schnupper']) !== "0" )) {
             condEinSpielerErwVoll = true
-          } else {
-            condEinSpielerJug = true
-          }
+          } 
           return k['geburtsdatum']
         }
         return undefined
       })
 
-      condAbendZeit = (ende) > Config.eveningTime
+      // Einzel, Doppel und Turnierspiele haben feste Dauer, daher Ende setzen und im Formular deaktivieren
+      if (this.state.bookingType === 'ts-einzel') {
+        ende = start + Config.singleTime
+      } else if (this.state.bookingType === 'ts-doppel') {
+        ende = start + Config.doubleTime
+      } else if (this.state.bookingType === 'ts-turnier') {
+        ende = start + Config.turnierTime
+      }
+      if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)|(ts-turnier)/ig)) { 
+        s.endsAtStd = Math.floor(ende/60)
+        s.endsAtViertel = ende % 60
+        s.endeActive = false
+      }
+
 
       // Message an der Spielzeit
       // Formal müssen Spieler korrekt eingetragen sein
