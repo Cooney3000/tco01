@@ -75,6 +75,61 @@ const parseCookie = str =>
     }, {});
 
 
+// Liefere die Daten für einen HTML-SELECT mit belegten und freien Zeiten
+const getSelectFill = (belegungen) => {
+
+  // Erzeuge alle Zeiten als Timestamps für den HTML-Select in einem zweidimensionalen Objekt
+  // mit Uhrzeiten im Viertelstunden-Takt
+  // in der Form {<uhrzeit> : {platz: <platz>, <aktiv|inaktiv>}}
+  let zeit = new Date()
+  let endeTag = new Date()
+  
+  // TESTDATEN ***************************************************
+  zeit = new Date(2020, 4, 22)
+  endeTag = new Date(2020, 4, 22)
+  
+  zeit.setHours(8,0,0,0)
+  endeTag.setHours(21,0,0,0)
+  const timetable = {}
+  for ( ; 
+        zeit <= endeTag; 
+        zeit = new Date(zeit.getTime() + 900000) ) // 900000 Millisekunden sind 15 Minuten
+  {
+      timetable[zeit] = []
+      for(let i = 0; i<config.anzahlPlaetze; i++) 
+      {
+        timetable[zeit].push(true)
+      }
+  }
+  
+  // Wir haben 2 Objekte: 
+  // 1. Wir iterieren über die Belegungen, sortiert nach Anfangszeit und Platz. 
+  // 2. timetable, auf das wir direkt über die Zeit zugreifen
+
+  // console.log(belegungen)
+  const viertelMs = 15*1000*60 // eine Viertelstunde in Millisekunden
+  for(let bKey in belegungen) 
+  {
+    let sa = new Date(belegungen[bKey].starts_at)
+    let ea = new Date(belegungen[bKey].ends_at)
+
+    let anzahlViertel = (ea - sa)/viertelMs
+    for (let i = 0; i < anzahlViertel; i++) 
+    {
+      let saTmp = new Date(sa.getTime() + (i * viertelMs))
+      let cTmp = Number(belegungen[bKey].court) - 1
+      timetable[saTmp][cTmp] = false
+      console.log(saTmp, timetable[saTmp][cTmp], ', court: ', cTmp)
+    }
+    
+
+    // console.log("Starts: ", sa, " Ende: ", ea, " Dauer: ", anzahlViertel, " Timetable: ", timetable[sa])
+  }
+  return timetable
+}
+
+
+
 ///////////////////////// KANN DAS FUNKTIONIEREN??? //////////////////////
 // const Model = () => {
 //   let liste = {};

@@ -1,7 +1,7 @@
 
 // ****** Konfigurationsdaten *******
 
-let hostLocal = true
+export const hostLocal = true
 
 const config = {
   testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
@@ -48,7 +48,7 @@ export const messages = {
   gast: [IMPORTANT, NOSAVE, '- Bitte den Gastnamen ins Kommentarfeld schreiben und die Gebühr innerhalb einer Woche überweisen!'],
   mitglied: [IMPORTANT, NOSAVE, '- Bitte nur für Mitglieder ohne Email verwenden und den Namen ins Kommentarfeld schreiben!'],
   veranstaltung: [IMPORTANT, SAVE, '- Bitte den Veranstaltungsanlass ins Kommentarfeld schreiben und den Vorstand informieren!'],
-  spieleranzahl: [IMPORTANT, NOSAVE, '- Bitte alle Spieler eintragen!'],
+  spieleranzahl: [IMPORTANT, NOSAVE, '- Bitte alle Personen eintragen!'],
   jugendvorrecht: [MSG, SAVE, '- Achtung: Jugendliche haben auf Platz 6 zu dieser Zeit Vorrecht!'],
   erwachsenenvorrecht: [IMPORTANT, NOSAVE, '- Buchung erst 15 Minuten vor Spielbeginn möglich, da erwachsene Vollmitglieder abends ab 17:00 Uhr Vorrecht haben.'],
   einzeldauer: [IMPORTANT, NOSAVE, '- Für ein Einzel maximal 60 Minuten buchen'],
@@ -75,26 +75,11 @@ export const permissions = {
   //              128 ist Recht 8
   //              143 ist Recht 1,2,3,4,8
     NONE : 0,
-    MYDATA_READ : 1,
-    MYDATA_WRITE : 2,
-    MYDATA_UPDATE : 3,          // kombiniert
-    ALLDATA_READ : 5,           // kombiniert
-    ALLDATA_WRITE : 8,  
-    ALLDATA_UPDATE : 15,        // kombiniert
-    PERMISSION_FREE_1 : 16,
-      MANNSCHAFTSFUEHRER : 32,
-      WIRT : 64,
-      T_ALL_PERMISSIONS : 128,    // Turnierverantwortliche
-    PERMISSION_FREE_2 : 256,
+    MANNSCHAFTSFUEHRER : 32,
+    WIRT : 64,
+    T_ALL_PERMISSIONS : 128,    // Turnierverantwortliche
     VORSTAND : 496,             // kombiniert 16, 32, 64, 128, 256
-    PERMISSION_FREE_5 : 512,
-    PERMISSION_FREE_6 : 1024,
-    PERMISSION_FREE_7 : 2048,
-    PERMISSION_FREE_8 : 4096,
-    PERMISSION_FREE_9 : 8192,
-    PERMISSION_FREE_10 : 16384,
-    PERMISSION_FREE_11 : 32768,
-      ADMINISTRATOR : 65535,
+    ADMINISTRATOR : 65535,
 };
 
 export default config;

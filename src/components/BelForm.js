@@ -52,6 +52,7 @@ class BelForm extends Component {
       p3Schn: r.schnupper3,
       p4Schn: r.schnupper4,
       spieler: [],
+      belegungenAbJetzt: [],
       court: r.court,
       zurTafel: false,
       saveActive: true,
@@ -85,6 +86,25 @@ class BelForm extends Component {
         this.setState({ spieler: spieler })
       })
       .catch(error => this.setState({ error, isLoading: false }));
+    
+    // Alle Belegungen des Tages für die Belegungsprüfung laden
+    let selectFill = {}   
+    url = Config.protokoll + Config.hostname + "/intern/api/belegungenabjetzt.php";
+    this.setState({ isLoading2: true });
+    fetch(url, { credentials: 'same-origin' })
+      .then(result => {
+        if (result.ok) {
+          // console.log(result);
+          return result.json();
+        } else {
+          throw new Error('Fehler beim Laden der Belegungsdaten');
+        }
+      })
+      .then(result => {
+        selectFill = getSelectFill(result.records);
+
+    })
+      .catch(error => this.setState({ error, isLoading2: false }));
     
   }
 
@@ -172,7 +192,7 @@ class BelForm extends Component {
                 <option disabled={!this.state.endeActive} value="45">45</option>
               </select>
             </div>
-            <div><strong>Spieler</strong> <span id="p1Msg" className={this.state.p1MsgClass}>{this.state.p1MsgTxt}</span></div>
+            <div><strong>{(this.state.bookingType.match(/(ts-einzel)|(ts-doppel)|(ts-turnier)/ig))?'Spieler':'Verantwortlicher'}</strong> <span id="p1Msg" className={this.state.p1MsgClass}>{this.state.p1MsgTxt}</span></div>
             <div className="form-row">
               <select id="p1" className={'form-control ' + this.state.p1MsgFormCtrl} onChange={this.handleChange} value={this.state.p1}>
                 <option value="0">- Bitte auswählen -</option>
@@ -351,6 +371,7 @@ class BelForm extends Component {
       let condEinMitglied = false
       let condEinSpielerErwVoll = false
       let condDoppelteSpieler = false
+      let condUserIstSpieler = false
 
       const datestring = this.state.startsAtDate + 'T' + this.state.startsAtStd + ':' + this.state.startsAtViertel + "Z"
       const sd = new Date(datestring)
@@ -376,8 +397,12 @@ class BelForm extends Component {
       pKeys[3] = _.find(this.state.spieler, { 'id': this.state.p4 })
 
       // Haben wir einen GAST oder ein Mitglied ohne Namen?
+      // Ist der aktuelle User auch Spieler?
       const {p1, p2, p3, p4} = this.state;
       [p1,p2,p3,p4].forEach( (p) => {
+        if (Number(p) === this.props.userId) {
+          condUserIstSpieler = true
+        }
         if (Number(p) === Config.gastId) {
           condEinGast = true
         }
@@ -386,7 +411,7 @@ class BelForm extends Component {
         }
       })
 
-      // Ist ein erwachsenes Vollmitglied dabei?
+    // Ist ein erwachsenes Vollmitglied dabei?
       // Welche Geburtsdaten haben die Spieler?
       pKeys.map(k => {
         if (k != null) // 
@@ -503,18 +528,17 @@ class BelForm extends Component {
         }
       }
 
-      // Nicht-Einzel/Doppel ist nur für Berechtigte speicher- und löschbar
+      // Berechtigung zum Speichern und Löschen
+      if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)|(ts-turnier)/ig)) {
+        s.saveActive = condUserIstSpieler || (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
+        s.deleteActive = condUserIstSpieler || (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
+      }
       if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)|(ts-veranstaltung)/ig)) {
-        s.saveActive   = (Permissions.MANNSCHAFTSFUEHRER === (Permissions.MANNSCHAFTSFUEHRER & this.props.permissions))
+        s.saveActive = (Permissions.MANNSCHAFTSFUEHRER === (Permissions.MANNSCHAFTSFUEHRER & this.props.permissions))
       }
       if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)|(ts-veranstaltung)/ig)) {
         s.deleteActive = (Permissions.MANNSCHAFTSFUEHRER === (Permissions.MANNSCHAFTSFUEHRER & this.props.permissions))
       }
-
-      // Gäste und Jugendliche dürfen an Arbeitstagen abends erst kurz vor Beginn der Abendspielzeit buchen
-
-      // Einzel-/Doppelbuchungen sind nur durch einen der Spieler änderbar
-      // ########## VORSICHT: IMMER GEGEN DIE GESPEICHERTE VERSION PRÜFEN 
 
       // Alle Ergebnisse in den State
       this.setState(s)
