@@ -50,6 +50,10 @@ class Belegungstag extends Component {
   render() {
     const { width } = this.state;
     let firstDaypickerDay = new Date();
+
+    // //### TESTDATEN ###################
+    // firstDaypickerDay = new Date(2020, 4, 22);
+    
     const isMobile = (width <= config.smartphoneWidth);
     if (isMobile) {
       firstDaypickerDay.setDate(firstDaypickerDay.getDate() - config.daypickerDaysBeforeToday);

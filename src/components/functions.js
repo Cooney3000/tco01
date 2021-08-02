@@ -1,34 +1,32 @@
-export const formatDate = (d) =>
-{
+import Config from './Defaults';
+
+export const formatDate = (d) => {
   var month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
+    day = '' + d.getDate(),
+    year = d.getFullYear();
 
   if (month.length < 2) month = '0' + month;
   if (day.length < 2) day = '0' + day;
 
-  return [year, month, day].join('-');  
+  return [year, month, day].join('-');
 }
 
 // ***** date array 
-export const getDateArray = (start, end) => 
-{
+export const getDateArray = (start, end) => {
   let dt = new Date(start),
-      arr = [];
+    arr = [];
   while (dt <= end) {
-    arr.push({ name: formatDate(dt), text: dt.toLocaleDateString("de-DE",{ weekday: 'short', month: 'short', day: 'numeric' })});
+    arr.push({ name: formatDate(dt), text: dt.toLocaleDateString("de-DE", { weekday: 'short', month: 'short', day: 'numeric' }) });
     dt.setDate(dt.getDate() + 1);
   }
   return arr;
 }
 
-export const isValidDate = (d) => 
-{
+export const isValidDate = (d) => {
   return d instanceof Date && !isNaN(d);
 }
 
-export const spielerzusatz = (geburtsdatum, schnupper) => 
-{
+export const spielerzusatz = (geburtsdatum, schnupper) => {
   let aktuellesJahr = new Date();
   aktuellesJahr = aktuellesJahr.getFullYear();
   let geburtsjahr = new Date(geburtsdatum);
@@ -43,8 +41,7 @@ export const spielerzusatz = (geburtsdatum, schnupper) =>
 
 // jugendlicher = nicht voll Berechtigt
 export const jugendlicher = (geburtsdatum) => {
-  if (typeof(geburtsdatum) === 'undefined' || geburtsdatum === null)
-  {
+  if (typeof (geburtsdatum) === 'undefined' || geburtsdatum === null) {
     return false;
   }
   let aktuellesJahr = new Date();
@@ -60,7 +57,7 @@ export const jugendlicher = (geburtsdatum) => {
 export const servertimeNow = () => {
   const cookies = parseCookie(document.cookie)
   const servertime = cookies['servertime']
-  const st = new Date(Number(servertime)) 
+  const st = new Date(Number(servertime))
   return st
 }
 
@@ -75,58 +72,85 @@ const parseCookie = str =>
     }, {});
 
 
-// Liefere die Daten für einen HTML-SELECT mit belegten und freien Zeiten
-const getSelectFill = (belegungen) => {
-
-  // Erzeuge alle Zeiten als Timestamps für den HTML-Select in einem zweidimensionalen Objekt
-  // mit Uhrzeiten im Viertelstunden-Takt
-  // in der Form {<uhrzeit> : {platz: <platz>, <aktiv|inaktiv>}}
-  let zeit = new Date()
-  let endeTag = new Date()
-  
-  // TESTDATEN ***************************************************
-  zeit = new Date(2020, 4, 22)
-  endeTag = new Date(2020, 4, 22)
-  
-  zeit.setHours(8,0,0,0)
-  endeTag.setHours(21,0,0,0)
-  const timetable = {}
-  for ( ; 
-        zeit <= endeTag; 
-        zeit = new Date(zeit.getTime() + 900000) ) // 900000 Millisekunden sind 15 Minuten
-  {
-      timetable[zeit] = []
-      for(let i = 0; i<config.anzahlPlaetze; i++) 
-      {
-        timetable[zeit].push(true)
+// Setze alle Zeiten auf false, die nicht als Start verwendet werden dürfen
+export function getBookableTimes(tt) {
+  // Zu welchem Slot kann auf einem Platz gestartet werden?
+  let startBooking = ['--', '--', '--', '--', '--', '--']
+  for (let slot in tt) {  // Iteration über die Indizes der Slots
+    for (let p in tt[slot]) { // Iteration über die Indizes (0 - 5) der Plätze je Viertelstunden
+      if (startBooking[p] === '--' && tt[slot][p] === Config.platzBelegt) {  // Wenn ein Platz an einer Stelle nicht buchbar ist, ist er ".."
+        startBooking[p] = slot.substr(19, 2) // Merke dir die Minuten des Slots. An Pos 19 sind die Minuten
       }
-  }
-  
-  // Wir haben 2 Objekte: 
-  // 1. Wir iterieren über die Belegungen, sortiert nach Anfangszeit und Platz. 
-  // 2. timetable, auf das wir direkt über die Zeit zugreifen
-
-  // console.log(belegungen)
-  const viertelMs = 15*1000*60 // eine Viertelstunde in Millisekunden
-  for(let bKey in belegungen) 
-  {
-    let sa = new Date(belegungen[bKey].starts_at)
-    let ea = new Date(belegungen[bKey].ends_at)
-
-    let anzahlViertel = (ea - sa)/viertelMs
-    for (let i = 0; i < anzahlViertel; i++) 
-    {
-      let saTmp = new Date(sa.getTime() + (i * viertelMs))
-      let cTmp = Number(belegungen[bKey].court) - 1
-      timetable[saTmp][cTmp] = false
-      console.log(saTmp, timetable[saTmp][cTmp], ', court: ', cTmp)
     }
-    
-
-    // console.log("Starts: ", sa, " Ende: ", ea, " Dauer: ", anzahlViertel, " Timetable: ", timetable[sa])
+  }
+  // Alle Plätze nur zu möglichen Startzeiten erlauben, andere Zeiten sperren ("--")
+  // z. B. Wenn eine Buchung um xx:30 Uhr besteht, dann sind keine Buchungen zur vollen Stunde erlaubt, 
+  // um nicht Lücken entstehen zu lassen
+  // *****************  DERZEIT INAKTIV!!! ******************
+  const timetable = []
+  for (let slot in tt) {  // Iteration über die Indizes der Viertelstunden (0..51)
+    timetable[slot] = []
+    for (let p in tt[slot]) { // Iteration über die Indizes (0 - 5) der Plätze je Viertelstunden
+      // console.log("p, tt[slot][p]: ", p, tt[slot][p])
+      if (startBooking[p] === '--') { // Auf diesem Platz p gibt es an diesem Tag noch keine Buchung
+        timetable[slot][p] = tt[slot][p]  // Platzziffer übernehmen
+      }
+      else {
+        if ((startBooking[p] === slot.substr(19, 2) || tt[slot][p] === Config.platzBelegt)) {  // Das ist eine gültige Zeit für einen Platz
+          timetable[slot][p] = tt[slot][p] // Platzziffer (oder eben Sperrzeichen) übernehmen
+        } else {
+          timetable[slot][p] = Config.platzLeer
+        }
+      }
+    }
   }
   return timetable
 }
+
+// Liefere die Daten für einen HTML-SELECT mit belegten und freien Zeiten
+export function getTimetable(belegungen) {
+  // Erzeuge alle Zeiten als Timestamps für den HTML-Select in einem zweidimensionalen Objekt
+  // mit Uhrzeiten im Slot-Takt (z. B. 30 oder 15 Minutene, je nach Config)
+  // in der Form {<uhrzeit> : {platz: <platz>, <aktiv|inaktiv>}}
+
+  let zeit = new Date();
+  let endeTag = new Date();
+
+  // Die Timetable erzeugen, alle Plätze und Zeiten "frei", also Anzeige der Platznummer
+  zeit.setHours(8, 0, 0, 0);
+  endeTag.setHours(21, 0, 0, 0);
+  const timetable = [];
+  for (; zeit <= endeTag; zeit = new Date(zeit.getTime() + Config.slotMinimalMinutes)) {
+    const tagesZeit = zeit.toTimeString().substr(0, 5)
+    timetable[tagesZeit] = [];
+    for (let i = 1; i <= Config.anzahlPlaetze; i++) {
+      timetable[tagesZeit].push(i);
+    }
+  }
+
+  // Jetzt belegte Zeiten mit "X" belegen
+  // Wir haben 2 Objekte: 
+  // 1. Wir iterieren über die Belegungen, sortiert nach Anfangszeit und Platz. 
+  // 2. timetable, auf das wir direkt über die Zeit zugreifen
+  // console.log(belegungen)
+  for (let bKey in belegungen) {
+    let sa = new Date(belegungen[bKey].starts_at);
+    let ea = new Date(belegungen[bKey].ends_at);
+    // console.log(belegungen[bKey].starts_at + ", " + belegungen[bKey].ends_at)
+    let anzahlSlots = (ea - sa) / Config.slotMinimalMinutes;
+    for (let i = 0; i < anzahlSlots; i++) {
+      let saTmp = new Date(sa.getTime() + (i * Config.slotMinimalMinutes));
+      let cTmp = Number(belegungen[bKey].court) - 1;
+      timetable[saTmp.toTimeString().substr(0, 5)][cTmp] = Config.platzBelegt;
+      // console.log(saTmp, timetable[saTmp][cTmp], ', court: ', cTmp)
+    }
+  }
+  return timetable;
+}
+
+
+
+
 
 
 
@@ -143,7 +167,7 @@ const getSelectFill = (belegungen) => {
 
 // Auswahl über Mausposition???
 // handleClick (e) {
-  
+
 //   var offset = $(this).offset();
 //   var hoehe = $(this).height(); 
 //   var relativeX = (e.pageX - offset.left);
@@ -154,5 +178,5 @@ const getSelectFill = (belegungen) => {
 //   std = Math.floor(std) + 7;
 
 //   alert("X: " + relativeX + "  Y: " + relativeY + " Zeit: " + std + ":" + minuten + " h, Höhe: " + hoehe);
-    
+
 // };

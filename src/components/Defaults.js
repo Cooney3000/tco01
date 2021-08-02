@@ -1,12 +1,12 @@
 
 // ****** Konfigurationsdaten *******
 
-export const hostLocal = true
+export const hostLocal = false
 
 const config = {
   testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
   // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
-  // testuser: {id:357, vorname:'Hart', nachname:'VerdrahtetUsr2', permissions: 432}, // mit normalen Benutzerrechten
+  //  testuser: {id:357, vorname:'Hart', nachname:'VerdrahtetUsr2', permissions: 432}, // mit normalen Benutzerrechten
   stringSeparator: ' ',
   smartphoneWidth: 578,
   anzahlPlaetze: 6,
@@ -26,6 +26,12 @@ const config = {
   turnierTime: 120, // = 2 Stunden 
   gastId: 1,
   mitgliedId: 25,
+  gastJugId: 28,
+  mitgliedJugId: 29,
+  platzLeer: "\u00A0\u00A0",
+  platzBelegt: "\u29EB",
+  slotMinimalMinutes: 1800000, // = 30 Minuten
+  delimiter: "§§§"
 }
 if (hostLocal) {
   config.hostname = 'localhost'
@@ -50,7 +56,7 @@ export const messages = {
   veranstaltung: [IMPORTANT, SAVE, '- Bitte den Veranstaltungsanlass ins Kommentarfeld schreiben und den Vorstand informieren!'],
   spieleranzahl: [IMPORTANT, NOSAVE, '- Bitte alle Personen eintragen!'],
   jugendvorrecht: [MSG, SAVE, '- Achtung: Jugendliche haben auf Platz 6 zu dieser Zeit Vorrecht!'],
-  erwachsenenvorrecht: [IMPORTANT, NOSAVE, '- Buchung erst 15 Minuten vor Spielbeginn möglich, da erwachsene Vollmitglieder abends ab 17:00 Uhr Vorrecht haben.'],
+  erwachsenenvorrecht: [IMPORTANT, NOSAVE, '- Buchung erst 15 Minuten vor Spielbeginn möglich, da werktags ab 17:00 Uhr ein erw. Vollmitglied mitspielen muss.'],
   einzeldauer: [IMPORTANT, NOSAVE, '- Für ein Einzel maximal 60 Minuten buchen'],
   doppeldauer: [IMPORTANT, NOSAVE, '- Für ein Doppel maximal 120 Minuten buchen'],
   turnier: [MSG, SAVE, '- Turnierspiele 120 Minuten. Falls möglich auf Platz 1 buchen. Parallel sollte ein Platz auf der Anlage nicht durch Turniere oder Training belegt sein! Wer Mannschaftstraining hat, darf nur auf den Plätzen der Mannschaft Turnier spielen.'],

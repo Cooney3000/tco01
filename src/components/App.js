@@ -21,7 +21,6 @@ class App extends Component
   componentDidMount()
   {
     this.setState(() => ({ isLoading1: true , isLoading2: true}));
-    
     if (Config.prod) 
     { 
       this.checkUser();
