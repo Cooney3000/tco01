@@ -26,9 +26,9 @@ class BelForm extends Component {
 
     // Initialer Wert für neue Buchungen. Wenn Einzel/Doppel erlaubt/nicht erlaubt sind, hier ändern
     const bookingType = (r.booking_type === '') ? (dateIsToday ? 'ts-einzel' : 'ts-turnier') : r.booking_type
-    const userDarfAlles = [Number([r.user_id]),Number([r.p1id]),Number([r.p2id]),Number([r.p3id]),Number([r.p4id])].includes(Number(this.props.userId)) 
-    const deleteActive =  userDarfAlles || (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
-      
+    const userDarfAlles = [Number([r.user_id]), Number([r.p1id]), Number([r.p2id]), Number([r.p3id]), Number([r.p4id])].includes(Number(this.props.userId))
+    const deleteActive = userDarfAlles || (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
+
     let [ed, et] = r.ends_at.split(' ');
     let sdA = sd.split('-');
     this.state = {
@@ -38,9 +38,10 @@ class BelForm extends Component {
       endsAtDate: ed,
       startsAt: st.substring(0, 5),
       endsAt: et.substring(0, 5),
+      seriesId: r.series_id,
       bookingType: bookingType,
       comment: (typeof r.comment === "undefined") ? "" : r.comment,
-      p1: (r.p1id === 0 ? Number(this.props.userId) :  Number(r.p1id)),
+      p1: (r.p1id === 0 ? Number(this.props.userId) : Number(r.p1id)),
       p2: Number(r.p2id),
       p3: Number(r.p3id),
       p4: Number(r.p4id),
@@ -111,10 +112,11 @@ class BelForm extends Component {
     if (isLoading1 || isLoading2) {
       return <p>Loading...</p>
     }
-    if (this.state.zurTafel === true) {
+    if (this.state.zurTafel === true) { 
       return <Redirect to={{ pathname: "/intern/tafel/", state: this.state.startsAtDate }} />
     }
     const condMF = (Permissions.MANNSCHAFTSFUEHRER === (Permissions.MANNSCHAFTSFUEHRER & this.props.permissions))
+    const condTrainer = (Permissions.TRAINER === (Permissions.MANNSCHAFTSFUEHRER & this.props.permissions))
     return (
       <div>
         <h1>Spieltag: {this.state.spieltag}</h1>
@@ -131,6 +133,7 @@ class BelForm extends Component {
               <option disabled={!condMF} value="ts-veranstaltung">Veranstaltung</option>
               <option disabled={!condMF} value="ts-training">Training</option>
               <option disabled={!condMF} value="ts-punktspiele">Punktspiele</option>
+              <option disabled={!condTrainer} value="ts-trbuchung">Punktspiele</option>
             </select>
             <div><strong>Start</strong> <span id="startsAtMsg" className={this.state.startsAtMsgClass}>{this.state.startsAtMsgTxt}</span></div>
             <div className="form-group">
@@ -141,8 +144,8 @@ class BelForm extends Component {
 
                       return (
                         <option key={ttl} value={ttl}>
-                          {ttl}h 
-                      {/*
+                          {ttl}h
+                          {/*
                           &nbsp; {this.state.timetable[ttl][0]} 
                           &nbsp; {this.state.timetable[ttl][1]} 
                           &nbsp; {this.state.timetable[ttl][2]} 
@@ -158,27 +161,27 @@ class BelForm extends Component {
               </div>
             </div>
             <div><strong>Platz</strong></div>
-              <div className="form-group">
-                <select id="court" className="form-control" onChange={this.handleChange} value={this.state.court}>
-                  <option value="--">--</option>
-                  <option disabled={this.state.courtBelegt[0]} value="1">1</option>
-                  <option disabled={this.state.courtBelegt[1]} value="2">2</option>
-                  <option disabled={this.state.courtBelegt[2]} value="3">3</option>
-                  <option disabled={this.state.courtBelegt[3]} value="4">4</option>
-                  <option disabled={this.state.courtBelegt[4]} value="5">5</option>
-                  <option disabled={this.state.courtBelegt[5]} value="6">6</option>
-                </select>
-              </div>
-          <div><strong>Ende</strong></div>
-             <div className="form-group">
-             <div>
+            <div className="form-group">
+              <select id="court" className="form-control" onChange={this.handleChange} value={this.state.court}>
+                <option value="--">--</option>
+                <option disabled={this.state.courtBelegt[0]} value="1">1</option>
+                <option disabled={this.state.courtBelegt[1]} value="2">2</option>
+                <option disabled={this.state.courtBelegt[2]} value="3">3</option>
+                <option disabled={this.state.courtBelegt[3]} value="4">4</option>
+                <option disabled={this.state.courtBelegt[4]} value="5">5</option>
+                <option disabled={this.state.courtBelegt[5]} value="6">6</option>
+              </select>
+            </div>
+            <div><strong>Ende</strong></div>
+            <div className="form-group">
+              <div>
                 <select id="endsAt" className={'form-control ' + this.state.startsAtMsgClass} onChange={this.handleChange} value={this.state.endsAt}>
                   {
                     Object.keys(this.state.timetable).map(ttl => {
                       return (
                         // <option disabled={!this.state.endeActive} key={ttl} value={ttl}>
                         <option key={ttl} value={ttl}>
-                          {ttl}h 
+                          {ttl}h
                           {/* &nbsp; {this.state.timetable[ttl][0]} 
                           &nbsp; {this.state.timetable[ttl][1]} 
                           &nbsp; {this.state.timetable[ttl][2]} 
@@ -203,7 +206,7 @@ class BelForm extends Component {
                   )
                 })}
               </select>
-              {(this.state.bookingType.match(/(ts-einzel)|(ts-turnier)|(ts-doppel)/ig)) ?
+              {(this.state.bookingType.match(/(ts-einzel)|(ts-turnier)|(ts-doppel)|(ts-trbuchung)/ig)) ?
                 <select id="p2" className={'form-control ' + this.state.p1MsgFormCtrl} onChange={this.handleChange} value={this.state.p2}>
                   <option value="0">- Bitte auswählen -</option>
                   {this.state.spieler.map(r => {
@@ -269,6 +272,7 @@ class BelForm extends Component {
       + '&ds=' + this.state.startsAtDate + ' ' + this.state.startsAt
       + '&de=' + this.state.endsAtDate + ' ' + this.state.endsAt
       + '&uid=' + this.props.userId
+      + '&sid=' + this.state.seriesId
       + '&p1=' + this.state.p1
       + '&p2=' + this.state.p2
       + '&p3=' + this.state.p3
@@ -369,21 +373,29 @@ class BelForm extends Component {
       s.p1MsgFormCtrl = ''
       s.overbooked = false
       s.startsAt = this.state.startsAt
+      s.seriesId = this.state.seriesId
 
       // Alle nicht buchbaren Zeiten der Timetable deaktivieren
       // s.timetable = getBookableTimes(this.state.timetable)
       s.timetable = this.state.timetable
       // Belegte Plätze im Select disablen
-      s.courtBelegt = s.timetable[s.startsAt].map( c => c === Config.platzBelegt )
+      s.courtBelegt = s.timetable[s.startsAt].map(c => c === Config.platzBelegt)
 
       // Endezeit errechnen
       let endsAtViertel = this.state.startsAt.substring(3, 5)
       let endsAtStd = this.state.endsAt.substring(0, 2)
       if (this.state.bookingType === "ts-einzel") {
-        endsAtStd = (Number(this.state.startsAt.substring(0, 2)) + 1).toLocaleString('de-DE', {minimumIntegerDigits: 2, useGrouping: false})
-      } 
-      else if (this.state.bookingType.match(/(ts-turnier)|(ts-doppel)/ig)) {
-        endsAtStd = (Number(this.state.startsAt.substring(0, 2)) + 2).toLocaleString('de-DE', {minimumIntegerDigits: 2, useGrouping: false})
+        endsAtStd = (Number(this.state.startsAt.substring(0, 2)) + 1).toLocaleString('de-DE', { minimumIntegerDigits: 2, useGrouping: false })
+      }
+      else if (this.state.bookingType === "ts-doppel") {
+        endsAtStd = (Number(this.state.startsAt.substring(0, 2)) + 2).toLocaleString('de-DE', { minimumIntegerDigits: 2, useGrouping: false })
+      }
+      else if (this.state.bookingType === "ts-turnier") {
+        if (!(Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))) {
+          endsAtStd = (Number(this.state.startsAt.substring(0, 2)) + 2).toLocaleString('de-DE', { minimumIntegerDigits: 2, useGrouping: false })
+        } else {
+          endsAtViertel = this.state.endsAt.substring(3, 5)
+        }
       }
       s.endsAt = endsAtStd + ":" + endsAtViertel
 
@@ -420,18 +432,19 @@ class BelForm extends Component {
       const spieler = this.state.spieler;
       condEinSpielerErwVoll = false
       pKeys.forEach((p) => {
+        // eslint-disable-next-line
         if (p != null && p != 0) // 
         {
           if (p === Number(this.props.userId)) {
             condUserIstSpieler = true
-          }    if (p === Config.gastId || p === Config.gastJugId) {
+          } if (p === Config.gastId || p === Config.gastJugId) {
             condEinGast = true
-          }    if (p === Config.mitgliedId) {
+          } if (p === Config.mitgliedId) {
             condEinMitglied = true
           }
           // Geburtsdatum und Schnupperstatus prüfen wir mittels spieler-SELECT-Array
           let pAttr = spieler.find(o => o.id === p.toString())
-          if ( ! (isJugendlicher(pAttr['geburtsdatum']) || pAttr['schnupper'] === "1") ) {
+          if (!(isJugendlicher(pAttr['geburtsdatum']) || pAttr['schnupper'] === "1")) {
             condEinSpielerErwVoll = true
           }
         }
@@ -453,7 +466,7 @@ class BelForm extends Component {
       }
       saveActiveMerker = (saveActiveMerker === true) ? s.saveActive : false
 
-      if (this.state.bookingType.match(/(ts-turnier)|(ts-einzel)/ig)) {
+      if (this.state.bookingType.match(/(ts-turnier)|(ts-einzel)|ts-trbuchung/ig)) {
         // Zwei Spieler müssen eingetragen werden, beide nicht 0 und unterschiedlich
         if (Number(this.state.p1) === 0 || Number(this.state.p2) === 0) {
           [s.p1msgClass, s.saveActive, s.p1MsgTxt] = Messages.spieleranzahl;
@@ -484,7 +497,7 @@ class BelForm extends Component {
       saveActiveMerker = (saveActiveMerker === true) ? s.saveActive : false
 
       if (condEinGast || condEinMitglied) {
-        if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig)) {
+        if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)|(ts-trbuchung)/ig)) {
           // Gäste und unbenannte Mitglieder müssen einen Kommentar/Namen vermerken. Mind. 2 Zeichen
           if (this.state.comment.length < 2) {
             [s.commentMsgClass, s.saveActive, s.commentMsgTxt] = condEinGast ? Messages.gast : Messages.mitglied
@@ -531,7 +544,7 @@ class BelForm extends Component {
         }
       }
       else if (this.state.bookingType === "ts-turnier") {
-        if ((ende - start) !== Config.turnierTime) {
+        if ((ende - start) !== Config.turnierTime && (Permissions.VORSTAND !== (Permissions.VORSTAND & this.props.permissions))) {
           [s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt] = Messages.turnierspieldauer;
         } else {
           [s.startsAtMsgClass, s.saveActive, s.startsAtMsgTxt] = Messages.turnier;
@@ -540,9 +553,19 @@ class BelForm extends Component {
       saveActiveMerker = (saveActiveMerker === true) ? s.saveActive : false
 
       // Berechtigung zum Speichern und Löschen und flexible Endezeit
-      if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)|(ts-turnier)/ig)) {
+      if (this.state.bookingType.match(/(ts-turnier)/ig)) {
+        s.saveActive = (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
+        s.deleteActive = (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
+        s.endeActive = false
+      }
+      if (this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig)) {
         s.saveActive = condUserIstSpieler || (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
         s.deleteActive = condUserIstSpieler || (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
+        s.endeActive = false
+      }
+      if (this.state.bookingType.match(/(ts-trbuchung)/ig)) {
+        s.saveActive = condUserIstSpieler || (Permissions.TRAINER === (Permissions.TRAINER & this.props.permissions))
+        s.deleteActive = condUserIstSpieler || (Permissions.TRAINER === (Permissions.TRAINER & this.props.permissions))
         s.endeActive = false
       }
       if (this.state.bookingType.match(/(ts-training)|(ts-punktspiele)|(ts-nichtreservierbar)|(ts-veranstaltung)/ig)) {

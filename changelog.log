@@ -15,6 +15,14 @@ https://www.red-bean.com/cvs2cl/changelogs.html#maintaining-the-changelog
 
 TCO Platzbuchungssystem
 =======================
+2022-01-17  Conny Roloff
+        Admin
+        * Serienbuchung erweitert um Trainerbuchungen
+        Platzbuchungssystem
+        * DB, users:  id 15: - frei BUCHBAR -
+        * tafel.css: ts-trbuchung hinzugefügt
+
+
 2021-01-01  Conny Roloff
         
         Platzbuchungssystem

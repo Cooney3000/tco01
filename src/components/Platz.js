@@ -112,6 +112,7 @@ const formatSpieler = (r, platzWide) =>
   spieler[3] = (r.p4vn ? r.p4vn + ' ' + r.p4nn : (r.p4nn) ? r.p4nn : '') + spielerzusatz(r.p4geb, r.schnupper4)
   
   // Führende Punkt und Whitespace entfernen, falls es sowas gibt
+  // eslint-disable-next-line
   spieler = spieler.map( s => s.replace(new RegExp(/^[\.\s]+/g), '') )
   
   spieler = spieler.join(', ')

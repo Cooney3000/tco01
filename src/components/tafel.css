@@ -127,8 +127,12 @@ a:hover {
   background-color: rgb(255, 253, 148);
 }
 .ts-veranstaltung {
-  color: rgb(176, 233, 150); 
+  color: rgb(200, 228, 187); 
   background-color: rgb(94, 94, 94);
+}
+.ts-trbuchung {
+  color: rgb(84, 109, 72); 
+  background-color: rgb(255, 115, 0);
 }
 .ts-nichtreservierbar {
   color: black; 

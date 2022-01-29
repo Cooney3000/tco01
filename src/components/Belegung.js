@@ -79,6 +79,7 @@ function getEmptyBel(court, day) {
   return {
     id: 0,
     user_id: 0,
+    series_id: '',
     p1: '',
     p2: '',
     p3: '',

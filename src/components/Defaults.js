@@ -1,7 +1,7 @@
 
 // ****** Konfigurationsdaten *******
 
-export const hostLocal = false
+export const hostLocal = true   // true = localhost zum Testen
 
 const config = {
   testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
@@ -31,7 +31,12 @@ const config = {
   platzLeer: "\u00A0\u00A0",
   platzBelegt: "\u29EB",
   slotMinimalMinutes: 1800000, // = 30 Minuten
-  delimiter: "§§§"
+  delimiter: "§§§",
+  hostname: '',
+  protokoll: '',
+  loginPage: '',
+  prod: false
+
 }
 if (hostLocal) {
   config.hostname = 'localhost'
@@ -84,6 +89,7 @@ export const permissions = {
     MANNSCHAFTSFUEHRER : 32,
     WIRT : 64,
     T_ALL_PERMISSIONS : 128,    // Turnierverantwortliche
+    TRAINER : 256,
     VORSTAND : 496,             // kombiniert 16, 32, 64, 128, 256
     ADMINISTRATOR : 65535,
 };
