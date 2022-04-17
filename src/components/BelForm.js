@@ -15,17 +15,19 @@ class BelForm extends Component {
     this.handleDelete = this.handleDelete.bind(this);
 
     const { r } = props;
-    // Daten für Datum, Start und Ende extrahieren
     let [sd, st] = r.starts_at.split(' ')
-    let scd = new Date(sd)
+    // Daten für Datum, Start und Ende
+    let scd = new Date(r.starts_at)
     let ssd = servertimeNow()
-    scd.setHours(0, 0, 0, 0)
-    ssd.setHours(0, 0, 0, 0)
 
-    const dateIsToday = (scd.valueOf() === ssd.valueOf())
+    let timeDiff = scd.valueOf() - ssd.valueOf()
+    console.debug("ssd:", ssd, " scd:", scd, " timeDiff:", timeDiff)
+    
+    const canBookForTomorrow = ( timeDiff < Config.std24) // 24*60*60*1000 = 24 Stunden in Millisekunden
+    console.debug("ssd:", ssd, " scd:", scd, " timeDiff:", timeDiff, " canBookForTomorrow:", canBookForTomorrow)
 
     // Initialer Wert für neue Buchungen. Wenn Einzel/Doppel erlaubt/nicht erlaubt sind, hier ändern
-    const bookingType = (r.booking_type === '') ? (dateIsToday ? 'ts-einzel' : 'ts-turnier') : r.booking_type
+    const bookingType = (r.booking_type === '') ? (canBookForTomorrow ? 'ts-einzel' : 'ts-turnier') : r.booking_type
     const userDarfAlles = [Number([r.user_id]), Number([r.p1id]), Number([r.p2id]), Number([r.p3id]), Number([r.p4id])].includes(Number(this.props.userId))
     const deleteActive = userDarfAlles || (Permissions.VORSTAND === (Permissions.VORSTAND & this.props.permissions))
 
@@ -53,7 +55,7 @@ class BelForm extends Component {
       deleteActive: deleteActive,
       endeActive: false,
       admin: false,
-      dateIsToday: dateIsToday,
+      canBookForTomorrow: canBookForTomorrow,
       overbooked: false,
       jugend: false,
       nichtVollBerechtigte: false,
@@ -123,12 +125,9 @@ class BelForm extends Component {
         <form className="form-inline">
           <fieldset className="fields">
             <div><strong>Buchungstyp</strong></div>
-            {!this.state.dateIsToday &&
-              <div>Einzel-/Doppel-Buchung nur am aktuellen Tag möglich</div>
-            }
             <select id="bookingType" className="form-control" onChange={this.handleChange} value={this.state.bookingType}>
-              <option disabled={!this.state.dateIsToday} value="ts-einzel">Einzel</option>
-              <option disabled={!this.state.dateIsToday} value="ts-doppel">Doppel</option>
+              <option disabled={!this.state.canBookForTomorrow} value="ts-einzel">Einzel</option>
+              <option disabled={!this.state.canBookForTomorrow} value="ts-doppel">Doppel</option>
               <option value="ts-turnier">Turnier</option>
               <option disabled={!condMF} value="ts-veranstaltung">Veranstaltung</option>
               <option disabled={!condMF} value="ts-training">Training</option>
@@ -374,6 +373,7 @@ class BelForm extends Component {
       s.overbooked = false
       s.startsAt = this.state.startsAt
       s.seriesId = this.state.seriesId
+      s.canBookForTomorrow = this.state.canBookForTomorrow
 
       // Alle nicht buchbaren Zeiten der Timetable deaktivieren
       // s.timetable = getBookableTimes(this.state.timetable)
@@ -418,6 +418,14 @@ class BelForm extends Component {
       // -----------
       // Es wird validiert, ob Erwachsene, Schnuppermitglieder und Jugendliche 
       // wirklich spielberechtigt sind und ob die eingetragenen Zeiten stimmen
+
+      // Darf zu dieser Zeit gebucht werden? (max 24 Std im Voraus bei Einzel/Doppel)
+      let jetzt = servertimeNow().getTime()
+      let timeDiff = sd.getTime() - jetzt
+      s.canBookForTomorrow = ( timeDiff < Config.std24) // 24*60*60*1000 = 24 Stunden in Millisekunden
+      if ( !s.canBookForTomorrow && this.state.bookingType.match(/(ts-einzel)|(ts-doppel)/ig)) {
+          [s.p1MsgClass, s.saveActive, s.p1MsgTxt] = Messages.max24h;
+      }
 
       // Buchungszeiten in Minuten
       const start = Number(s.startsAt.substring(0, 2)) * 60 + Number(s.startsAt.substring(3, 5))

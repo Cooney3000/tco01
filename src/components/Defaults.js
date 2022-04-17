@@ -1,11 +1,11 @@
 
 // ****** Konfigurationsdaten *******
 
-export const hostLocal = true   // true = localhost zum Testen
+export const hostLocal = false   // true = localhost zum Testen
 
 const config = {
-  testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
-  // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
+  // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
+  testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetUsr', permissions: 0}, // mit normalen Benutzerrechten
   //  testuser: {id:357, vorname:'Hart', nachname:'VerdrahtetUsr2', permissions: 432}, // mit normalen Benutzerrechten
   stringSeparator: ' ',
   smartphoneWidth: 578,
@@ -35,8 +35,9 @@ const config = {
   hostname: '',
   protokoll: '',
   loginPage: '',
-  prod: false
-
+  prod: false,
+  std24: 93600000 // 24 Stunden + 1 Std Zeitzone + 1 Std Sommerzeit in Millisekunden 
+  // std24: 50400000    // 12 Stunden + 1 Std Sommerzeit Zeitzone + 1 Std in Millisekunden
 }
 if (hostLocal) {
   config.hostname = 'localhost'
@@ -58,7 +59,7 @@ const SAVE = true
 export const messages = {
   gast: [IMPORTANT, NOSAVE, '- Bitte den Gastnamen ins Kommentarfeld schreiben und die Gebühr innerhalb einer Woche überweisen!'],
   mitglied: [IMPORTANT, NOSAVE, '- Bitte nur für Mitglieder ohne Email verwenden und den Namen ins Kommentarfeld schreiben!'],
-  veranstaltung: [IMPORTANT, SAVE, '- Bitte den Veranstaltungsanlass ins Kommentarfeld schreiben und den Vorstand informieren!'],
+  veranstaltung: [MSG, SAVE, '- Bitte den Veranstaltungsanlass ins Kommentarfeld schreiben und den Vorstand informieren!'],
   spieleranzahl: [IMPORTANT, NOSAVE, '- Bitte alle Personen eintragen!'],
   jugendvorrecht: [MSG, SAVE, '- Achtung: Jugendliche haben auf Platz 6 zu dieser Zeit Vorrecht!'],
   erwachsenenvorrecht: [IMPORTANT, NOSAVE, '- Buchung erst 15 Minuten vor Spielbeginn möglich, da werktags ab 17:00 Uhr ein erw. Vollmitglied mitspielen muss.'],
@@ -68,6 +69,7 @@ export const messages = {
   turnierspieldauer: [IMPORTANT, NOSAVE, '- Turnierspiele 120 Minuten. Falls möglich auf Platz 1 buchen. Parallel sollte ein Platz auf der Anlage nicht durch Turniere oder Training belegt sein! Wer Mannschaftstraining hat, darf nur auf den Plätzen der Mannschaft Turnier spielen.'],
   zeit: [IMPORTANT, NOSAVE, '- Der Start muss vor dem Ende liegen!'],
   platzbelegt:  [IMPORTANT, NOSAVE, '- Platz bereits belegt!'],
+  max24h:  [IMPORTANT, NOSAVE, '- Einzel/Doppel maximal 24 Stunden im Voraus buchbar!'],
 };
 for (let i = 1; i <= config.anzahlPlaetze; i++) {
   config.platzArray.push(i);

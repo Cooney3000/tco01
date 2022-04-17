@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import BelForm from './BelForm';
+import BelFormTrBuchung from './BelFormTrBuchung';
 import { Link } from 'react-router-dom';
 import Config from './Defaults';
 
@@ -34,7 +35,7 @@ class Belegung extends Component {
     .then(result => {
       if (result.ok) {
         if (result.redirected) {
-          console.log("BelDetails.js/Checkuser: Authentifizierungsfehler")
+          // console.log("BelDetails.js/Checkuser: Authentifizierungsfehler")
           window.location.href = result.url
         }
         return result.json();
@@ -44,12 +45,23 @@ class Belegung extends Component {
     })
     .then(result => {
       let belegung = result.records.map( r => {
-        return (
-          <div key={r.id} className="p-2">
-              <Link to={{ pathname: '/intern/tafel/', state: {d: day} }}><p className="btn btn-secondary">Zurück</p></Link>
-              <BelForm r={r} userId={this.props.userId} permissions={this.props.permissions} />
-          </div>
-        )
+        if (r.booking_type === "ts-trbuchung")
+        {
+          return (
+            <div key={r.id} className="p-2">
+                <Link to={{ pathname: '/intern/tafel/', state: {d: day} }}><p className="btn btn-secondary">Zurück</p></Link>
+                <BelFormTrBuchung r={r} userId={this.props.userId} permissions={this.props.permissions} />
+            </div>
+          )
+        } else 
+        {
+          return (
+            <div key={r.id} className="p-2">
+                <Link to={{ pathname: '/intern/tafel/', state: {d: day} }}><p className="btn btn-secondary">Zurück</p></Link>
+                <BelForm r={r} userId={this.props.userId} permissions={this.props.permissions} />
+            </div>
+          )
+        }
       })
       this.setState({ belegung: belegung })
     })

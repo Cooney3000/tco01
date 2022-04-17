@@ -131,7 +131,7 @@ a:hover {
   background-color: rgb(94, 94, 94);
 }
 .ts-trbuchung {
-  color: rgb(84, 109, 72); 
+  color: black; 
   background-color: rgb(255, 115, 0);
 }
 .ts-nichtreservierbar {
@@ -163,6 +163,11 @@ a:hover {
   width:20%;
   color: black; 
   background-color: rgb(156, 156, 156);
+}
+.l-trbuchung {
+  width:20%;
+  color: black; 
+  background-color: rgb(255, 115, 0);
 }
 .l-veranstaltung {
   width:20%;
@@ -347,6 +352,9 @@ a:hover {
     width:100%;
   }
   .l-turnier {
+    width:100%;
+  }
+  .l-trbuchung {
     width:100%;
   }
   .l-punktspiele {

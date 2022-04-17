@@ -106,15 +106,21 @@ const formatSpieler = (r, platzWide) =>
   // spieler[3] = (r.p4vn ? (platzWide ? r.p4vn : r.p4vn.charAt(0) + '.') + ' ' + r.p4nn : (r.p4nn) ? r.p4nn : '') + spielerzusatz(r.p4geb, r.schnupper4)
   
   // Vorname und Name verketten. Vorname bei wenig Platz abkürzen
+  
   spieler[0] = (r.p1vn ? r.p1vn + ' ' + r.p1nn : (r.p1nn) ? r.p1nn : '') + spielerzusatz(r.p1geb, r.schnupper1)
   spieler[1] = (r.p2vn ? r.p2vn + ' ' + r.p2nn : (r.p2nn) ? r.p2nn : '') + spielerzusatz(r.p2geb, r.schnupper2)
   spieler[2] = (r.p3vn ? r.p3vn + ' ' + r.p3nn : (r.p3nn) ? r.p3nn : '') + spielerzusatz(r.p3geb, r.schnupper3)
   spieler[3] = (r.p4vn ? r.p4vn + ' ' + r.p4nn : (r.p4nn) ? r.p4nn : '') + spielerzusatz(r.p4geb, r.schnupper4)
-  
-  // Führende Punkt und Whitespace entfernen, falls es sowas gibt
+
+  // Führende und training Punkt und Whitespace entfernen, falls es sowas gibt
   // eslint-disable-next-line
-  spieler = spieler.map( s => s.replace(new RegExp(/^[\.\s]+/g), '') )
-  
+  spieler = spieler.map( s => 
+    {
+      s.replace(new RegExp(/^[\.\s]+/g), '') 
+      s.replace(new RegExp(/[,\s]*$/g), '')
+      return s
+    })
+
   spieler = spieler.join(', ')
 
   // ... und trailing Kommas, Whitespaces entfernen
