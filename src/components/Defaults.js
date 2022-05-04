@@ -1,7 +1,7 @@
 
 // ****** Konfigurationsdaten *******
 
-export const hostLocal = false   // true = localhost zum Testen
+export const hostLocal = true   // true = localhost zum Testen
 
 const config = {
   // testuser: {id:211, vorname:'Hart', nachname:'VerdrahtetAdm', permissions: 65535}, // mit Adminrechten
